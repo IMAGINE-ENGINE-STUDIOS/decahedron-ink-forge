@@ -52,6 +52,11 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				geometric: {
+					primary: 'hsl(var(--geometric-primary))',
+					secondary: 'hsl(var(--geometric-secondary))',
+					accent: 'hsl(var(--geometric-accent))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -84,11 +89,43 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+					'50%': { transform: 'translateY(-20px) rotate(5deg)' }
+				},
+				'rotate': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' }
+				},
+				'geometric-pulse': {
+					'0%, 100%': { 
+						opacity: '0.6',
+						transform: 'scale(1)'
+					},
+					'50%': { 
+						opacity: '1',
+						transform: 'scale(1.05)'
+					}
+				},
+				'ink-flow': {
+					'0%, 100%': { 
+						transform: 'translateX(0%) scaleX(1)',
+						opacity: '0.4'
+					},
+					'50%': { 
+						transform: 'translateX(5%) scaleX(1.02)',
+						opacity: '0.7'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 6s ease-in-out infinite',
+				'rotate': 'rotate 20s linear infinite',
+				'geometric-pulse': 'geometric-pulse 4s ease-in-out infinite',
+				'ink-flow': 'ink-flow 8s ease-in-out infinite'
 			}
 		}
 	},

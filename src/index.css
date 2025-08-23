@@ -8,35 +8,41 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Parchment & Ink Design System */
+    --background: 44 33% 97%; /* Parchment cream */
+    --foreground: 0 0% 10%; /* Deep ink black */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 44 33% 98%;
+    --card-foreground: 0 0% 10%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 44 33% 98%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 0 0% 10%; /* Ink black */
+    --primary-foreground: 44 33% 97%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 44 20% 90%; /* Light parchment */
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 44 20% 90%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 44 25% 85%;
+    --accent-foreground: 0 0% 10%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 44 33% 97%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 44 25% 85%;
+    --input: 44 25% 85%;
+    --ring: 0 0% 10%;
 
-    --radius: 0.5rem;
+    /* Geometric Animation Colors */
+    --geometric-primary: 0 0% 10%;
+    --geometric-secondary: 0 0% 25%;
+    --geometric-accent: 44 25% 75%;
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +107,43 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Geometric Animations */
+  .geometric-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .geometric-rotate {
+    animation: rotate 20s linear infinite;
+  }
+  
+  .geometric-pulse {
+    animation: geometric-pulse 4s ease-in-out infinite;
+  }
+  
+  .ink-flow {
+    animation: ink-flow 8s ease-in-out infinite;
+  }
+  
+  /* Parchment texture effect */
+  .parchment-texture {
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(26, 26, 26, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 80% 50%, rgba(26, 26, 26, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 40% 20%, rgba(26, 26, 26, 0.01) 1px, transparent 1px);
+    background-size: 100px 100px, 150px 150px, 200px 200px;
+  }
+}
+
+@layer utilities {
+  .text-geometric {
+    color: hsl(var(--geometric-primary));
+  }
+  
+  .border-geometric {
+    border-color: hsl(var(--geometric-secondary));
   }
 }
