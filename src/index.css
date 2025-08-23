@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -37,10 +39,12 @@ All colors MUST be HSL.
     --input: 44 25% 85%;
     --ring: 0 0% 10%;
 
-    /* Geometric Animation Colors */
-    --geometric-primary: 0 0% 10%;
-    --geometric-secondary: 0 0% 25%;
-    --geometric-accent: 44 25% 75%;
+    /* Technical Geometric Colors */
+    --geometric-primary: 0 0% 8%;
+    --geometric-secondary: 0 0% 20%;
+    --geometric-accent: 0 0% 30%;
+    --technical-line: 0 0% 15%;
+    --technical-highlight: 0 0% 5%;
 
     --radius: 0.75rem;
 
@@ -107,6 +111,17 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  .font-technical {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  
+  .font-display {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 }
 

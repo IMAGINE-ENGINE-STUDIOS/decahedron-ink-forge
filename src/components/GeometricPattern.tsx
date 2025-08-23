@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface GeometricPatternProps {
-  variant?: 'dodecahedron' | 'spiral' | 'cube-array' | 'flower-of-life';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'dodecahedron' | 'spiral' | 'cube-array' | 'flower-of-life' | 'technical-blueprint' | 'technical-wireframe' | 'technical-corner';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
 
@@ -14,25 +14,35 @@ const GeometricPattern: React.FC<GeometricPatternProps> = ({
   const sizeClasses = {
     sm: 'w-16 h-16',
     md: 'w-24 h-24',
-    lg: 'w-32 h-32'
+    lg: 'w-32 h-32',
+    xl: 'w-48 h-48'
   };
 
   const getDodecahedronPath = () => (
-    <g className="stroke-geometric-primary fill-none stroke-1">
-      {/* Dodecahedron outline */}
-      <polygon points="50,10 80,25 95,55 80,85 50,100 20,85 5,55 20,25" className="animate-geometric-pulse" />
-      <polygon points="50,20 70,30 80,50 70,70 50,80 30,70 20,50 30,30" className="animate-float" />
-      {/* Inner pentagon */}
-      <polygon points="50,35 60,40 65,50 60,60 50,65 40,60 35,50 40,40" className="animate-rotate" />
-      {/* Connection lines */}
-      <line x1="50" y1="10" x2="50" y2="35" className="animate-ink-flow" />
-      <line x1="80" y1="25" x2="60" y2="40" className="animate-ink-flow" />
-      <line x1="95" y1="55" x2="65" y2="50" className="animate-ink-flow" />
-      <line x1="80" y1="85" x2="60" y2="60" className="animate-ink-flow" />
-      <line x1="50" y1="100" x2="50" y2="65" className="animate-ink-flow" />
-      <line x1="20" y1="85" x2="40" y2="60" className="animate-ink-flow" />
-      <line x1="5" y1="55" x2="35" y2="50" className="animate-ink-flow" />
-      <line x1="20" y1="25" x2="40" y2="40" className="animate-ink-flow" />
+    <g className="stroke-technical-highlight fill-none stroke-[0.5]">
+      {/* Technical Dodecahedron outline */}
+      <polygon points="50,5 85,22 98,52 85,88 50,105 15,88 2,52 15,22" className="animate-geometric-pulse stroke-[1]" />
+      <polygon points="50,15 75,28 85,50 75,75 50,88 25,75 15,50 25,28" className="animate-float opacity-80" />
+      {/* Inner core pentagon */}
+      <polygon points="50,30 65,35 72,50 65,65 50,70 35,65 28,50 35,35" className="animate-rotate stroke-[1.5]" />
+      {/* Technical connection grid */}
+      <line x1="50" y1="5" x2="50" y2="30" className="animate-ink-flow stroke-technical-line" />
+      <line x1="85" y1="22" x2="65" y2="35" className="animate-ink-flow stroke-technical-line" />
+      <line x1="98" y1="52" x2="72" y2="50" className="animate-ink-flow stroke-technical-line" />
+      <line x1="85" y1="88" x2="65" y2="65" className="animate-ink-flow stroke-technical-line" />
+      <line x1="50" y1="105" x2="50" y2="70" className="animate-ink-flow stroke-technical-line" />
+      <line x1="15" y1="88" x2="35" y2="65" className="animate-ink-flow stroke-technical-line" />
+      <line x1="2" y1="52" x2="28" y2="50" className="animate-ink-flow stroke-technical-line" />
+      <line x1="15" y1="22" x2="35" y2="35" className="animate-ink-flow stroke-technical-line" />
+      {/* Technical vertex markers */}
+      <circle cx="50" cy="5" r="1" className="fill-technical-highlight animate-geometric-pulse" />
+      <circle cx="85" cy="22" r="1" className="fill-technical-highlight animate-geometric-pulse" />
+      <circle cx="98" cy="52" r="1" className="fill-technical-highlight animate-geometric-pulse" />
+      <circle cx="85" cy="88" r="1" className="fill-technical-highlight animate-geometric-pulse" />
+      <circle cx="50" cy="105" r="1" className="fill-technical-highlight animate-geometric-pulse" />
+      <circle cx="15" cy="88" r="1" className="fill-technical-highlight animate-geometric-pulse" />
+      <circle cx="2" cy="52" r="1" className="fill-technical-highlight animate-geometric-pulse" />
+      <circle cx="15" cy="22" r="1" className="fill-technical-highlight animate-geometric-pulse" />
     </g>
   );
 
@@ -84,6 +94,45 @@ const GeometricPattern: React.FC<GeometricPatternProps> = ({
     </g>
   );
 
+  const getTechnicalBlueprintPath = () => (
+    <g className="stroke-technical-highlight fill-none stroke-[0.5]">
+      <rect x="20" y="20" width="60" height="60" className="stroke-[1] animate-geometric-pulse" />
+      <rect x="30" y="30" width="40" height="40" className="stroke-[0.5] animate-float" />
+      <circle cx="50" cy="50" r="15" className="stroke-[1] animate-rotate" />
+      {/* Technical measurement lines */}
+      <line x1="15" y1="20" x2="15" y2="80" className="stroke-technical-line stroke-[0.3]" />
+      <line x1="20" y1="15" x2="80" y2="15" className="stroke-technical-line stroke-[0.3]" />
+      {/* Dimension markers */}
+      <text x="10" y="50" className="text-[3px] fill-technical-line">60</text>
+      <text x="50" y="10" className="text-[3px] fill-technical-line">60</text>
+    </g>
+  );
+
+  const getTechnicalWireframePath = () => (
+    <g className="stroke-technical-highlight fill-none stroke-[0.5]">
+      {/* 3D Wireframe structure */}
+      <polygon points="30,20 70,20 80,30 40,30" className="animate-geometric-pulse" />
+      <polygon points="30,20 30,60 40,70 40,30" className="animate-float" />
+      <polygon points="70,20 70,60 80,70 80,30" className="animate-ink-flow" />
+      <polygon points="30,60 70,60 80,70 40,70" className="animate-rotate" />
+      {/* Connection lines */}
+      <line x1="30" y1="20" x2="40" y2="30" className="stroke-technical-line" />
+      <line x1="70" y1="20" x2="80" y2="30" className="stroke-technical-line" />
+      <line x1="30" y1="60" x2="40" y2="70" className="stroke-technical-line" />
+      <line x1="70" y1="60" x2="80" y2="70" className="stroke-technical-line" />
+    </g>
+  );
+
+  const getTechnicalCornerPath = () => (
+    <g className="stroke-technical-highlight fill-none stroke-[1]">
+      <path d="M10,30 L10,10 L30,10" className="animate-geometric-pulse" />
+      <path d="M70,10 L90,10 L90,30" className="animate-geometric-pulse" />
+      <path d="M90,70 L90,90 L70,90" className="animate-geometric-pulse" />
+      <path d="M30,90 L10,90 L10,70" className="animate-geometric-pulse" />
+      <circle cx="50" cy="50" r="2" className="fill-technical-highlight animate-float" />
+    </g>
+  );
+
   const getPattern = () => {
     switch (variant) {
       case 'spiral':
@@ -92,6 +141,12 @@ const GeometricPattern: React.FC<GeometricPatternProps> = ({
         return getCubeArrayPath();
       case 'flower-of-life':
         return getFlowerOfLifePath();
+      case 'technical-blueprint':
+        return getTechnicalBlueprintPath();
+      case 'technical-wireframe':
+        return getTechnicalWireframePath();
+      case 'technical-corner':
+        return getTechnicalCornerPath();
       default:
         return getDodecahedronPath();
     }

@@ -57,6 +57,10 @@ export default {
 					secondary: 'hsl(var(--geometric-secondary))',
 					accent: 'hsl(var(--geometric-accent))'
 				},
+				technical: {
+					line: 'hsl(var(--technical-line))',
+					highlight: 'hsl(var(--technical-highlight))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
