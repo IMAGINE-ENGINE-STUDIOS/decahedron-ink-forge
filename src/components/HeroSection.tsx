@@ -57,6 +57,15 @@ const HeroSection: React.FC = () => {
             <div className="w-24 h-px bg-technical-line mx-auto mb-6"></div>
           </div>
 
+          {/* Logo */}
+          <div className="mb-8 flex justify-center">
+            <img 
+              src="/lovable-uploads/c653fd62-6de9-4d23-93ef-be9bdbecec8f.png" 
+              alt="Decahedron Ventures Logo" 
+              className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 opacity-90 hover:opacity-100 transition-opacity duration-300"
+            />
+          </div>
+
           {/* Main heading */}
           <h1 className="font-display text-6xl md:text-8xl xl:text-9xl font-black text-foreground mb-8 leading-[0.85] tracking-tight">
             DECAHEDRON
