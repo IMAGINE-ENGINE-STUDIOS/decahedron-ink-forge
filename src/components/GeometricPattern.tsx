@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface GeometricPatternProps {
-  variant?: 'dodecahedron' | 'spiral' | 'cube-array' | 'flower-of-life' | 'technical-blueprint' | 'technical-wireframe' | 'technical-corner' | 'complex-geometric';
+  variant?: 'dodecahedron' | 'spiral' | 'cube-array' | 'flower-of-life' | 'technical-blueprint' | 'technical-wireframe' | 'technical-corner';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
@@ -133,81 +133,6 @@ const GeometricPattern: React.FC<GeometricPatternProps> = ({
     </g>
   );
 
-  const getComplexGeometricPath = () => (
-    <g className="stroke-technical-highlight fill-none stroke-[0.8]">
-      {/* Replicating the exact pattern from the uploaded image */}
-      {/* Outer dodecagon */}
-      <polygon points="50,2 78,12 92,35 92,65 78,88 50,98 22,88 8,65 8,35 22,12" className="animate-geometric-pulse stroke-[1.2]" />
-      
-      {/* Inner geometric network */}
-      <g className="stroke-[0.6] animate-ink-flow">
-        {/* Central hexagon */}
-        <polygon points="50,30 65,37.5 65,52.5 50,60 35,52.5 35,37.5" className="stroke-[1]" />
-        
-        {/* Primary radiating lines from center */}
-        <line x1="50" y1="50" x2="50" y2="2" className="animate-geometric-pulse" />
-        <line x1="50" y1="50" x2="78" y2="12" />
-        <line x1="50" y1="50" x2="92" y2="35" />
-        <line x1="50" y1="50" x2="92" y2="65" />
-        <line x1="50" y1="50" x2="78" y2="88" />
-        <line x1="50" y1="50" x2="50" y2="98" />
-        <line x1="50" y1="50" x2="22" y2="88" />
-        <line x1="50" y1="50" x2="8" y2="65" />
-        <line x1="50" y1="50" x2="8" y2="35" />
-        <line x1="50" y1="50" x2="22" y2="12" />
-        
-        {/* Hexagon vertices to outer points */}
-        <line x1="50" y1="30" x2="50" y2="2" />
-        <line x1="65" y1="37.5" x2="92" y2="35" />
-        <line x1="65" y1="52.5" x2="92" y2="65" />
-        <line x1="50" y1="60" x2="78" y2="88" />
-        <line x1="35" y1="52.5" x2="8" y2="65" />
-        <line x1="35" y1="37.5" x2="8" y2="35" />
-        
-        {/* Triangular subdivisions */}
-        <line x1="50" y1="2" x2="78" y2="12" />
-        <line x1="78" y1="12" x2="92" y2="35" />
-        <line x1="92" y1="35" x2="92" y2="65" />
-        <line x1="92" y1="65" x2="78" y2="88" />
-        <line x1="78" y1="88" x2="50" y2="98" />
-        <line x1="50" y1="98" x2="22" y2="88" />
-        <line x1="22" y1="88" x2="8" y2="65" />
-        <line x1="8" y1="65" x2="8" y2="35" />
-        <line x1="8" y1="35" x2="22" y2="12" />
-        <line x1="22" y1="12" x2="50" y2="2" />
-        
-        {/* Additional internal triangulation */}
-        <line x1="50" y1="30" x2="78" y2="12" />
-        <line x1="65" y1="37.5" x2="78" y2="12" />
-        <line x1="65" y1="37.5" x2="92" y2="65" />
-        <line x1="65" y1="52.5" x2="78" y2="88" />
-        <line x1="50" y1="60" x2="50" y2="98" />
-        <line x1="35" y1="52.5" x2="22" y2="88" />
-        <line x1="35" y1="37.5" x2="22" y2="12" />
-        <line x1="50" y1="30" x2="22" y2="12" />
-        
-        {/* Cross patterns creating the intricate internal structure */}
-        <line x1="35" y1="30" x2="65" y2="60" className="animate-float" />
-        <line x1="65" y1="30" x2="35" y2="60" className="animate-float" />
-        <line x1="30" y1="37.5" x2="70" y2="52.5" />
-        <line x1="70" y1="37.5" x2="30" y2="52.5" />
-        
-        {/* Additional complexity to match the reference pattern */}
-        <line x1="22" y1="12" x2="65" y2="37.5" className="opacity-70" />
-        <line x1="78" y1="12" x2="35" y2="37.5" className="opacity-70" />
-        <line x1="92" y1="35" x2="35" y2="52.5" className="opacity-70" />
-        <line x1="92" y1="65" x2="35" y2="52.5" className="opacity-70" />
-        <line x1="78" y1="88" x2="35" y2="37.5" className="opacity-70" />
-        <line x1="22" y1="88" x2="65" y2="37.5" className="opacity-70" />
-        <line x1="8" y1="65" x2="65" y2="52.5" className="opacity-70" />
-        <line x1="8" y1="35" x2="65" y2="52.5" className="opacity-70" />
-      </g>
-      
-      {/* Central emphasis point */}
-      <circle cx="50" cy="50" r="1.5" className="fill-technical-highlight animate-geometric-pulse" />
-    </g>
-  );
-
   const getPattern = () => {
     switch (variant) {
       case 'spiral':
@@ -222,8 +147,6 @@ const GeometricPattern: React.FC<GeometricPatternProps> = ({
         return getTechnicalWireframePath();
       case 'technical-corner':
         return getTechnicalCornerPath();
-      case 'complex-geometric':
-        return getComplexGeometricPath();
       default:
         return getDodecahedronPath();
     }

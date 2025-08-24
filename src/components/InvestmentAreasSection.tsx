@@ -50,7 +50,7 @@ const InvestmentAreasSection: React.FC = () => {
         <div className="text-center mb-16">
           <div className="inline-block mb-6">
             <GeometricPattern 
-              variant="complex-geometric" 
+              variant="dodecahedron" 
               size="lg" 
               className="text-geometric-primary animate-geometric-pulse" 
             />
