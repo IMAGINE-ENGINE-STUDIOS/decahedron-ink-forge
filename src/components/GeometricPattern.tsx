@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface GeometricPatternProps {
-  variant?: 'dodecahedron' | 'spiral' | 'cube-array' | 'flower-of-life' | 'technical-blueprint' | 'technical-wireframe' | 'technical-corner';
+  variant?: 'dodecahedron' | 'spiral' | 'cube-array' | 'flower-of-life' | 'technical-blueprint' | 'technical-wireframe' | 'technical-corner' | 'golden-spiral-grid';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
@@ -133,6 +133,51 @@ const GeometricPattern: React.FC<GeometricPatternProps> = ({
     </g>
   );
 
+  const getGoldenSpiralGridPath = () => (
+    <g className="fill-none">
+      {/* Concentric construction circles */}
+      <g className="stroke-technical-line">
+        <circle cx="50" cy="50" r="46" className="stroke-[0.4]" />
+        <circle cx="50" cy="50" r="36" className="stroke-[0.35]" />
+        <circle cx="50" cy="50" r="26" className="stroke-[0.3]" />
+        <circle cx="50" cy="50" r="16" className="stroke-[0.25]" />
+      </g>
+
+      {/* Golden rectangles (construction) */}
+      <g className="stroke-technical-line">
+        <rect x="18" y="18" width="64" height="64" className="stroke-[0.35]" />
+        <rect x="18" y="50" width="40" height="32" className="stroke-[0.3]" />
+        <rect x="58" y="18" width="24" height="24" className="stroke-[0.25]" />
+        <rect x="58" y="42" width="24" height="40" className="stroke-[0.25]" />
+      </g>
+
+      {/* Logarithmic spiral approximation */}
+      <path 
+        d="M22,78 Q36,62 38,50 Q40,38 50,36 Q62,34 70,44 Q78,54 74,66 Q70,78 56,80 Q44,82 34,74 Q26,68 22,58"
+        className="stroke-technical-highlight stroke-[0.9]"
+      />
+
+      {/* Construction diagonals */}
+      <g className="stroke-technical-line">
+        <line x1="18" y1="18" x2="82" y2="82" className="stroke-[0.25]" />
+        <line x1="18" y1="82" x2="82" y2="18" className="stroke-[0.25]" />
+        <line x1="50" y1="4" x2="50" y2="96" className="stroke-[0.2]" />
+        <line x1="4" y1="50" x2="96" y2="50" className="stroke-[0.2]" />
+      </g>
+
+      {/* Nodes */}
+      <g className="fill-technical-highlight">
+        <circle cx="50" cy="36" r="0.9" />
+        <circle cx="62" cy="34" r="0.9" />
+        <circle cx="70" cy="44" r="0.9" />
+        <circle cx="74" cy="66" r="0.9" />
+        <circle cx="56" cy="80" r="0.9" />
+        <circle cx="34" cy="74" r="0.9" />
+        <circle cx="22" cy="58" r="0.9" />
+      </g>
+    </g>
+  );
+
   const getPattern = () => {
     switch (variant) {
       case 'spiral':
@@ -147,6 +192,8 @@ const GeometricPattern: React.FC<GeometricPatternProps> = ({
         return getTechnicalWireframePath();
       case 'technical-corner':
         return getTechnicalCornerPath();
+      case 'golden-spiral-grid':
+        return getGoldenSpiralGridPath();
       default:
         return getDodecahedronPath();
     }
