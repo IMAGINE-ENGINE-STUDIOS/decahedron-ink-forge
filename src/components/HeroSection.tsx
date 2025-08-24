@@ -62,7 +62,7 @@ const HeroSection: React.FC = () => {
             <img 
               src="/lovable-uploads/c653fd62-6de9-4d23-93ef-be9bdbecec8f.png" 
               alt="Decahedron Ventures Logo" 
-              className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 opacity-90 hover:opacity-100 transition-opacity duration-300"
+              className="w-40 md:w-56 lg:w-64 h-auto object-contain opacity-95 hover:opacity-100 transition-opacity duration-300 drop-shadow"
             />
           </div>
 

@@ -49,10 +49,10 @@ const InvestmentAreasSection: React.FC = () => {
         {/* Section header */}
         <div className="text-center mb-16">
           <div className="inline-block mb-6">
-            <GeometricPattern 
-              variant="golden-spiral-grid" 
-              size="lg" 
-              className="text-geometric-primary" 
+            <img 
+              src="/lovable-uploads/c653fd62-6de9-4d23-93ef-be9bdbecec8f.png" 
+              alt="Decahedron Ventures logo"
+              className="w-20 md:w-24 lg:w-28 h-auto mx-auto opacity-90 hover:opacity-100 transition-opacity duration-300"
             />
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-8">

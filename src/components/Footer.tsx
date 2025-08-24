@@ -5,70 +5,25 @@ import GeometricPattern from './GeometricPattern';
 const Footer: React.FC = () => {
   return (
     <footer className="relative bg-background border-t border-technical-line parchment-texture">
-      {/* Enhanced Technical Drawing Background */}
       <div className="absolute inset-0 opacity-10">
-          <svg className="w-full h-full" viewBox="0 0 1200 400" preserveAspectRatio="none">
-            {/* Wide Technical Grid */}
-            <defs>
-              <pattern id="footer-grid-major" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.35"/>
-              </pattern>
-              <pattern id="footer-grid-minor" width="10" height="10" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.12"/>
-              </pattern>
-            </defs>
-
-            <rect width="100%" height="100%" fill="url(#footer-grid-minor)" />
-            <rect width="100%" height="100%" fill="url(#footer-grid-major)" />
-
-            {/* Concentric wide forms */}
-            <g stroke="hsl(var(--technical-line))" fill="none">
-              <circle cx="600" cy="200" r="180" strokeWidth="0.8" />
-              <circle cx="600" cy="200" r="120" strokeWidth="0.6" />
-              <circle cx="600" cy="200" r="60" strokeWidth="0.5" />
-            </g>
-
-            {/* Golden rectangles layout (logical proportioning) */}
-            <g stroke="hsl(var(--technical-line))" fill="none">
-              <rect x="120" y="60" width="292" height="180" strokeWidth="0.6" />
-              <rect x="412" y="60" width="180" height="180" strokeWidth="0.4" />
-              <rect x="592" y="60" width="112" height="112" strokeWidth="0.35" />
-              <rect x="704" y="172" width="68" height="68" strokeWidth="0.3" />
-              <rect x="772" y="172" width="42" height="42" strokeWidth="0.25" />
-            </g>
-
-            {/* Diagonals and centerlines */}
-            <g stroke="hsl(var(--technical-line))" strokeWidth="0.3" fill="none">
-              <line x1="0" y1="200" x2="1200" y2="200" />
-              <line x1="600" y1="0" x2="600" y2="400" />
-              <line x1="120" y1="60" x2="412" y2="240" />
-              <line x1="412" y1="60" x2="120" y2="240" />
-            </g>
-
-            {/* Logarithmic spiral sweeping the footer */}
-            <path 
-              d="M140,300 Q260,220 340,200 Q420,180 520,190 Q640,200 700,230 Q780,270 860,230 Q940,190 1060,210"
-              fill="none" stroke="hsl(var(--technical-highlight))" strokeWidth="1" />
-
-            {/* Marker nodes along spiral */}
-            <g fill="hsl(var(--technical-highlight))">
-              <circle cx="260" cy="220" r="2" />
-              <circle cx="340" cy="200" r="2" />
-              <circle cx="520" cy="190" r="2" />
-              <circle cx="700" cy="230" r="2" />
-              <circle cx="860" cy="230" r="2" />
-              <circle cx="1060" cy="210" r="2" />
-            </g>
-
-            {/* Subtle corner braces for structure */}
-            <g stroke="hsl(var(--technical-line))" strokeWidth="0.5" fill="none">
-              <path d="M20,80 L20,20 L80,20" />
-              <path d="M1120,320 L1180,320 L1180,260" />
-            </g>
-          </svg>
+        <svg className="w-full h-full" viewBox="0 0 1200 400" preserveAspectRatio="none">
+          <defs>
+            <pattern id="footer-grid-major" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.35"/>
+            </pattern>
+            <pattern id="footer-grid-minor" width="10" height="10" patternUnits="userSpaceOnUse">
+              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.12"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#footer-grid-minor)" />
+          <rect width="100%" height="100%" fill="url(#footer-grid-major)" />
+        </svg>
       </div>
 
       <div className="container mx-auto px-6 py-16 relative z-10">
+        <div className="flex justify-center mb-10">
+          <img src="/lovable-uploads/c653fd62-6de9-4d23-93ef-be9bdbecec8f.png" alt="Decahedron Ventures logo" className="w-24 md:w-32 lg:w-36 h-auto opacity-90 hover:opacity-100 transition-opacity duration-300" />
+        </div>
         {/* Main Footer Content */}
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-12 mb-12">
           
