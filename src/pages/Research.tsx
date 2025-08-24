@@ -130,8 +130,22 @@ const Research: React.FC = () => {
             <div className="font-technical text-sm text-geometric-secondary leading-relaxed mb-4">
               Where: i ∈ {"{1,2,...,10}"} and φ ≈ 1.6180339887
             </div>
-            <div className="font-technical text-sm text-geometric-secondary leading-relaxed">
+            <div className="font-technical text-sm text-geometric-secondary leading-relaxed mb-6">
               This creates a descending geometric progression, where each subsequent market receives a fraction of the previous one's allocation, scaled by 1/φ.
+            </div>
+            
+            {/* Total Weight Normalization */}
+            <div className="border border-technical-line bg-background/50 p-4 mb-4">
+              <h3 className="font-technical text-sm text-technical-highlight mb-3 tracking-wider uppercase">[ TOTAL WEIGHT NORMALIZATION ]</h3>
+              <div className="font-technical text-xs text-geometric-primary leading-relaxed mb-3">
+                The sum of the geometric series in the denominator is:
+              </div>
+              <div className="font-technical text-base text-center text-technical-highlight my-4 bg-background/50 p-3 border border-technical-line">
+                S = Σ(k=0 to 9)(1/φ^k) = (1-(1/φ)^10) / (1-1/φ) ≈ 2.5964
+              </div>
+              <div className="font-technical text-xs text-geometric-secondary leading-relaxed">
+                Thus, the allocation to market 1 (the base weight) is: A = 1/S ≈ 0.3851 (38.51%)
+              </div>
             </div>
           </div>
 
@@ -139,25 +153,78 @@ const Research: React.FC = () => {
           <div className="mb-12 border border-technical-line bg-background/30 p-6 overflow-x-auto">
             <h2 className="font-technical text-lg text-technical-highlight mb-4 tracking-wider uppercase">[ TARGET MARKETS FOR INVESTMENT ]</h2>
             <div className="font-technical text-xs text-geometric-secondary mb-4">RANKED BY MARKET SIZE AND ANNUAL GROWTH RATE</div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {[
-                { sector: "Analog Habitats", size: "$1.34 Billion", growth: "58.8%" },
-                { sector: "Quantum Computing", size: "$1.3 Billion", growth: "33%" },
-                { sector: "AR/VR/Simulation", size: "$4 Billion", growth: "20%" },
-                { sector: "Artificial Intelligence", size: "$146 Billion", growth: "19%" },
-                { sector: "Spaceports", size: "$19 Billion", growth: "15%" },
-                { sector: "Aerospace Manufacturing", size: "$72 Billion", growth: "14.3%" },
-                { sector: "Defense Systems", size: "$985 Billion", growth: "8.2%" },
-                { sector: "Energy/Population Scale", size: "$5.3 Trillion", growth: "8%" },
-                { sector: "Telecommunications", size: "$2.1 Trillion", growth: "6.6%" },
-                { sector: "Photonics", size: "$1.5 Trillion", growth: "6.5%" }
+                { sector: "Analog Habitats", size: "$1.34B", growth: "58.8%", allocation: "38.51%" },
+                { sector: "Quantum Computing", size: "$1.3B", growth: "33%", allocation: "23.81%" },
+                { sector: "AR/VR/Simulation", size: "$4B", growth: "20%", allocation: "14.71%" },
+                { sector: "Artificial Intelligence", size: "$146B", growth: "19%", allocation: "9.09%" },
+                { sector: "Spaceports", size: "$19B", growth: "15%", allocation: "5.62%" },
+                { sector: "Aerospace Manufacturing", size: "$72B", growth: "14.3%", allocation: "3.47%" },
+                { sector: "Defense Systems", size: "$985B", growth: "8.2%", allocation: "2.15%" },
+                { sector: "Energy/Population Scale", size: "$5.3T", growth: "8%", allocation: "1.33%" },
+                { sector: "Telecommunications", size: "$2.1T", growth: "6.6%", allocation: "0.82%" },
+                { sector: "Photonics", size: "$1.5T", growth: "6.5%", allocation: "0.51%" }
               ].map((market, index) => (
-                <div key={market.sector} className="border border-technical-line bg-background/50 p-3">
-                  <div className="text-technical-highlight text-xs mb-1">{`${String(index + 1).padStart(2, '0')}.${market.sector.toUpperCase()}`}</div>
+                <div key={market.sector} className="border border-technical-line bg-background/50 p-4 hover:bg-technical-highlight/5 transition-colors">
+                  <div className="text-technical-highlight text-xs mb-2 font-bold">{String(index + 1).padStart(2, '0')}.{market.sector.toUpperCase()}</div>
                   <div className="text-geometric-primary text-xs mb-1">SIZE: {market.size}</div>
-                  <div className="text-geometric-secondary text-xs">GROWTH: {market.growth}</div>
+                  <div className="text-geometric-primary text-xs mb-1">GROWTH: {market.growth}</div>
+                  <div className="text-technical-highlight text-xs font-bold">ALLOCATION: {market.allocation}</div>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Company Coefficient Model */}
+          <div className="mb-12 border border-technical-line bg-background/30 p-6">
+            <h2 className="font-technical text-lg text-technical-highlight mb-4 tracking-wider uppercase">[ COMPANY COEFFICIENT MODEL ]</h2>
+            <div className="font-technical text-sm text-geometric-primary leading-relaxed mb-4">
+              The Company Coefficient (CC) is calculated by evaluating multiple factors such as Founder Quality, IP Strength, and Market Fit. 
+              Each factor is scored from 1 to 10, and the weighted average is computed to get the CC.
+            </div>
+            <div className="font-technical text-lg text-center text-technical-highlight my-6 bg-background/50 p-4 border border-technical-line">
+              CC = Σ(Factor Score × Factor Weight) / Σ(Factor Weight)
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {[
+                { factor: "Founder Quality", weight: "30%", description: "Experience, track record, vision" },
+                { factor: "IP Strength", weight: "25%", description: "Patents, proprietary technology" },
+                { factor: "Market Fit", weight: "20%", description: "Product-market alignment" },
+                { factor: "Financial Health", weight: "15%", description: "Revenue, burn rate, runway" },
+                { factor: "Team Composition", weight: "10%", description: "Technical expertise, diversity" }
+              ].map((item, index) => (
+                <div key={item.factor} className="border border-technical-line bg-background/50 p-3">
+                  <div className="text-technical-highlight text-xs mb-1 font-bold">{item.factor.toUpperCase()}</div>
+                  <div className="text-geometric-primary text-xs mb-1">WEIGHT: {item.weight}</div>
+                  <div className="text-geometric-secondary text-xs">{item.description}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Potential Applications */}
+          <div className="mb-12 border border-technical-line bg-background/30 p-6">
+            <h2 className="font-technical text-lg text-technical-highlight mb-4 tracking-wider uppercase">[ POTENTIAL APPLICATIONS ]</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="border border-technical-line bg-background/50 p-4">
+                <div className="font-technical text-sm text-technical-highlight mb-2">PASSIVE FUNDS</div>
+                <div className="font-technical text-xs text-geometric-secondary leading-relaxed">
+                  Use as a static allocation strategy for low-rotation portfolios with quarterly rebalancing.
+                </div>
+              </div>
+              <div className="border border-technical-line bg-background/50 p-4">
+                <div className="font-technical text-sm text-technical-highlight mb-2">ACTIVE FUNDS</div>
+                <div className="font-technical text-xs text-geometric-secondary leading-relaxed">
+                  Use as a baseline allocation model, adjusted periodically by confidence or volatility modifiers.
+                </div>
+              </div>
+              <div className="border border-technical-line bg-background/50 p-4">
+                <div className="font-technical text-sm text-technical-highlight mb-2">MULTI-ASSET STRATEGIES</div>
+                <div className="font-technical text-xs text-geometric-secondary leading-relaxed">
+                  Adaptable to crypto portfolios, startup seed funds, or cross-border investments.
+                </div>
+              </div>
             </div>
           </div>
 
@@ -209,9 +276,125 @@ const Research: React.FC = () => {
             </div>
           </div>
 
+          {/* Performance Metrics and Risk Analysis */}
+          <div className="mb-12 border border-technical-line bg-background/30 p-6">
+            <h2 className="font-technical text-lg text-technical-highlight mb-4 tracking-wider uppercase">[ PERFORMANCE METRICS & RISK ANALYSIS ]</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="border border-technical-line bg-background/50 p-4">
+                <h3 className="font-technical text-sm text-technical-highlight mb-3 tracking-wider uppercase">TARGET METRICS</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-geometric-secondary text-xs">10-Year Return Target:</span>
+                    <span className="text-technical-highlight text-xs font-bold">10x (1000%)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-geometric-secondary text-xs">Annual Compound Growth:</span>
+                    <span className="text-technical-highlight text-xs font-bold">~25.89%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-geometric-secondary text-xs">Risk-Adjusted Return (Sharpe):</span>
+                    <span className="text-technical-highlight text-xs font-bold">≥2.0</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-geometric-secondary text-xs">Maximum Drawdown:</span>
+                    <span className="text-technical-highlight text-xs font-bold">≤30%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="border border-technical-line bg-background/50 p-4">
+                <h3 className="font-technical text-sm text-technical-highlight mb-3 tracking-wider uppercase">RISK MITIGATION</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-geometric-secondary text-xs">Diversification Index:</span>
+                    <span className="text-technical-highlight text-xs font-bold">0.85</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-geometric-secondary text-xs">Correlation Coefficient:</span>
+                    <span className="text-technical-highlight text-xs font-bold">≤0.40</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-geometric-secondary text-xs">Volatility Buffer:</span>
+                    <span className="text-technical-highlight text-xs font-bold">15%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-geometric-secondary text-xs">Liquidity Reserve:</span>
+                    <span className="text-technical-highlight text-xs font-bold">5%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Implementation Framework */}
+          <div className="mb-12 border border-technical-line bg-background/30 p-6">
+            <h2 className="font-technical text-lg text-technical-highlight mb-4 tracking-wider uppercase">[ IMPLEMENTATION FRAMEWORK ]</h2>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="border border-technical-line bg-background/50 p-4">
+                <div className="text-technical-highlight text-xs mb-2 font-bold">PHASE 01</div>
+                <div className="text-geometric-primary text-xs mb-1">MARKET ANALYSIS</div>
+                <div className="text-geometric-secondary text-xs">Deep dive into target sectors, competitive landscape assessment</div>
+              </div>
+              <div className="border border-technical-line bg-background/50 p-4">
+                <div className="text-technical-highlight text-xs mb-2 font-bold">PHASE 02</div>
+                <div className="text-geometric-primary text-xs mb-1">CAPITAL DEPLOYMENT</div>
+                <div className="text-geometric-secondary text-xs">Golden ratio allocation implementation across identified opportunities</div>
+              </div>
+              <div className="border border-technical-line bg-background/50 p-4">
+                <div className="text-technical-highlight text-xs mb-2 font-bold">PHASE 03</div>
+                <div className="text-geometric-primary text-xs mb-1">PORTFOLIO OPTIMIZATION</div>
+                <div className="text-geometric-secondary text-xs">Continuous rebalancing based on performance metrics and market conditions</div>
+              </div>
+              <div className="border border-technical-line bg-background/50 p-4">
+                <div className="text-technical-highlight text-xs mb-2 font-bold">PHASE 04</div>
+                <div className="text-geometric-primary text-xs mb-1">EXIT STRATEGY</div>
+                <div className="text-geometric-secondary text-xs">Strategic exits at optimal valuations to maximize returns</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact and Next Steps */}
+          <div className="mb-12 border border-technical-line bg-background/30 p-6">
+            <h2 className="font-technical text-lg text-technical-highlight mb-4 tracking-wider uppercase">[ NEXT STEPS & PARTNERSHIP ]</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div className="font-technical text-sm text-geometric-primary leading-relaxed mb-4">
+                  We encourage you to review this document and consider how this approach can contribute to building an investment 
+                  portfolio that maximizes returns while maintaining a strategic diversification approach.
+                </div>
+                <div className="font-technical text-sm text-geometric-primary leading-relaxed">
+                  Should you have any questions or wish to discuss any part of the model further, please initiate partnership 
+                  proceedings through our secure communication channels.
+                </div>
+              </div>
+              <div className="border border-technical-line bg-background/50 p-4">
+                <div className="text-technical-highlight text-xs mb-3 font-bold">PARTNERSHIP CONTACTS</div>
+                <div className="space-y-2">
+                  <div>
+                    <div className="text-geometric-primary text-xs">Khalia Padilla</div>
+                    <div className="text-geometric-secondary text-xs">Managing Partner</div>
+                  </div>
+                  <div>
+                    <div className="text-geometric-primary text-xs">Ricardo Font</div>
+                    <div className="text-geometric-secondary text-xs">Managing Partner</div>
+                  </div>
+                  <div className="mt-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => window.location.href = '/#contact'}
+                      className="font-technical border border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-4 py-2 text-xs font-medium tracking-wider uppercase transition-all duration-300 w-full"
+                    >
+                      [ INITIATE PARTNERSHIP ]
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           {/* Technical Coordinates */}
-          <div className="mt-12 font-technical text-xs text-geometric-secondary/60 tracking-[0.2em] text-center">
-            RESEARCH.PROTOCOL.V2.1 | φ-ALLOCATION.MODEL | PROPRIETARY.ALGORITHM
+          <div className="mt-12 font-technical text-xs text-geometric-secondary/60 tracking-[0.2em] text-center border-t border-technical-line pt-8">
+            <div className="mb-2">RESEARCH.PROTOCOL.V2.1 | φ-ALLOCATION.MODEL | PROPRIETARY.ALGORITHM</div>
+            <div className="text-geometric-secondary/40">DECAHEDRON VENTURES © 2025 | CONFIDENTIAL & PROPRIETARY</div>
           </div>
         </div>
 
