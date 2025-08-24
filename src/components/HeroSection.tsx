@@ -17,39 +17,38 @@ const HeroSection: React.FC = () => {
         </svg>
       </div>
 
-      {/* Dynamic Technical Geometric Patterns */}
-      <div className="absolute inset-0 opacity-60">
-        {/* Central Large Dodecahedron */}
+      {/* Matrix-like Symbol Effect */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="matrix-symbols">
+          {Array.from({ length: 200 }).map((_, i) => {
+            const symbols = ['$', '£', '€', '¥', '₿', '₹', '₽', '₩', '₪', '₦', '₴', '₡', '₵'];
+            const symbol = symbols[i % symbols.length];
+            const x = (i % 20) * 5;
+            const y = Math.floor(i / 20) * 8;
+            const delay = (i * 0.1) % 10;
+            
+            return (
+              <div
+                key={i}
+                className="absolute font-technical text-technical-line animate-matrix-fall"
+                style={{
+                  left: `${x}%`,
+                  top: `${y}%`,
+                  animationDelay: `${delay}s`,
+                  fontSize: `${0.8 + Math.random() * 0.4}rem`
+                }}
+              >
+                {symbol}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Central Decahedron Technical Drawing */}
+      <div className="absolute inset-0 opacity-40">
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <GeometricPattern variant="dodecahedron" size="xl" className="animate-rotate opacity-40" />
-        </div>
-        
-        {/* Technical Pattern Array */}
-        <div className="absolute top-20 left-20">
-          <GeometricPattern variant="technical-blueprint" size="lg" className="animate-float" />
-        </div>
-        <div className="absolute top-32 right-24">
-          <GeometricPattern variant="dodecahedron" size="md" className="animate-geometric-pulse" />
-        </div>
-        <div className="absolute bottom-40 left-28">
-          <GeometricPattern variant="technical-wireframe" size="lg" className="animate-ink-flow" />
-        </div>
-        <div className="absolute bottom-24 right-32">
-          <GeometricPattern variant="cube-array" size="md" className="animate-float" />
-        </div>
-        <div className="absolute top-40 left-1/2 transform -translate-x-1/2">
-          <GeometricPattern variant="spiral" size="sm" className="animate-rotate" />
-        </div>
-        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2">
-          <GeometricPattern variant="flower-of-life" size="sm" className="animate-geometric-pulse" />
-        </div>
-        
-        {/* Corner Technical Elements */}
-        <div className="absolute top-10 right-10">
-          <GeometricPattern variant="technical-corner" size="sm" className="animate-ink-flow" />
-        </div>
-        <div className="absolute bottom-10 left-10">
-          <GeometricPattern variant="technical-corner" size="sm" className="animate-ink-flow" />
+          <GeometricPattern variant="dodecahedron" size="xl" className="animate-rotate opacity-60" />
         </div>
       </div>
 
@@ -79,8 +78,24 @@ const HeroSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Technical Investment Matrix */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-16 max-w-3xl mx-auto font-technical text-xs uppercase tracking-widest">
+          {/* Investment Locations Matrix */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl mx-auto font-technical text-xs uppercase tracking-widest">
+            {[
+              { label: "UNITED STATES", code: "USA.01", coords: "39.8283°N, 98.5795°W" },
+              { label: "JAPAN", code: "JPN.02", coords: "36.2048°N, 138.2529°E" },
+              { label: "LATAM", code: "LAT.03", coords: "8.7832°S, 55.4915°W" },
+              { label: "EUROPE", code: "EUR.04", coords: "54.5260°N, 15.2551°E" }
+            ].map((location, index) => (
+              <div key={location.label} className="border border-technical-line bg-background/30 p-3 hover:bg-technical-highlight/5 transition-colors">
+                <div className="text-technical-highlight mb-1 text-[10px]">{location.code}</div>
+                <div className="text-geometric-primary text-[9px] mb-1">{location.label}</div>
+                <div className="text-geometric-secondary text-[8px]">{location.coords}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Technical Investment Focus */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-16 max-w-3xl mx-auto font-technical text-xs uppercase tracking-widest">
             {[
               { label: "TECHNOLOGY", code: "TECH.01" },
               { label: "SPACE", code: "SPCE.02" },
@@ -89,9 +104,9 @@ const HeroSection: React.FC = () => {
               { label: "INFRASTRUCTURE", code: "INFR.05" },
               { label: "SUSTAINABILITY", code: "SUST.06" }
             ].map((area, index) => (
-              <div key={area.label} className="border border-technical-line bg-background/30 p-3 hover:bg-technical-highlight/5 transition-colors">
-                <div className="text-technical-highlight mb-1">{area.code}</div>
-                <div className="text-geometric-primary text-[10px]">{area.label}</div>
+              <div key={area.label} className="border border-technical-line bg-background/30 p-2 hover:bg-technical-highlight/5 transition-colors">
+                <div className="text-technical-highlight mb-1 text-[10px]">{area.code}</div>
+                <div className="text-geometric-primary text-[9px]">{area.label}</div>
               </div>
             ))}
           </div>

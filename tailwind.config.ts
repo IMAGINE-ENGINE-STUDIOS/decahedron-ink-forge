@@ -121,6 +121,22 @@ export default {
 						transform: 'translateX(5%) scaleX(1.02)',
 						opacity: '0.7'
 					}
+				},
+				'matrix-fall': {
+					'0%': {
+						transform: 'translateY(-100vh)',
+						opacity: '0'
+					},
+					'10%': {
+						opacity: '1'
+					},
+					'90%': {
+						opacity: '1'
+					},
+					'100%': {
+						transform: 'translateY(100vh)',
+						opacity: '0'
+					}
 				}
 			},
 			animation: {
@@ -129,7 +145,8 @@ export default {
 				'float': 'float 6s ease-in-out infinite',
 				'rotate': 'rotate 20s linear infinite',
 				'geometric-pulse': 'geometric-pulse 4s ease-in-out infinite',
-				'ink-flow': 'ink-flow 8s ease-in-out infinite'
+				'ink-flow': 'ink-flow 8s ease-in-out infinite',
+				'matrix-fall': 'matrix-fall 8s linear infinite'
 			}
 		}
 	},
