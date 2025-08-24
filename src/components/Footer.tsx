@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
 
       <div className="container mx-auto px-6 py-16 relative z-10">
         <div className="flex justify-center mb-10">
-          <img src="/lovable-uploads/c653fd62-6de9-4d23-93ef-be9bdbecec8f.png" alt="Decahedron Ventures logo" className="w-24 md:w-32 lg:w-36 h-auto opacity-90 hover:opacity-100 transition-opacity duration-300" />
+          <img src="/lovable-uploads/a63ed1a5-f345-497c-b509-c24edcbbba15.png" alt="Decahedron Ventures logo" className="w-24 md:w-32 lg:w-36 h-auto opacity-90 hover:opacity-100 transition-opacity duration-300" />
         </div>
         {/* Main Footer Content */}
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-12 mb-12">

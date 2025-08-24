@@ -60,9 +60,9 @@ const HeroSection: React.FC = () => {
           {/* Logo */}
           <div className="mb-8 flex justify-center">
             <img 
-              src="/lovable-uploads/c653fd62-6de9-4d23-93ef-be9bdbecec8f.png" 
+              src="/lovable-uploads/a63ed1a5-f345-497c-b509-c24edcbbba15.png" 
               alt="Decahedron Ventures Logo" 
-              className="w-40 md:w-56 lg:w-64 h-auto object-contain opacity-95 hover:opacity-100 transition-opacity duration-300 drop-shadow"
+              className="w-60 md:w-80 lg:w-96 h-auto object-contain opacity-95 hover:opacity-100 transition-opacity duration-300 drop-shadow-lg"
             />
           </div>
 

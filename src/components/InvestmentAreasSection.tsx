@@ -50,7 +50,7 @@ const InvestmentAreasSection: React.FC = () => {
         <div className="text-center mb-16">
           <div className="inline-block mb-6">
             <img 
-              src="/lovable-uploads/c653fd62-6de9-4d23-93ef-be9bdbecec8f.png" 
+              src="/lovable-uploads/a63ed1a5-f345-497c-b509-c24edcbbba15.png" 
               alt="Decahedron Ventures logo"
               className="w-20 md:w-24 lg:w-28 h-auto mx-auto opacity-90 hover:opacity-100 transition-opacity duration-300"
             />
