@@ -45,12 +45,6 @@ const HeroSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Central Decahedron Technical Drawing */}
-      <div className="absolute inset-0 opacity-40">
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <GeometricPattern variant="dodecahedron" size="xl" className="animate-rotate opacity-60" />
-        </div>
-      </div>
 
       {/* Hero content */}
       <div className="container mx-auto px-6 text-center relative z-10">

@@ -5,62 +5,153 @@ import GeometricPattern from './GeometricPattern';
 const Footer: React.FC = () => {
   return (
     <footer className="relative bg-background border-t border-technical-line parchment-texture">
-      {/* Technical Drawing Background */}
+      {/* Enhanced Technical Drawing Background */}
       <div className="absolute inset-0 opacity-10">
         <svg className="w-full h-full" viewBox="0 0 1200 400" preserveAspectRatio="none">
           {/* Grid Pattern */}
           <defs>
-            <pattern id="footer-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.5"/>
+            <pattern id="footer-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.3"/>
+            </pattern>
+            <pattern id="footer-fine-grid" width="5" height="5" patternUnits="userSpaceOnUse">
+              <path d="M 5 0 L 0 0 0 5" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.1"/>
             </pattern>
           </defs>
+          <rect width="100%" height="100%" fill="url(#footer-fine-grid)" />
           <rect width="100%" height="100%" fill="url(#footer-grid)" />
           
-          {/* Technical Cube Structure */}
-          <g transform="translate(100, 100)">
-            {/* Base cubes */}
-            {Array.from({ length: 8 }).map((_, i) => {
-              const x = (i % 4) * 60;
-              const y = Math.floor(i / 4) * 60;
+          {/* Isometric Cube Structure - Left Side */}
+          <g transform="translate(50, 80)">
+            {Array.from({ length: 15 }).map((_, i) => {
+              const row = Math.floor(i / 5);
+              const col = i % 5;
+              const x = col * 25 + row * 12.5;
+              const y = row * 15;
+              const height = 20 + (i % 3) * 10;
               return (
                 <g key={i} transform={`translate(${x}, ${y})`}>
-                  {/* Cube faces */}
+                  {/* Isometric cube */}
                   <polygon 
-                    points="0,40 20,20 20,0 0,20" 
+                    points={`0,${height} 12.5,${height-7.5} 25,${height} 12.5,${height+7.5}`}
                     fill="none" 
                     stroke="hsl(var(--technical-line))" 
-                    strokeWidth="1"
+                    strokeWidth="0.5"
                   />
                   <polygon 
-                    points="0,40 20,60 40,40 20,20" 
+                    points={`12.5,${height-7.5} 25,${height} 25,${height-20} 12.5,${height-27.5}`}
                     fill="none" 
                     stroke="hsl(var(--technical-line))" 
-                    strokeWidth="1"
+                    strokeWidth="0.5"
                   />
                   <polygon 
-                    points="20,20 40,0 40,40 20,60" 
+                    points={`0,${height} 12.5,${height-7.5} 12.5,${height-27.5} 0,${height-20}`}
                     fill="none" 
                     stroke="hsl(var(--technical-line))" 
-                    strokeWidth="1"
+                    strokeWidth="0.5"
+                  />
+                  <polygon 
+                    points={`0,${height-20} 12.5,${height-27.5} 25,${height-20} 12.5,${height-12.5}`}
+                    fill="none" 
+                    stroke="hsl(var(--technical-line))" 
+                    strokeWidth="0.3"
+                  />
+                </g>
+              );
+            })}
+          </g>
+
+          {/* Central Decahedron Structure */}
+          <g transform="translate(400, 120)">
+            {/* Dodecahedron wireframe */}
+            <circle r="60" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.8"/>
+            <circle r="45" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.5"/>
+            <circle r="30" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.3"/>
+            
+            {/* Pentagon faces */}
+            {Array.from({ length: 12 }).map((_, i) => {
+              const angle = (i * 30) * Math.PI / 180;
+              const radius = 40;
+              const x = Math.cos(angle) * radius;
+              const y = Math.sin(angle) * radius;
+              return (
+                <g key={i} transform={`translate(${x}, ${y})`}>
+                  <polygon 
+                    points="0,-8 7.6,-2.5 4.7,6.5 -4.7,6.5 -7.6,-2.5"
+                    fill="none" 
+                    stroke="hsl(var(--technical-line))" 
+                    strokeWidth="0.4"
+                  />
+                </g>
+              );
+            })}
+            
+            {/* Center structure */}
+            <polygon 
+              points="0,-15 14.3,-4.6 8.8,12.1 -8.8,12.1 -14.3,-4.6"
+              fill="none" 
+              stroke="hsl(var(--technical-highlight))" 
+              strokeWidth="0.8"
+            />
+          </g>
+
+          {/* Technical Pyramid Structures - Right Side */}
+          <g transform="translate(650, 100)">
+            {Array.from({ length: 12 }).map((_, i) => {
+              const row = Math.floor(i / 4);
+              const col = i % 4;
+              const x = col * 40;
+              const y = row * 35;
+              const size = 15 + (i % 2) * 5;
+              return (
+                <g key={i} transform={`translate(${x}, ${y})`}>
+                  {/* Pyramid structure */}
+                  <polygon 
+                    points={`0,${size} ${size},${size} ${size/2},0`}
+                    fill="none" 
+                    stroke="hsl(var(--technical-line))" 
+                    strokeWidth="0.5"
+                  />
+                  <line 
+                    x1="0" y1={size} x2={size/2} y2="0" 
+                    stroke="hsl(var(--technical-line))" 
+                    strokeWidth="0.3"
+                  />
+                  <line 
+                    x1={size} y1={size} x2={size/2} y2="0" 
+                    stroke="hsl(var(--technical-line))" 
+                    strokeWidth="0.3"
                   />
                 </g>
               );
             })}
           </g>
           
-          {/* Additional geometric elements */}
-          <g transform="translate(600, 150)">
-            <circle r="80" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="1"/>
-            <circle r="60" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.5"/>
-            <circle r="40" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.5"/>
+          {/* Technical Dimensions and Annotations */}
+          <g transform="translate(900, 80)" className="font-technical text-xs">
+            <line x1="0" y1="0" x2="120" y2="0" stroke="hsl(var(--technical-line))" strokeWidth="0.8"/>
+            <line x1="0" y1="0" x2="0" y2="120" stroke="hsl(var(--technical-line))" strokeWidth="0.8"/>
+            
+            {/* Dimension lines */}
+            <line x1="10" y1="-5" x2="10" y2="5" stroke="hsl(var(--technical-highlight))" strokeWidth="0.5"/>
+            <line x1="110" y1="-5" x2="110" y2="5" stroke="hsl(var(--technical-highlight))" strokeWidth="0.5"/>
+            <line x1="10" y1="0" x2="110" y2="0" stroke="hsl(var(--technical-highlight))" strokeWidth="0.3"/>
+            
+            <line x1="-5" y1="10" x2="5" y2="10" stroke="hsl(var(--technical-highlight))" strokeWidth="0.5"/>
+            <line x1="-5" y1="110" x2="5" y2="110" stroke="hsl(var(--technical-highlight))" strokeWidth="0.5"/>
+            <line x1="0" y1="10" x2="0" y2="110" stroke="hsl(var(--technical-highlight))" strokeWidth="0.3"/>
+            
+            <text x="60" y="-10" textAnchor="middle" className="fill-technical-line text-[6px]">SCALE 1:1000</text>
+            <text x="-10" y="60" textAnchor="middle" className="fill-technical-line text-[6px]" transform="rotate(-90, -10, 60)">ELEVATION</text>
+            <text x="130" y="5" className="fill-technical-highlight text-[6px]">100.0m</text>
+            <text x="5" y="125" className="fill-technical-highlight text-[6px]">100.0m</text>
           </g>
-          
-          {/* Technical annotations */}
-          <g transform="translate(900, 100)" className="font-technical text-xs">
-            <line x1="0" y1="0" x2="80" y2="0" stroke="hsl(var(--technical-line))" strokeWidth="0.5"/>
-            <line x1="0" y1="0" x2="0" y2="80" stroke="hsl(var(--technical-line))" strokeWidth="0.5"/>
-            <text x="40" y="-5" textAnchor="middle" className="fill-technical-line text-[8px]">SCALE 1:1000</text>
-            <text x="-5" y="40" textAnchor="middle" className="fill-technical-line text-[8px]" transform="rotate(-90, -5, 40)">ELEVATION</text>
+
+          {/* Connection Lines */}
+          <g stroke="hsl(var(--technical-line))" strokeWidth="0.2" fill="none">
+            <path d="M200,120 Q350,100 400,120"/>
+            <path d="M460,120 Q550,140 650,120"/>
+            <line x1="100" y1="200" x2="400" y2="180"/>
+            <line x1="460" y1="180" x2="750" y2="200"/>
           </g>
         </svg>
       </div>
