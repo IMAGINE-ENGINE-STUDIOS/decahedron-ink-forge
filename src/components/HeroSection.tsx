@@ -115,16 +115,11 @@ const HeroSection: React.FC = () => {
           </div>
 
           {/* Technical Action Interface */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Button 
-              size="lg" 
-              className="font-technical bg-technical-highlight text-primary-foreground hover:bg-primary px-10 py-5 text-sm font-medium tracking-wider uppercase border border-technical-line transition-all duration-300"
-            >
-              [ ACCESS PORTFOLIO ]
-            </Button>
+          <div className="flex justify-center items-center">
             <Button 
               variant="outline" 
               size="lg"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               className="font-technical border-2 border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-10 py-5 text-sm font-medium tracking-wider uppercase transition-all duration-300"
             >
               [ INITIATE PARTNERSHIP ]

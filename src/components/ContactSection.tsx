@@ -34,7 +34,7 @@ const ContactSection: React.FC = () => {
   };
 
   return (
-    <section className="py-20 bg-background parchment-texture relative">
+    <section id="contact" className="py-20 bg-background parchment-texture relative">
       {/* Background elements */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 right-10">
