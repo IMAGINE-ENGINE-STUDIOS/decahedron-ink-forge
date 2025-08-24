@@ -115,7 +115,15 @@ const HeroSection: React.FC = () => {
           </div>
 
           {/* Technical Action Interface */}
-          <div className="flex justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => window.location.href = '/research'}
+              className="font-technical border-2 border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-10 py-5 text-sm font-medium tracking-wider uppercase transition-all duration-300"
+            >
+              [ A.I. RESEARCH ]
+            </Button>
             <Button 
               variant="outline" 
               size="lg"
