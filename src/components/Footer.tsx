@@ -5,95 +5,67 @@ import GeometricPattern from './GeometricPattern';
 const Footer: React.FC = () => {
   return (
     <footer className="relative bg-background border-t border-technical-line parchment-texture">
-      {/* Enhanced Golden Ratio Technical Drawing Background */}
-      <div className="absolute inset-0 opacity-15">
-        <svg className="w-full h-full" viewBox="0 0 1200 400" preserveAspectRatio="none">
-          {/* Refined Technical Grid */}
-          <defs>
-            <pattern id="footer-grid-major" width="48" height="30" patternUnits="userSpaceOnUse">
-              <path d="M 48 0 L 0 0 0 30" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.25"/>
-            </pattern>
-            <pattern id="footer-grid-minor" width="12" height="7.5" patternUnits="userSpaceOnUse">
-              <path d="M 12 0 L 0 0 0 7.5" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.08"/>
-            </pattern>
-          </defs>
+      {/* Enhanced Technical Drawing Background */}
+      <div className="absolute inset-0 opacity-10">
+          <svg className="w-full h-full" viewBox="0 0 1200 400" preserveAspectRatio="none">
+            {/* Wide Technical Grid */}
+            <defs>
+              <pattern id="footer-grid-major" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.35"/>
+              </pattern>
+              <pattern id="footer-grid-minor" width="10" height="10" patternUnits="userSpaceOnUse">
+                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.12"/>
+              </pattern>
+            </defs>
 
-          <rect width="100%" height="100%" fill="url(#footer-grid-minor)" />
-          <rect width="100%" height="100%" fill="url(#footer-grid-major)" />
+            <rect width="100%" height="100%" fill="url(#footer-grid-minor)" />
+            <rect width="100%" height="100%" fill="url(#footer-grid-major)" />
 
-          {/* Golden Ratio Composition - Center */}
-          <g stroke="hsl(var(--technical-line))" fill="none">
-            {/* Main golden rectangle (1.618:1 ratio) */}
-            <rect x="300" y="75" width="324" height="200" strokeWidth="0.8" />
-            <rect x="300" y="75" width="200" height="200" strokeWidth="0.6" />
-            <rect x="500" y="75" width="124" height="124" strokeWidth="0.4" />
-            <rect x="500" y="199" width="76" height="76" strokeWidth="0.3" />
-            <rect x="576" y="199" width="48" height="48" strokeWidth="0.25" />
-            
-            {/* Fibonacci spiral construction arcs */}
-            <path d="M 300 275 Q 400 275 400 175" strokeWidth="0.5" />
-            <path d="M 400 175 Q 500 175 500 199" strokeWidth="0.4" />
-            <path d="M 500 199 Q 524 199 524 223" strokeWidth="0.35" />
-            <path d="M 524 223 Q 548 223 548 247" strokeWidth="0.3" />
-          </g>
+            {/* Concentric wide forms */}
+            <g stroke="hsl(var(--technical-line))" fill="none">
+              <circle cx="600" cy="200" r="180" strokeWidth="0.8" />
+              <circle cx="600" cy="200" r="120" strokeWidth="0.6" />
+              <circle cx="600" cy="200" r="60" strokeWidth="0.5" />
+            </g>
 
-          {/* Symmetrical Side Compositions */}
-          {/* Left geometric cluster */}
-          <g stroke="hsl(var(--technical-line))" fill="none" strokeWidth="0.4">
-            <circle cx="150" cy="120" r="60" />
-            <circle cx="150" cy="120" r="37" />
-            <circle cx="150" cy="120" r="23" />
-            <polygon points="150,60 185,97 185,143 150,180 115,143 115,97" strokeWidth="0.3" />
-            <polygon points="150,83 173,106 173,134 150,157 127,134 127,106" strokeWidth="0.25" />
-          </g>
+            {/* Golden rectangles layout (logical proportioning) */}
+            <g stroke="hsl(var(--technical-line))" fill="none">
+              <rect x="120" y="60" width="292" height="180" strokeWidth="0.6" />
+              <rect x="412" y="60" width="180" height="180" strokeWidth="0.4" />
+              <rect x="592" y="60" width="112" height="112" strokeWidth="0.35" />
+              <rect x="704" y="172" width="68" height="68" strokeWidth="0.3" />
+              <rect x="772" y="172" width="42" height="42" strokeWidth="0.25" />
+            </g>
 
-          {/* Right geometric cluster */}
-          <g stroke="hsl(var(--technical-line))" fill="none" strokeWidth="0.4">
-            <circle cx="1050" cy="280" r="80" />
-            <circle cx="1050" cy="280" r="50" />
-            <circle cx="1050" cy="280" r="30" />
-            <rect x="1010" y="240" width="80" height="80" strokeWidth="0.3" />
-            <rect x="1025" y="255" width="50" height="50" strokeWidth="0.25" />
-          </g>
+            {/* Diagonals and centerlines */}
+            <g stroke="hsl(var(--technical-line))" strokeWidth="0.3" fill="none">
+              <line x1="0" y1="200" x2="1200" y2="200" />
+              <line x1="600" y1="0" x2="600" y2="400" />
+              <line x1="120" y1="60" x2="412" y2="240" />
+              <line x1="412" y1="60" x2="120" y2="240" />
+            </g>
 
-          {/* Connecting Golden Spiral */}
-          <path 
-            d="M100,350 Q200,300 300,275 Q450,250 600,260 Q750,270 900,290 Q1000,310 1100,300"
-            fill="none" stroke="hsl(var(--technical-highlight))" strokeWidth="1.2" 
-            opacity="0.8"
-          />
+            {/* Logarithmic spiral sweeping the footer */}
+            <path 
+              d="M140,300 Q260,220 340,200 Q420,180 520,190 Q640,200 700,230 Q780,270 860,230 Q940,190 1060,210"
+              fill="none" stroke="hsl(var(--technical-highlight))" strokeWidth="1" />
 
-          {/* Sacred geometry nodes */}
-          <g fill="hsl(var(--technical-highlight))">
-            <circle cx="300" cy="275" r="2.5" />
-            <circle cx="400" cy="175" r="2" />
-            <circle cx="500" cy="199" r="1.8" />
-            <circle cx="600" cy="260" r="2.2" />
-            <circle cx="900" cy="290" r="2" />
-            <circle cx="1100" cy="300" r="2.5" />
-          </g>
+            {/* Marker nodes along spiral */}
+            <g fill="hsl(var(--technical-highlight))">
+              <circle cx="260" cy="220" r="2" />
+              <circle cx="340" cy="200" r="2" />
+              <circle cx="520" cy="190" r="2" />
+              <circle cx="700" cy="230" r="2" />
+              <circle cx="860" cy="230" r="2" />
+              <circle cx="1060" cy="210" r="2" />
+            </g>
 
-          {/* Symmetrical Corner Elements */}
-          <g stroke="hsl(var(--technical-line))" strokeWidth="0.4" fill="none">
-            {/* Top corners */}
-            <path d="M30,30 L60,30 L60,60 L45,60 L45,45 L30,45 Z" />
-            <path d="M1170,30 L1140,30 L1140,60 L1155,60 L1155,45 L1170,45 Z" />
-            
-            {/* Bottom corners */}
-            <path d="M30,370 L60,370 L60,340 L45,340 L45,355 L30,355 Z" />
-            <path d="M1170,370 L1140,370 L1140,340 L1155,340 L1155,355 L1170,355 Z" />
-          </g>
-
-          {/* Additional Golden Ratio Subdivisions */}
-          <g stroke="hsl(var(--technical-line))" strokeWidth="0.15" fill="none" opacity="0.6">
-            <line x1="185" y1="75" x2="185" y2="275" />
-            <line x1="370" y1="75" x2="370" y2="275" />
-            <line x1="444" y1="75" x2="444" y2="275" />
-            <line x1="300" y1="123" x2="624" y2="123" />
-            <line x1="300" y1="151" x2="624" y2="151" />
-            <line x1="300" y1="227" x2="624" y2="227" />
-          </g>
-        </svg>
+            {/* Subtle corner braces for structure */}
+            <g stroke="hsl(var(--technical-line))" strokeWidth="0.5" fill="none">
+              <path d="M20,80 L20,20 L80,20" />
+              <path d="M1120,320 L1180,320 L1180,260" />
+            </g>
+          </svg>
       </div>
 
       <div className="container mx-auto px-6 py-16 relative z-10">
@@ -103,14 +75,8 @@ const Footer: React.FC = () => {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <div className="flex items-center mb-6">
-              <div className="mr-4 p-2 border border-technical-line rounded-sm bg-background/30">
-                <img 
-                  src="/lovable-uploads/8c7ffe90-ee6b-4968-96c0-d1898523f0f4.png" 
-                  alt="Decahedron Ventures Logo" 
-                  className="w-8 h-8 object-contain filter brightness-110"
-                />
-              </div>
-              <h3 className="font-display text-xl md:text-2xl font-bold text-foreground">DECAHEDRON VENTURES</h3>
+              <GeometricPattern variant="golden-spiral-grid" size="sm" className="mr-3 text-technical-highlight" />
+              <h3 className="font-display text-2xl font-bold text-foreground">DECAHEDRON VENTURES</h3>
             </div>
             <p className="text-muted-foreground mb-6 leading-relaxed">
               Advanced capital deployment for next-generation infrastructure. 

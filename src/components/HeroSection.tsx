@@ -49,20 +49,6 @@ const HeroSection: React.FC = () => {
       {/* Hero content */}
       <div className="container mx-auto px-6 text-center relative z-10">
         <div className="max-w-5xl mx-auto">
-          {/* Company Logo */}
-          <div className="mb-12 relative">
-            <div className="flex justify-center mb-8">
-              <div className="relative p-6 border border-technical-line bg-background/20 backdrop-blur-sm rounded-lg">
-                <img 
-                  src="/lovable-uploads/8c7ffe90-ee6b-4968-96c0-d1898523f0f4.png" 
-                  alt="Decahedron Ventures Logo" 
-                  className="w-24 h-24 md:w-32 md:h-32 object-contain filter brightness-110 drop-shadow-lg"
-                />
-                <div className="absolute inset-0 border border-technical-highlight rounded-lg animate-geometric-pulse opacity-50"></div>
-              </div>
-            </div>
-          </div>
-
           {/* Technical Label */}
           <div className="mb-8 relative">
             <div className="font-technical text-sm tracking-wider uppercase text-geometric-secondary mb-4">
