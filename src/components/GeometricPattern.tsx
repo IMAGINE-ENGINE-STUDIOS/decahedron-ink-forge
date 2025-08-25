@@ -18,33 +18,78 @@ const GeometricPattern: React.FC<GeometricPatternProps> = ({
     xl: 'w-48 h-48'
   };
 
-  const getDodecahedronPath = () => (
-    <g className="stroke-technical-highlight fill-none stroke-[0.5]">
-      {/* Technical Dodecahedron outline */}
-      <polygon points="50,5 85,22 98,52 85,88 50,105 15,88 2,52 15,22" className="animate-geometric-pulse stroke-[1]" />
-      <polygon points="50,15 75,28 85,50 75,75 50,88 25,75 15,50 25,28" className="animate-float opacity-80" />
-      {/* Inner core pentagon */}
-      <polygon points="50,30 65,35 72,50 65,65 50,70 35,65 28,50 35,35" className="animate-rotate stroke-[1.5]" />
-      {/* Technical connection grid */}
-      <line x1="50" y1="5" x2="50" y2="30" className="animate-ink-flow stroke-technical-line" />
-      <line x1="85" y1="22" x2="65" y2="35" className="animate-ink-flow stroke-technical-line" />
-      <line x1="98" y1="52" x2="72" y2="50" className="animate-ink-flow stroke-technical-line" />
-      <line x1="85" y1="88" x2="65" y2="65" className="animate-ink-flow stroke-technical-line" />
-      <line x1="50" y1="105" x2="50" y2="70" className="animate-ink-flow stroke-technical-line" />
-      <line x1="15" y1="88" x2="35" y2="65" className="animate-ink-flow stroke-technical-line" />
-      <line x1="2" y1="52" x2="28" y2="50" className="animate-ink-flow stroke-technical-line" />
-      <line x1="15" y1="22" x2="35" y2="35" className="animate-ink-flow stroke-technical-line" />
-      {/* Technical vertex markers */}
-      <circle cx="50" cy="5" r="1" className="fill-technical-highlight animate-geometric-pulse" />
-      <circle cx="85" cy="22" r="1" className="fill-technical-highlight animate-geometric-pulse" />
-      <circle cx="98" cy="52" r="1" className="fill-technical-highlight animate-geometric-pulse" />
-      <circle cx="85" cy="88" r="1" className="fill-technical-highlight animate-geometric-pulse" />
-      <circle cx="50" cy="105" r="1" className="fill-technical-highlight animate-geometric-pulse" />
-      <circle cx="15" cy="88" r="1" className="fill-technical-highlight animate-geometric-pulse" />
-      <circle cx="2" cy="52" r="1" className="fill-technical-highlight animate-geometric-pulse" />
-      <circle cx="15" cy="22" r="1" className="fill-technical-highlight animate-geometric-pulse" />
-    </g>
-  );
+  const getPythagoreanStarPath = () => {
+    // Pentagon vertices for Pythagorean star (pentagram)
+    const centerX = 50, centerY = 50, radius = 35;
+    const vertices = Array.from({ length: 5 }, (_, i) => {
+      const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+      return {
+        x: centerX + radius * Math.cos(angle),
+        y: centerY + radius * Math.sin(angle)
+      };
+    });
+
+    return (
+      <g className="stroke-technical-highlight fill-none stroke-[1]">
+        {/* Outer pentagon construction */}
+        <polygon 
+          points={vertices.map(v => `${v.x},${v.y}`).join(' ')} 
+          className="stroke-technical-line stroke-[0.3] opacity-40" 
+        />
+        
+        {/* Pythagorean star lines - each connects every second vertex */}
+        <line 
+          x1={vertices[0].x} y1={vertices[0].y} 
+          x2={vertices[2].x} y2={vertices[2].y} 
+          className="animate-ink-flow stroke-[1.5]"
+          style={{animationDelay: '0s'}}
+        />
+        <line 
+          x1={vertices[2].x} y1={vertices[2].y} 
+          x2={vertices[4].x} y2={vertices[4].y} 
+          className="animate-ink-flow stroke-[1.5]"
+          style={{animationDelay: '0.5s'}}
+        />
+        <line 
+          x1={vertices[4].x} y1={vertices[4].y} 
+          x2={vertices[1].x} y2={vertices[1].y} 
+          className="animate-ink-flow stroke-[1.5]"
+          style={{animationDelay: '1s'}}
+        />
+        <line 
+          x1={vertices[1].x} y1={vertices[1].y} 
+          x2={vertices[3].x} y2={vertices[3].y} 
+          className="animate-ink-flow stroke-[1.5]"
+          style={{animationDelay: '1.5s'}}
+        />
+        <line 
+          x1={vertices[3].x} y1={vertices[3].y} 
+          x2={vertices[0].x} y2={vertices[0].y} 
+          className="animate-ink-flow stroke-[1.5]"
+          style={{animationDelay: '2s'}}
+        />
+
+        {/* Golden ratio construction lines */}
+        <line x1={centerX} y1={centerY} x2={vertices[0].x} y2={vertices[0].y} className="stroke-technical-line stroke-[0.2] opacity-30" />
+        <line x1={centerX} y1={centerY} x2={vertices[2].x} y2={vertices[2].y} className="stroke-technical-line stroke-[0.2] opacity-30" />
+
+        {/* Vertex markers */}
+        {vertices.map((vertex, i) => (
+          <circle 
+            key={i}
+            cx={vertex.x} 
+            cy={vertex.y} 
+            r="1.5" 
+            className="fill-technical-highlight animate-geometric-pulse"
+            style={{animationDelay: `${i * 0.1}s`}}
+          />
+        ))}
+        
+        {/* Center point */}
+        <circle cx={centerX} cy={centerY} r="2" className="fill-technical-highlight animate-float" />
+      </g>
+    );
+  };
 
   const getSpiralPath = () => (
     <g className="stroke-geometric-primary fill-none stroke-1">
@@ -195,7 +240,7 @@ const GeometricPattern: React.FC<GeometricPatternProps> = ({
       case 'golden-spiral-grid':
         return getGoldenSpiralGridPath();
       default:
-        return getDodecahedronPath();
+        return getPythagoreanStarPath();
     }
   };
 
