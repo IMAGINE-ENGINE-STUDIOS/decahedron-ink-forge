@@ -213,15 +213,6 @@ const GeometricPattern: React.FC<GeometricPatternProps> = ({
         return getPythagoreanStarPath();
     }
   };
-
-  return (
-    <svg 
-      className={`${sizeClasses[size]} ${className}`} 
-      viewBox="0 0 100 100" 
-      preserveAspectRatio="xMidYMid meet"
-    >
-      {getPattern()}
-    </svg>
-  );
+  return;
 };
 export default GeometricPattern;
