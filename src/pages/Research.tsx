@@ -1,17 +1,15 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
-
 const Research: React.FC = () => {
-  return (
-    <main className="min-h-screen">
+  return <main className="min-h-screen">
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden parchment-texture">
         {/* Technical Blueprint Grid */}
         <div className="absolute inset-0 opacity-30">
           <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
             <defs>
               <pattern id="grid" width="2" height="2" patternUnits="userSpaceOnUse">
-                <path d="M 2 0 L 0 0 0 2" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.05"/>
+                <path d="M 2 0 L 0 0 0 2" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.05" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#grid)" />
@@ -21,28 +19,23 @@ const Research: React.FC = () => {
         {/* Matrix-like Symbol Effect */}
         <div className="absolute inset-0 opacity-20">
           <div className="matrix-symbols">
-            {Array.from({ length: 200 }).map((_, i) => {
-              const symbols = ['φ', '∑', '∞', '∆', '∇', '∂', '∫', '√', '±', '≈', '≤', '≥', '∈'];
-              const symbol = symbols[i % symbols.length];
-              const x = (i % 20) * 5;
-              const y = Math.floor(i / 20) * 8;
-              const delay = (i * 0.1) % 10;
-              
-              return (
-                <div
-                  key={i}
-                  className="absolute font-technical text-technical-line animate-matrix-fall"
-                  style={{
-                    left: `${x}%`,
-                    top: `${y}%`,
-                    animationDelay: `${delay}s`,
-                    fontSize: `${0.8 + Math.random() * 0.4}rem`
-                  }}
-                >
+            {Array.from({
+            length: 200
+          }).map((_, i) => {
+            const symbols = ['φ', '∑', '∞', '∆', '∇', '∂', '∫', '√', '±', '≈', '≤', '≥', '∈'];
+            const symbol = symbols[i % symbols.length];
+            const x = i % 20 * 5;
+            const y = Math.floor(i / 20) * 8;
+            const delay = i * 0.1 % 10;
+            return <div key={i} className="absolute font-technical text-technical-line animate-matrix-fall" style={{
+              left: `${x}%`,
+              top: `${y}%`,
+              animationDelay: `${delay}s`,
+              fontSize: `${0.8 + Math.random() * 0.4}rem`
+            }}>
                   {symbol}
-                </div>
-              );
-            })}
+                </div>;
+          })}
           </div>
         </div>
 
@@ -50,11 +43,7 @@ const Research: React.FC = () => {
         <div className="container mx-auto px-6 text-left relative z-10 max-w-6xl">
           {/* Back Button */}
           <div className="mb-8">
-            <Button 
-              variant="outline" 
-              onClick={() => window.history.back()}
-              className="font-technical border border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-6 py-2 text-xs font-medium tracking-wider uppercase transition-all duration-300"
-            >
+            <Button variant="outline" onClick={() => window.history.back()} className="font-technical border border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-6 py-2 text-xs font-medium tracking-wider uppercase transition-all duration-300">
               <ArrowLeft className="w-4 h-4 mr-2" />
               [ RETURN TO MAIN ]
             </Button>
@@ -70,11 +59,7 @@ const Research: React.FC = () => {
 
           {/* Logo */}
           <div className="mb-8 flex justify-center">
-            <img 
-              src="/lovable-uploads/c653fd62-6de9-4d23-93ef-be9bdbecec8f.png" 
-              alt="Decahedron Ventures Logo" 
-              className="w-32 md:w-40 h-auto object-contain opacity-95 hover:opacity-100 transition-opacity duration-300 drop-shadow-lg"
-            />
+            <img src="/lovable-uploads/c653fd62-6de9-4d23-93ef-be9bdbecec8f.png" alt="Decahedron Ventures Logo" className="w-32 md:w-40 h-auto object-contain opacity-95 hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />
           </div>
 
           {/* Main heading */}
@@ -92,11 +77,7 @@ const Research: React.FC = () => {
           {/* Executive Summary */}
           <div className="mb-12 border border-technical-line bg-background/30 p-6">
             <h2 className="font-technical text-lg text-technical-highlight mb-4 tracking-wider uppercase">[ EXECUTIVE SUMMARY ]</h2>
-            <p className="font-technical text-sm text-geometric-primary leading-relaxed mb-4">
-              Decahedron Ventures applies a sophisticated mathematical approach to diversify capital across 10 high-growth markets. 
-              The goal is to generate a 10x return over 10 years. By leveraging the Golden Ratio in portfolio allocation, we aim to 
-              achieve a balanced, risk-mitigated exposure to emerging markets with exponential growth potential.
-            </p>
+            <p className="font-technical text-sm text-geometric-primary leading-relaxed mb-4">Decahedron Ventures is developing a sophisticated mathematical framework to diversify capital across 10 high-growth markets. Our research explores the potential to generate a 10x return over 10 years by applying the Golden Ratio to portfolio allocation. This approach seeks to balance exposure, mitigate risk, and capture opportunities in emerging markets with exponential growth potential..</p>
             <p className="font-technical text-sm text-geometric-secondary leading-relaxed">
               This whitepaper provides an in-depth explanation of the capital allocation model, factors affecting investment decisions, 
               and a robust Python code implementation for simulation and analysis.
@@ -154,25 +135,62 @@ const Research: React.FC = () => {
             <h2 className="font-technical text-lg text-technical-highlight mb-4 tracking-wider uppercase">[ TARGET MARKETS FOR INVESTMENT ]</h2>
             <div className="font-technical text-xs text-geometric-secondary mb-4">RANKED BY MARKET SIZE AND ANNUAL GROWTH RATE</div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {[
-                { sector: "Analog Habitats", size: "$1.34B", growth: "58.8%", allocation: "38.51%" },
-                { sector: "Quantum Computing", size: "$1.3B", growth: "33%", allocation: "23.81%" },
-                { sector: "AR/VR/Simulation", size: "$4B", growth: "20%", allocation: "14.71%" },
-                { sector: "Artificial Intelligence", size: "$146B", growth: "19%", allocation: "9.09%" },
-                { sector: "Spaceports", size: "$19B", growth: "15%", allocation: "5.62%" },
-                { sector: "Aerospace Manufacturing", size: "$72B", growth: "14.3%", allocation: "3.47%" },
-                { sector: "Defense Systems", size: "$985B", growth: "8.2%", allocation: "2.15%" },
-                { sector: "Energy/Population Scale", size: "$5.3T", growth: "8%", allocation: "1.33%" },
-                { sector: "Telecommunications", size: "$2.1T", growth: "6.6%", allocation: "0.82%" },
-                { sector: "Photonics", size: "$1.5T", growth: "6.5%", allocation: "0.51%" }
-              ].map((market, index) => (
-                <div key={market.sector} className="border border-technical-line bg-background/50 p-4 hover:bg-technical-highlight/5 transition-colors">
+              {[{
+              sector: "Analog Habitats",
+              size: "$1.34B",
+              growth: "58.8%",
+              allocation: "38.51%"
+            }, {
+              sector: "Quantum Computing",
+              size: "$1.3B",
+              growth: "33%",
+              allocation: "23.81%"
+            }, {
+              sector: "AR/VR/Simulation",
+              size: "$4B",
+              growth: "20%",
+              allocation: "14.71%"
+            }, {
+              sector: "Artificial Intelligence",
+              size: "$146B",
+              growth: "19%",
+              allocation: "9.09%"
+            }, {
+              sector: "Spaceports",
+              size: "$19B",
+              growth: "15%",
+              allocation: "5.62%"
+            }, {
+              sector: "Aerospace Manufacturing",
+              size: "$72B",
+              growth: "14.3%",
+              allocation: "3.47%"
+            }, {
+              sector: "Defense Systems",
+              size: "$985B",
+              growth: "8.2%",
+              allocation: "2.15%"
+            }, {
+              sector: "Energy/Population Scale",
+              size: "$5.3T",
+              growth: "8%",
+              allocation: "1.33%"
+            }, {
+              sector: "Telecommunications",
+              size: "$2.1T",
+              growth: "6.6%",
+              allocation: "0.82%"
+            }, {
+              sector: "Photonics",
+              size: "$1.5T",
+              growth: "6.5%",
+              allocation: "0.51%"
+            }].map((market, index) => <div key={market.sector} className="border border-technical-line bg-background/50 p-4 hover:bg-technical-highlight/5 transition-colors">
                   <div className="text-technical-highlight text-xs mb-2 font-bold">{String(index + 1).padStart(2, '0')}.{market.sector.toUpperCase()}</div>
                   <div className="text-geometric-primary text-xs mb-1">SIZE: {market.size}</div>
                   <div className="text-geometric-primary text-xs mb-1">GROWTH: {market.growth}</div>
                   <div className="text-technical-highlight text-xs font-bold">ALLOCATION: {market.allocation}</div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
 
@@ -187,19 +205,31 @@ const Research: React.FC = () => {
               CC = Σ(Factor Score × Factor Weight) / Σ(Factor Weight)
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              {[
-                { factor: "Founder Quality", weight: "30%", description: "Experience, track record, vision" },
-                { factor: "IP Strength", weight: "25%", description: "Patents, proprietary technology" },
-                { factor: "Market Fit", weight: "20%", description: "Product-market alignment" },
-                { factor: "Financial Health", weight: "15%", description: "Revenue, burn rate, runway" },
-                { factor: "Team Composition", weight: "10%", description: "Technical expertise, diversity" }
-              ].map((item, index) => (
-                <div key={item.factor} className="border border-technical-line bg-background/50 p-3">
+              {[{
+              factor: "Founder Quality",
+              weight: "30%",
+              description: "Experience, track record, vision"
+            }, {
+              factor: "IP Strength",
+              weight: "25%",
+              description: "Patents, proprietary technology"
+            }, {
+              factor: "Market Fit",
+              weight: "20%",
+              description: "Product-market alignment"
+            }, {
+              factor: "Financial Health",
+              weight: "15%",
+              description: "Revenue, burn rate, runway"
+            }, {
+              factor: "Team Composition",
+              weight: "10%",
+              description: "Technical expertise, diversity"
+            }].map((item, index) => <div key={item.factor} className="border border-technical-line bg-background/50 p-3">
                   <div className="text-technical-highlight text-xs mb-1 font-bold">{item.factor.toUpperCase()}</div>
                   <div className="text-geometric-primary text-xs mb-1">WEIGHT: {item.weight}</div>
                   <div className="text-geometric-secondary text-xs">{item.description}</div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
 
@@ -378,11 +408,7 @@ const Research: React.FC = () => {
                     <div className="text-geometric-secondary text-xs">Managing Partner</div>
                   </div>
                   <div className="mt-4">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => window.location.href = '/#contact'}
-                      className="font-technical border border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-4 py-2 text-xs font-medium tracking-wider uppercase transition-all duration-300 w-full"
-                    >
+                    <Button variant="outline" onClick={() => window.location.href = '/#contact'} className="font-technical border border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-4 py-2 text-xs font-medium tracking-wider uppercase transition-all duration-300 w-full">
                       [ INITIATE PARTNERSHIP ]
                     </Button>
                   </div>
@@ -405,7 +431,9 @@ const Research: React.FC = () => {
             <line x1="0" y1="25" x2="100" y2="25" stroke="hsl(var(--technical-line))" strokeWidth="0.05" className="animate-ink-flow">
               <animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" repeatCount="indefinite" />
             </line>
-            <line x1="0" y1="75" x2="100" y2="75" stroke="hsl(var(--technical-line))" strokeWidth="0.05" className="animate-ink-flow" style={{animationDelay: '2s'}}>
+            <line x1="0" y1="75" x2="100" y2="75" stroke="hsl(var(--technical-line))" strokeWidth="0.05" className="animate-ink-flow" style={{
+            animationDelay: '2s'
+          }}>
               <animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" repeatCount="indefinite" begin="2s" />
             </line>
             
@@ -417,8 +445,6 @@ const Research: React.FC = () => {
           </svg>
         </div>
       </section>
-    </main>
-  );
+    </main>;
 };
-
 export default Research;
