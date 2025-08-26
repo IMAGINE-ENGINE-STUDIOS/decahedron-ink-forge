@@ -75,11 +75,11 @@ const Research: React.FC = () => {
           </div>
 
           {/* Disclaimer */}
-          <div className="mb-12 text-center border border-yellow-400/50 bg-yellow-50/10 backdrop-blur-sm px-6 py-4 rounded-sm">
-            <div className="font-technical text-sm text-yellow-200 tracking-wider uppercase">
+          <div className="mb-12 text-center border border-red-400/50 bg-red-50/10 backdrop-blur-sm px-6 py-4 rounded-sm">
+            <div className="font-technical text-sm text-red-200 tracking-wider uppercase">
               [ RESEARCH DISCLAIMER ]
             </div>
-            <div className="font-technical text-xs text-yellow-300 mt-2">
+            <div className="font-technical text-xs text-red-300 mt-2">
               These strategies represent a work in progress and are intended for research and development purposes.
             </div>
           </div>
