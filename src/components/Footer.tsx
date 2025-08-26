@@ -1,18 +1,16 @@
 import React from 'react';
 import { Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 import GeometricPattern from './GeometricPattern';
-
 const Footer: React.FC = () => {
-  return (
-    <footer className="relative bg-background border-t border-technical-line parchment-texture">
+  return <footer className="relative bg-background border-t border-technical-line parchment-texture">
       <div className="absolute inset-0 opacity-10">
         <svg className="w-full h-full" viewBox="0 0 1200 400" preserveAspectRatio="none">
           <defs>
             <pattern id="footer-grid-major" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.35"/>
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.35" />
             </pattern>
             <pattern id="footer-grid-minor" width="10" height="10" patternUnits="userSpaceOnUse">
-              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.12"/>
+              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.12" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#footer-grid-minor)" />
@@ -44,13 +42,10 @@ const Footer: React.FC = () => {
                 <span className="w-2 h-2 bg-technical-highlight rounded-full mr-3"></span>
                 <span>FUND.VERSION: V2.1.STABLE</span>
               </div>
+              
               <div className="flex items-center">
-                <span className="w-2 h-2 bg-technical-highlight rounded-full mr-3"></span>
-                <span>AUM.STATUS: $2.5B.DEPLOYED</span>
-              </div>
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-technical-highlight rounded-full mr-3"></span>
-                <span>PORTFOLIO.COUNT: 150+.ACTIVE</span>
+                
+                
               </div>
             </div>
           </div>
@@ -61,13 +56,23 @@ const Footer: React.FC = () => {
               [ GLOBAL OPERATIONS ]
             </h4>
             <div className="space-y-4">
-              {[
-                { region: "United States", code: "USA", status: "PRIMARY.HQ" },
-                { region: "Japan", code: "JPN", status: "TECH.HUB" },
-                { region: "Latin America", code: "LAT", status: "EMERGING.MKTS" },
-                { region: "Europe", code: "EUR", status: "INNOVATION.CTR" }
-              ].map((location) => (
-                <div key={location.code} className="flex items-center group">
+              {[{
+              region: "United States",
+              code: "USA",
+              status: "PRIMARY.HQ"
+            }, {
+              region: "Japan",
+              code: "JPN",
+              status: "TECH.HUB"
+            }, {
+              region: "Latin America",
+              code: "LAT",
+              status: "EMERGING.MKTS"
+            }, {
+              region: "Europe",
+              code: "EUR",
+              status: "INNOVATION.CTR"
+            }].map(location => <div key={location.code} className="flex items-center group">
                   <MapPin className="w-4 h-4 text-technical-highlight mr-3" />
                   <div>
                     <div className="text-foreground font-medium">{location.region}</div>
@@ -75,8 +80,7 @@ const Footer: React.FC = () => {
                       {location.code} | {location.status}
                     </div>
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
 
@@ -88,11 +92,11 @@ const Footer: React.FC = () => {
             <div className="space-y-4 mb-6">
               <div className="flex items-center">
                 <Mail className="w-4 h-4 text-technical-highlight mr-3" />
-                <span className="text-muted-foreground font-technical text-sm">contact@decahedronvc.com</span>
+                <span className="text-muted-foreground font-technical text-sm">info@decahedronvc.com</span>
               </div>
               <div className="flex items-center">
                 <Phone className="w-4 h-4 text-technical-highlight mr-3" />
-                <span className="text-muted-foreground font-technical text-sm">+1.555.DECA.001</span>
+                <span className="text-muted-foreground font-technical text-sm">+1.407.760.4873</span>
               </div>
             </div>
             
@@ -102,10 +106,7 @@ const Footer: React.FC = () => {
                 NETWORK.LINKS
               </h5>
               <div className="flex space-x-4">
-                <a 
-                  href="#" 
-                  className="w-10 h-10 border border-technical-line bg-background/50 hover:bg-technical-highlight hover:text-primary-foreground flex items-center justify-center transition-colors"
-                >
+                <a href="#" className="w-10 h-10 border border-technical-line bg-background/50 hover:bg-technical-highlight hover:text-primary-foreground flex items-center justify-center transition-colors">
                   <Linkedin className="w-4 h-4" />
                 </a>
               </div>
@@ -138,8 +139,6 @@ const Footer: React.FC = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;

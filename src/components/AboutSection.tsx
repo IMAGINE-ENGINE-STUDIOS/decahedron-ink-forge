@@ -1,10 +1,8 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import GeometricPattern from './GeometricPattern';
-
 const AboutSection: React.FC = () => {
-  return (
-    <section className="py-20 bg-background parchment-texture relative">
+  return <section className="py-20 bg-background parchment-texture relative">
       {/* Background geometric elements */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 right-10">
@@ -21,12 +19,7 @@ const AboutSection: React.FC = () => {
             Our Mission
           </h2>
           <div className="w-24 h-px bg-geometric-primary mx-auto mb-8"></div>
-          <p className="text-xl text-muted-foreground leading-relaxed">
-            At Decahedron Ventures, we believe in the power of geometry to unlock 
-            infinite possibilities. Like the ten faces of a decahedron, we approach 
-            investment opportunities from multiple dimensions, identifying 
-            transformative technologies that will reshape our world.
-          </p>
+          <p className="text-xl text-muted-foreground leading-relaxed">At Decahedron Ventures, we believe in the power of mathematical precision to unlock infinite possibilities. Inspired by the ten faces of a decahedron, our investment philosophy is built on identifying ten or more transformative factors within startups—signals that highlight innovations positioned to deliver exponential growth.</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -34,11 +27,7 @@ const AboutSection: React.FC = () => {
             <CardContent className="p-8">
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
-                  <GeometricPattern 
-                    variant="dodecahedron" 
-                    size="md" 
-                    className="text-geometric-primary animate-geometric-pulse" 
-                  />
+                  <GeometricPattern variant="dodecahedron" size="md" className="text-geometric-primary animate-geometric-pulse" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-foreground mb-4">
@@ -58,11 +47,7 @@ const AboutSection: React.FC = () => {
             <CardContent className="p-8">
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
-                  <GeometricPattern 
-                    variant="flower-of-life" 
-                    size="md" 
-                    className="text-geometric-primary animate-float" 
-                  />
+                  <GeometricPattern variant="flower-of-life" size="md" className="text-geometric-primary animate-float" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-foreground mb-4">
@@ -80,27 +65,8 @@ const AboutSection: React.FC = () => {
         </div>
 
         {/* Statistics section */}
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-geometric-primary mb-2">$2.5B</div>
-            <div className="text-muted-foreground text-sm uppercase tracking-wider">Assets Under Management</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-geometric-primary mb-2">150+</div>
-            <div className="text-muted-foreground text-sm uppercase tracking-wider">Portfolio Companies</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-geometric-primary mb-2">25</div>
-            <div className="text-muted-foreground text-sm uppercase tracking-wider">Years Experience</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-geometric-primary mb-2">6</div>
-            <div className="text-muted-foreground text-sm uppercase tracking-wider">Core Sectors</div>
-          </div>
-        </div>
+        
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default AboutSection;

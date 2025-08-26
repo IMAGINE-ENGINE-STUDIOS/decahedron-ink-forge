@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import GeometricPattern from './GeometricPattern';
-
 const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -14,27 +13,30 @@ const ContactSection: React.FC = () => {
     company: '',
     message: ''
   });
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Simulate form submission
     toast({
       title: "Message Transmitted",
-      description: "Your inquiry has been received. Our team will respond within 24 hours.",
+      description: "Your inquiry has been received. Our team will respond within 24 hours."
     });
-    setFormData({ name: '', email: '', company: '', message: '' });
+    setFormData({
+      name: '',
+      email: '',
+      company: '',
+      message: ''
+    });
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
   };
-
-  return (
-    <section id="contact" className="py-20 bg-background parchment-texture relative">
+  return <section id="contact" className="py-20 bg-background parchment-texture relative">
       {/* Background elements */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 right-10">
@@ -76,28 +78,13 @@ const ContactSection: React.FC = () => {
                       <label className="font-technical text-xs uppercase tracking-wider text-geometric-secondary mb-2 block">
                         CONTACT.NAME
                       </label>
-                      <Input
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        className="bg-background/50 border-technical-line font-technical"
-                        placeholder="Enter full name"
-                      />
+                      <Input name="name" value={formData.name} onChange={handleChange} required className="bg-background/50 border-technical-line font-technical" placeholder="Enter full name" />
                     </div>
                     <div>
                       <label className="font-technical text-xs uppercase tracking-wider text-geometric-secondary mb-2 block">
                         EMAIL.ADDRESS
                       </label>
-                      <Input
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className="bg-background/50 border-technical-line font-technical"
-                        placeholder="Enter email address"
-                      />
+                      <Input name="email" type="email" value={formData.email} onChange={handleChange} required className="bg-background/50 border-technical-line font-technical" placeholder="Enter email address" />
                     </div>
                   </div>
                   
@@ -105,34 +92,17 @@ const ContactSection: React.FC = () => {
                     <label className="font-technical text-xs uppercase tracking-wider text-geometric-secondary mb-2 block">
                       ORGANIZATION
                     </label>
-                    <Input
-                      name="company"
-                      value={formData.company}
-                      onChange={handleChange}
-                      className="bg-background/50 border-technical-line font-technical"
-                      placeholder="Company or organization"
-                    />
+                    <Input name="company" value={formData.company} onChange={handleChange} className="bg-background/50 border-technical-line font-technical" placeholder="Company or organization" />
                   </div>
                   
                   <div>
                     <label className="font-technical text-xs uppercase tracking-wider text-geometric-secondary mb-2 block">
                       MESSAGE.CONTENT
                     </label>
-                    <Textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={6}
-                      className="bg-background/50 border-technical-line font-technical resize-none"
-                      placeholder="Describe your inquiry, investment opportunity, or partnership proposal..."
-                    />
+                    <Textarea name="message" value={formData.message} onChange={handleChange} required rows={6} className="bg-background/50 border-technical-line font-technical resize-none" placeholder="Describe your inquiry, investment opportunity, or partnership proposal..." />
                   </div>
                   
-                  <Button 
-                    type="submit"
-                    className="w-full font-technical bg-technical-highlight text-primary-foreground hover:bg-primary border border-technical-line"
-                  >
+                  <Button type="submit" className="w-full font-technical bg-technical-highlight text-primary-foreground hover:bg-primary border border-technical-line">
                     <Send className="w-4 h-4 mr-2" />
                     [ TRANSMIT.MESSAGE ]
                   </Button>
@@ -158,7 +128,7 @@ const ContactSection: React.FC = () => {
                         <div className="font-technical text-xs uppercase tracking-wider text-geometric-secondary">
                           PRIMARY.EMAIL
                         </div>
-                        <div className="text-foreground font-medium">contact@decahedronvc.com</div>
+                        <div className="text-foreground font-medium">info@decahedronvc.com</div>
                       </div>
                     </div>
                     
@@ -170,7 +140,7 @@ const ContactSection: React.FC = () => {
                         <div className="font-technical text-xs uppercase tracking-wider text-geometric-secondary">
                           SECURE.LINE
                         </div>
-                        <div className="text-foreground font-medium">+1 (555) DECA-001</div>
+                        <div className="text-foreground font-medium">+1 407.760.4873</div>
                       </div>
                     </div>
                     
@@ -217,8 +187,6 @@ const ContactSection: React.FC = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default ContactSection;
