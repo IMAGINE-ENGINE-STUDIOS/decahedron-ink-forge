@@ -69,9 +69,19 @@ const Research: React.FC = () => {
           </h1>
 
           {/* Date and Authors */}
-          <div className="font-technical text-sm text-geometric-secondary mb-12 text-center border border-technical-line bg-background/50 backdrop-blur-sm px-6 py-4 rounded-sm">
+          <div className="font-technical text-sm text-geometric-secondary mb-8 text-center border border-technical-line bg-background/50 backdrop-blur-sm px-6 py-4 rounded-sm">
             <div className="mb-2">DECAHEDRON VENTURES - APRIL 18, 2025</div>
             <div className="text-xs">KHALIA PADILLA - MANAGING PARTNER | RICARDO FONT - MANAGING PARTNER</div>
+          </div>
+
+          {/* Disclaimer */}
+          <div className="mb-12 text-center border border-yellow-400/50 bg-yellow-50/10 backdrop-blur-sm px-6 py-4 rounded-sm">
+            <div className="font-technical text-sm text-yellow-200 tracking-wider uppercase">
+              [ RESEARCH DISCLAIMER ]
+            </div>
+            <div className="font-technical text-xs text-yellow-300 mt-2">
+              These strategies represent a work in progress and are intended for research and development purposes.
+            </div>
           </div>
 
           {/* Executive Summary */}
