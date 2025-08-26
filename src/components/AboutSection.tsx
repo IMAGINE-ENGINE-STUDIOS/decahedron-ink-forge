@@ -33,11 +33,7 @@ const AboutSection: React.FC = () => {
                   <h3 className="text-2xl font-bold text-foreground mb-4">
                     Investment Philosophy
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    We seek companies that demonstrate the mathematical precision 
-                    of sacred geometry—perfect balance, infinite growth potential, 
-                    and the ability to create transformative change across industries.
-                  </p>
+                  <p className="text-muted-foreground leading-relaxed">We invest in early and growth-stage companies that demonstrate strong differentiation factors and breakthrough innovation, with the potential to reshape and transform entire industries</p>
                 </div>
               </div>
             </CardContent>
@@ -53,11 +49,7 @@ const AboutSection: React.FC = () => {
                   <h3 className="text-2xl font-bold text-foreground mb-4">
                     Global Impact
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Our portfolio companies are building the infrastructure of tomorrow—
-                    from sustainable energy systems to space exploration technologies 
-                    that will benefit humanity for generations to come.
-                  </p>
+                  <p className="text-muted-foreground leading-relaxed">Investing in companies across 4 continents  building the infrastructure of tomorrow— from sustainable energy systems to space exploration technologies that will benefit humanity for generations to come.</p>
                 </div>
               </div>
             </CardContent>
