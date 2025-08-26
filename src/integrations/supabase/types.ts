@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      limited_partner_applications: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          investment_amount: string | null
+          investment_focus: string[] | null
+          job_title: string | null
+          message: string | null
+          phone: string | null
+          pitch_deck_url: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          investment_amount?: string | null
+          investment_focus?: string[] | null
+          job_title?: string | null
+          message?: string | null
+          phone?: string | null
+          pitch_deck_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          investment_amount?: string | null
+          investment_focus?: string[] | null
+          job_title?: string | null
+          message?: string | null
+          phone?: string | null
+          pitch_deck_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
