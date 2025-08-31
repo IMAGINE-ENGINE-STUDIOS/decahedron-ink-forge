@@ -47,33 +47,33 @@ const ContactSection: React.FC = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-16">
-            <div className="font-technical text-sm tracking-wider uppercase text-geometric-secondary mb-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="font-technical text-xs sm:text-sm tracking-wider uppercase text-geometric-secondary mb-3 sm:mb-4">
               [ COMMUNICATION.PROTOCOL ]
             </div>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-8">
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 sm:mb-8">
               INITIATE CONTACT
             </h2>
-            <div className="w-24 h-px bg-technical-line mx-auto mb-6"></div>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <div className="w-16 sm:w-24 h-px bg-technical-line mx-auto mb-4 sm:mb-6"></div>
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Establish direct communication channels with our investment team. 
               All transmissions are encrypted and processed within 24 hours.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
             {/* Contact Form */}
             <Card className="bg-card/30 backdrop-blur-sm border-technical-line">
-              <CardContent className="p-8">
-                <h3 className="font-technical text-lg font-semibold text-foreground mb-6 uppercase tracking-wider">
+              <CardContent className="p-6 sm:p-8">
+                <h3 className="font-technical text-base sm:text-lg font-semibold text-foreground mb-4 sm:mb-6 uppercase tracking-wider">
                   [ SECURE.TRANSMISSION.FORM ]
                 </h3>
                 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <label className="font-technical text-xs uppercase tracking-wider text-geometric-secondary mb-2 block">
                         CONTACT.NAME
@@ -111,24 +111,24 @@ const ContactSection: React.FC = () => {
             </Card>
 
             {/* Contact Information */}
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               {/* Direct Contact */}
               <Card className="bg-card/30 backdrop-blur-sm border-technical-line">
-                <CardContent className="p-8">
-                  <h3 className="font-technical text-lg font-semibold text-foreground mb-6 uppercase tracking-wider">
+                <CardContent className="p-6 sm:p-8">
+                  <h3 className="font-technical text-base sm:text-lg font-semibold text-foreground mb-4 sm:mb-6 uppercase tracking-wider">
                     [ DIRECT.CHANNELS ]
                   </h3>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     <div className="flex items-center">
-                      <div className="w-12 h-12 bg-technical-highlight/10 border border-technical-line flex items-center justify-center mr-4">
-                        <Mail className="w-5 h-5 text-technical-highlight" />
+                      <div className="w-10 sm:w-12 h-10 sm:h-12 bg-technical-highlight/10 border border-technical-line flex items-center justify-center mr-3 sm:mr-4">
+                        <Mail className="w-4 sm:w-5 h-4 sm:h-5 text-technical-highlight" />
                       </div>
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <div className="font-technical text-xs uppercase tracking-wider text-geometric-secondary">
                           PRIMARY.EMAIL
                         </div>
-                        <div className="text-foreground font-medium">info@decahedronvc.com</div>
+                        <div className="text-foreground font-medium break-all">info@decahedronventures.com</div>
                       </div>
                     </div>
                     
