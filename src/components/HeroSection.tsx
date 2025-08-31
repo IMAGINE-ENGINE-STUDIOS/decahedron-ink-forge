@@ -47,58 +47,58 @@ const HeroSection: React.FC = () => {
 
 
       {/* Hero content */}
-      <div className="container mx-auto px-6 text-center relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
         <div className="max-w-5xl mx-auto">
           {/* Technical Label */}
-          <div className="mb-8 relative">
-            <div className="font-technical text-sm tracking-wider uppercase text-geometric-secondary mb-4">
+          <div className="mb-6 sm:mb-8 relative">
+            <div className="font-technical text-xs sm:text-sm tracking-wider uppercase text-geometric-secondary mb-3 sm:mb-4">
               [ VENTURE CAPITAL ENGINEERING ]
             </div>
-            <div className="w-24 h-px bg-technical-line mx-auto mb-6"></div>
+            <div className="w-16 sm:w-24 h-px bg-technical-line mx-auto mb-4 sm:mb-6"></div>
           </div>
 
           {/* Logo */}
-          <div className="mb-8 flex justify-center">
+          <div className="mb-6 sm:mb-8 flex justify-center">
             <img 
               src="/lovable-uploads/a63ed1a5-f345-497c-b509-c24edcbbba15.png" 
               alt="Decahedron Ventures Logo" 
-              className="w-60 md:w-80 lg:w-96 h-auto object-contain opacity-95 hover:opacity-100 transition-opacity duration-300 drop-shadow-lg"
+              className="w-40 sm:w-60 md:w-80 lg:w-96 h-auto object-contain opacity-95 hover:opacity-100 transition-opacity duration-300 drop-shadow-lg"
             />
           </div>
 
           {/* Main heading */}
-          <h1 className="font-display text-6xl md:text-8xl xl:text-9xl font-black text-foreground mb-8 leading-[0.85] tracking-tight">
+          <h1 className="font-display text-3xl sm:text-5xl md:text-7xl xl:text-8xl font-black text-foreground mb-6 sm:mb-8 leading-[0.85] tracking-tight">
             DECAHEDRON
-            <span className="block text-technical-highlight mt-2">VENTURES</span>
+            <span className="block text-technical-highlight mt-1 sm:mt-2">VENTURES</span>
           </h1>
 
           {/* Technical Subtitle */}
-          <div className="font-technical text-base md:text-lg text-geometric-secondary mb-12 max-w-4xl mx-auto leading-relaxed tracking-wide">
-            <div className="border border-technical-line bg-background/50 backdrop-blur-sm px-6 py-4 rounded-sm">
+          <div className="font-technical text-sm sm:text-base md:text-lg text-geometric-secondary mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed tracking-wide">
+            <div className="border border-technical-line bg-background/50 backdrop-blur-sm px-4 sm:px-6 py-3 sm:py-4 rounded-sm">
               ADVANCED CAPITAL DEPLOYMENT FOR NEXT-GENERATION INFRASTRUCTURE
-              <br className="hidden md:block" />
+              <br className="hidden sm:block" />
               TARGETING HIGH-IMPACT TECHNOLOGICAL SOLUTIONS
             </div>
           </div>
 
           {/* Investment Locations Matrix */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl mx-auto font-technical text-xs uppercase tracking-widest">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12 max-w-4xl mx-auto font-technical text-xs uppercase tracking-widest">
             {[
               { label: "UNITED STATES", code: "USA.01", coords: "39.8283°N, 98.5795°W" },
               { label: "JAPAN", code: "JPN.02", coords: "36.2048°N, 138.2529°E" },
               { label: "LATAM", code: "LAT.03", coords: "8.7832°S, 55.4915°W" },
               { label: "EUROPE", code: "EUR.04", coords: "54.5260°N, 15.2551°E" }
             ].map((location, index) => (
-              <div key={location.label} className="border border-technical-line bg-background/30 p-3 hover:bg-technical-highlight/5 transition-colors">
-                <div className="text-technical-highlight mb-1 text-[10px]">{location.code}</div>
-                <div className="text-geometric-primary text-[9px] mb-1">{location.label}</div>
-                <div className="text-geometric-secondary text-[8px]">{location.coords}</div>
+              <div key={location.label} className="border border-technical-line bg-background/30 p-2 sm:p-3 hover:bg-technical-highlight/5 transition-colors">
+                <div className="text-technical-highlight mb-1 text-[10px] sm:text-[10px]">{location.code}</div>
+                <div className="text-geometric-primary text-[10px] sm:text-[9px] mb-1">{location.label}</div>
+                <div className="text-geometric-secondary text-[8px] sm:text-[8px] break-all">{location.coords}</div>
               </div>
             ))}
           </div>
 
           {/* Technical Investment Focus */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-16 max-w-3xl mx-auto font-technical text-xs uppercase tracking-widest">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-12 sm:mb-16 max-w-3xl mx-auto font-technical text-xs uppercase tracking-widest">
             {[
               { label: "TECHNOLOGY", code: "TECH.01" },
               { label: "SPACE", code: "SPCE.02" },
@@ -108,19 +108,19 @@ const HeroSection: React.FC = () => {
               { label: "SUSTAINABILITY", code: "SUST.06" }
             ].map((area, index) => (
               <div key={area.label} className="border border-technical-line bg-background/30 p-2 hover:bg-technical-highlight/5 transition-colors">
-                <div className="text-technical-highlight mb-1 text-[10px]">{area.code}</div>
-                <div className="text-geometric-primary text-[9px]">{area.label}</div>
+                <div className="text-technical-highlight mb-1 text-[9px] sm:text-[10px]">{area.code}</div>
+                <div className="text-geometric-primary text-[8px] sm:text-[9px]">{area.label}</div>
               </div>
             ))}
           </div>
 
           {/* Technical Action Interface */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
             <Button 
               variant="outline" 
               size="lg"
               onClick={() => window.location.href = '/research'}
-              className="font-technical border-2 border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-10 py-5 text-sm font-medium tracking-wider uppercase transition-all duration-300"
+              className="w-full sm:w-auto font-technical border-2 border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-6 sm:px-10 py-4 sm:py-5 text-xs sm:text-sm font-medium tracking-wider uppercase transition-all duration-300"
             >
               [ A.I. RESEARCH ]
             </Button>
@@ -128,14 +128,14 @@ const HeroSection: React.FC = () => {
               variant="outline" 
               size="lg"
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-              className="font-technical border-2 border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-10 py-5 text-sm font-medium tracking-wider uppercase transition-all duration-300"
+              className="w-full sm:w-auto font-technical border-2 border-technical-line text-technical-highlight hover:bg-technical-highlight hover:text-primary-foreground px-6 sm:px-10 py-4 sm:py-5 text-xs sm:text-sm font-medium tracking-wider uppercase transition-all duration-300"
             >
               [ INITIATE PARTNERSHIP ]
             </Button>
           </div>
           
           {/* Technical Coordinates */}
-          <div className="mt-12 font-technical text-xs text-geometric-secondary/60 tracking-[0.2em]">
+          <div className="mt-8 sm:mt-12 font-technical text-[10px] sm:text-xs text-geometric-secondary/60 tracking-[0.2em] break-all">
             LAT: 37.7749° N | LONG: 122.4194° W | ALT: VENTURE.PROTOCOL.V2.1
           </div>
         </div>

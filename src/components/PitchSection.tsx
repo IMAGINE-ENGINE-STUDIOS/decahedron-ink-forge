@@ -69,18 +69,18 @@ const PitchSection: React.FC = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-16">
-            <div className="font-technical text-sm tracking-wider uppercase text-geometric-secondary mb-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="font-technical text-xs sm:text-sm tracking-wider uppercase text-geometric-secondary mb-3 sm:mb-4">
               [ INVESTMENT.PROPOSAL.SUBMISSION ]
             </div>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-8">
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 sm:mb-8">
               SUBMIT YOUR PITCH
             </h2>
-            <div className="w-24 h-px bg-technical-line mx-auto mb-6"></div>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <div className="w-16 sm:w-24 h-px bg-technical-line mx-auto mb-4 sm:mb-6"></div>
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Present your transformative technology to our investment committee. 
               All submissions undergo rigorous evaluation using our proprietary assessment matrix.
             </p>
@@ -88,14 +88,14 @@ const PitchSection: React.FC = () => {
 
           {/* Pitch Form */}
           <Card className="bg-card/30 backdrop-blur-sm border-technical-line">
-            <CardContent className="p-8">
-              <div className="mb-8">
-                <h3 className="font-technical text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
+            <CardContent className="p-6 sm:p-8">
+              <div className="mb-6 sm:mb-8">
+                <h3 className="font-technical text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 uppercase tracking-wider">
                   [ PITCH.SUBMISSION.PROTOCOL ]
                 </h3>
                 
                 {/* Requirements */}
-                <div className="grid md:grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
                   <div className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
                     <span className="font-technical text-xs text-geometric-secondary">SERIES.A.READY</span>
