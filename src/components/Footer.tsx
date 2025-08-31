@@ -18,20 +18,18 @@ const Footer: React.FC = () => {
         </svg>
       </div>
 
-      <div className="container mx-auto px-6 py-16 relative z-10">
-        <div className="flex justify-center mb-10">
-          <img src="/lovable-uploads/a63ed1a5-f345-497c-b509-c24edcbbba15.png" alt="Decahedron Ventures logo" className="w-24 md:w-32 lg:w-36 h-auto opacity-90 hover:opacity-100 transition-opacity duration-300" />
+      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 relative z-10">
+        <div className="flex justify-center mb-8 sm:mb-10">
+          <img src="/lovable-uploads/a63ed1a5-f345-497c-b509-c24edcbbba15.png" alt="Decahedron Ventures logo" className="w-20 sm:w-24 md:w-32 lg:w-36 h-auto opacity-90 hover:opacity-100 transition-opacity duration-300" />
         </div>
         {/* Main Footer Content */}
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-12 mb-12">
-          
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 mb-8 sm:mb-12">
           {/* Company Info */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center mb-6">
-              <GeometricPattern variant="golden-spiral-grid" size="sm" className="mr-3 text-technical-highlight" />
-              <h3 className="font-display text-2xl font-bold text-foreground">DECAHEDRON VENTURES</h3>
+          <div className="sm:col-span-2 lg:col-span-2">
+            <div className="mb-4 sm:mb-6">
+              <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-foreground">DECAHEDRON VENTURES</h3>
             </div>
-            <p className="text-muted-foreground mb-6 leading-relaxed">
+            <p className="text-muted-foreground mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
               Advanced capital deployment for next-generation infrastructure. 
               Targeting high-impact technological solutions across six core sectors.
             </p>
@@ -92,7 +90,7 @@ const Footer: React.FC = () => {
             <div className="space-y-4 mb-6">
               <div className="flex items-center">
                 <Mail className="w-4 h-4 text-technical-highlight mr-3" />
-                <span className="text-muted-foreground font-technical text-sm">info@decahedronvc.com</span>
+                <span className="text-muted-foreground font-technical text-sm break-all">info@decahedronventures.com</span>
               </div>
               <div className="flex items-center">
                 <Phone className="w-4 h-4 text-technical-highlight mr-3" />
@@ -106,7 +104,7 @@ const Footer: React.FC = () => {
                 NETWORK.LINKS
               </h5>
               <div className="flex space-x-4">
-                <a href="#" className="w-10 h-10 border border-technical-line bg-background/50 hover:bg-technical-highlight hover:text-primary-foreground flex items-center justify-center transition-colors">
+                <a href="https://lovable.dev/projects/7601db4a-866d-4253-b810-f91a534af6e4" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-technical-line bg-background/50 hover:bg-technical-highlight hover:text-primary-foreground flex items-center justify-center transition-colors">
                   <Linkedin className="w-4 h-4" />
                 </a>
               </div>
@@ -116,11 +114,11 @@ const Footer: React.FC = () => {
 
         {/* Technical Footer Bar */}
         <div className="border-t border-technical-line pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="font-technical text-xs text-geometric-secondary mb-4 md:mb-0">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+            <div className="font-technical text-xs text-geometric-secondary">
               © 2024 DECAHEDRON.VENTURES | ALL.RIGHTS.RESERVED | PROTOCOL.v2.1
             </div>
-            <div className="flex items-center space-x-6 font-technical text-xs">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 font-technical text-xs">
               <a href="#" className="text-geometric-secondary hover:text-technical-highlight transition-colors">
                 PRIVACY.POLICY
               </a>
