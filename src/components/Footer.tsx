@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 import GeometricPattern from './GeometricPattern';
 const Footer: React.FC = () => {
   return <footer className="relative bg-background border-t border-technical-line parchment-texture">
@@ -95,18 +95,6 @@ const Footer: React.FC = () => {
               <div className="flex items-center">
                 <Phone className="w-4 h-4 text-technical-highlight mr-3" />
                 <span className="text-muted-foreground font-technical text-sm">+1.407.760.4873</span>
-              </div>
-            </div>
-            
-            {/* Social Links */}
-            <div>
-              <h5 className="font-technical text-xs text-geometric-secondary mb-3 uppercase tracking-wider">
-                NETWORK.LINKS
-              </h5>
-              <div className="flex space-x-4">
-                <a href="https://lovable.dev/projects/7601db4a-866d-4253-b810-f91a534af6e4" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-technical-line bg-background/50 hover:bg-technical-highlight hover:text-primary-foreground flex items-center justify-center transition-colors">
-                  <Linkedin className="w-4 h-4" />
-                </a>
               </div>
             </div>
           </div>
