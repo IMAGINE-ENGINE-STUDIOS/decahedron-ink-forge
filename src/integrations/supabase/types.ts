@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      contacts: {
+        Row: {
+          company: string
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       limited_partner_applications: {
         Row: {
           company_name: string | null
@@ -57,6 +87,51 @@ export type Database = {
           message?: string | null
           phone?: string | null
           pitch_deck_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pitches: {
+        Row: {
+          company_name: string
+          created_at: string
+          description: string | null
+          email: string
+          founder_name: string
+          funding_target: string
+          id: string
+          pitch_deck_url: string | null
+          sector: string
+          stage: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          description?: string | null
+          email: string
+          founder_name: string
+          funding_target: string
+          id?: string
+          pitch_deck_url?: string | null
+          sector: string
+          stage: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          description?: string | null
+          email?: string
+          founder_name?: string
+          funding_target?: string
+          id?: string
+          pitch_deck_url?: string | null
+          sector?: string
+          stage?: string
           status?: string
           updated_at?: string
         }

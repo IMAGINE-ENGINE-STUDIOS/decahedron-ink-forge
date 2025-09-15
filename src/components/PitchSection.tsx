@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, CheckCircle, AlertCircle, FileText } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from '@/integrations/supabase/client';
 import GeometricPattern from './GeometricPattern';
 
 const PitchSection: React.FC = () => {
@@ -21,23 +22,72 @@ const PitchSection: React.FC = () => {
   });
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate pitch submission
-    toast({
-      title: "Pitch Submitted Successfully",
-      description: "Your pitch has been received and will be reviewed by our investment committee within 2-3 weeks.",
-    });
-    setFormData({
-      companyName: '',
-      founderName: '',
-      email: '',
-      sector: '',
-      stage: '',
-      fundingAmount: '',
-      description: '',
-      pitchDeck: null
-    });
+    
+    try {
+      let pitchDeckUrl = null;
+      
+      // Upload pitch deck file if provided
+      if (formData.pitchDeck) {
+        const fileExt = formData.pitchDeck.name.split('.').pop();
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+        const filePath = `pitches/${fileName}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('pitch-decks')
+          .upload(filePath, formData.pitchDeck);
+          
+        if (uploadError) {
+          throw new Error(`File upload failed: ${uploadError.message}`);
+        }
+        
+        pitchDeckUrl = filePath;
+      }
+      
+      // Insert pitch data into database
+      const { error: insertError } = await supabase
+        .from('pitches')
+        .insert({
+          company_name: formData.companyName,
+          founder_name: formData.founderName,
+          email: formData.email,
+          sector: formData.sector,
+          stage: formData.stage,
+          funding_target: formData.fundingAmount,
+          description: formData.description,
+          pitch_deck_url: pitchDeckUrl,
+        });
+        
+      if (insertError) {
+        throw new Error(`Database error: ${insertError.message}`);
+      }
+      
+      toast({
+        title: "Pitch Submitted Successfully",
+        description: "Your pitch has been received and will be reviewed by our investment committee within 2-3 weeks.",
+      });
+      
+      // Reset form
+      setFormData({
+        companyName: '',
+        founderName: '',
+        email: '',
+        sector: '',
+        stage: '',
+        fundingAmount: '',
+        description: '',
+        pitchDeck: null
+      });
+      
+    } catch (error) {
+      console.error('Submission error:', error);
+      toast({
+        title: "Submission Failed",
+        description: error instanceof Error ? error.message : "There was an error submitting your pitch. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

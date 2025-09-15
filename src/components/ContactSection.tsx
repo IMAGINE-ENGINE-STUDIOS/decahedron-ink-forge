@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from '@/integrations/supabase/client';
 import GeometricPattern from './GeometricPattern';
 const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -16,19 +17,45 @@ const ContactSection: React.FC = () => {
   const {
     toast
   } = useToast();
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate form submission
-    toast({
-      title: "Message Transmitted",
-      description: "Your inquiry has been received. Our team will respond within 24 hours."
-    });
-    setFormData({
-      name: '',
-      email: '',
-      company: '',
-      message: ''
-    });
+    
+    try {
+      // Insert contact data into database
+      const { error } = await supabase
+        .from('contacts')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          message: formData.message,
+        });
+        
+      if (error) {
+        throw new Error(`Database error: ${error.message}`);
+      }
+      
+      toast({
+        title: "Message Transmitted",
+        description: "Your inquiry has been received. Our team will respond within 24 hours."
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        company: '',
+        message: ''
+      });
+      
+    } catch (error) {
+      console.error('Submission error:', error);
+      toast({
+        title: "Transmission Failed",
+        description: error instanceof Error ? error.message : "There was an error sending your message. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
