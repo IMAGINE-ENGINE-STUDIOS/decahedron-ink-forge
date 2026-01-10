@@ -1,1 +1,4 @@
 project_id = "sugwwemxqozsfccweyxj"
+
+[functions.decile-crm]
+verify_jwt = false

@@ -4,10 +4,28 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Download, Mail, Building2, Calendar, FileText, User, MessageSquare, LogOut, Users } from 'lucide-react';
+import { 
+  Download, 
+  Mail, 
+  Building2, 
+  LogOut, 
+  Users, 
+  MessageSquare, 
+  RefreshCw,
+  BarChart3,
+  Briefcase,
+  TrendingUp,
+  Target
+} from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useDecileCRM, type CRMStats } from '@/hooks/useDecileCRM';
+import { DashboardOverview } from '@/components/admin/DashboardOverview';
+import { AnalyticsCharts } from '@/components/admin/AnalyticsCharts';
+import { DealFlowTable } from '@/components/admin/DealFlowTable';
+import { InvestorCRM } from '@/components/admin/InvestorCRM';
+import { IndustryBreakdown } from '@/components/admin/IndustryBreakdown';
 
 interface Pitch {
   id: string;
@@ -52,12 +70,20 @@ const AdminDashboard: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [lpApplications, setLpApplications] = useState<LPApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const [crmStats, setCrmStats] = useState<CRMStats | null>(null);
   const { toast } = useToast();
   const { user, signOut } = useAuth();
+  const { fetchStats, loading: crmLoading } = useDecileCRM();
 
   useEffect(() => {
     fetchData();
+    loadCRMStats();
   }, []);
+
+  const loadCRMStats = async () => {
+    const stats = await fetchStats();
+    if (stats) setCrmStats(stats);
+  };
 
   const fetchData = async () => {
     try {
@@ -133,12 +159,18 @@ const AdminDashboard: React.FC = () => {
     });
   };
 
+  const thisWeekCount = pitches.filter(p => 
+    new Date(p.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  ).length + lpApplications.filter(l => 
+    new Date(l.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  ).length;
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-technical">LOADING.DATA...</p>
+          <p className="text-muted-foreground font-technical">LOADING.INTELLIGENCE.DATA...</p>
         </div>
       </div>
     );
@@ -146,23 +178,29 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-technical-line bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+      {/* Header */}
+      <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-technical text-primary">
-                [ ADMIN.DASHBOARD ]
-              </h1>
-              <p className="text-sm text-muted-foreground font-technical">
-                {user?.email}
-              </p>
+            <div className="flex items-center gap-4">
+              <div>
+                <h1 className="text-2xl font-technical text-primary flex items-center gap-2">
+                  <Target className="h-6 w-6" />
+                  [ INTELLIGENCE.CENTER ]
+                </h1>
+                <p className="text-sm text-muted-foreground font-technical">
+                  {user?.email}
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <Button 
-                onClick={fetchData} 
+                onClick={() => { fetchData(); loadCRMStats(); }} 
                 variant="outline" 
                 className="font-technical"
+                disabled={loading}
               >
+                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                 REFRESH
               </Button>
               <Button 
@@ -178,146 +216,63 @@ const AdminDashboard: React.FC = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-2">
-                <FileText className="h-8 w-8 text-primary" />
-                <div>
-                  <p className="text-2xl font-bold">{pitches.length}</p>
-                  <p className="text-xs text-muted-foreground font-technical uppercase">Pitches</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-2">
-                <Users className="h-8 w-8 text-primary" />
-                <div>
-                  <p className="text-2xl font-bold">{lpApplications.length}</p>
-                  <p className="text-xs text-muted-foreground font-technical uppercase">LP Applications</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-2">
-                <MessageSquare className="h-8 w-8 text-primary" />
-                <div>
-                  <p className="text-2xl font-bold">{contacts.length}</p>
-                  <p className="text-xs text-muted-foreground font-technical uppercase">Contacts</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-2">
-                <Calendar className="h-8 w-8 text-primary" />
-                <div>
-                  <p className="text-2xl font-bold">
-                    {pitches.filter(p => new Date(p.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length + 
-                     lpApplications.filter(l => new Date(l.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length}
-                  </p>
-                  <p className="text-xs text-muted-foreground font-technical uppercase">This Week</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      <main className="container mx-auto px-4 py-8 space-y-8">
+        {/* Overview Stats */}
+        <DashboardOverview 
+          pitchCount={pitches.length}
+          lpCount={lpApplications.length}
+          contactCount={contacts.length}
+          thisWeekCount={thisWeekCount}
+          crmStats={crmStats}
+          crmLoading={crmLoading}
+        />
 
-        <Tabs defaultValue="pitches" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="pitches" className="font-technical">
-              PITCHES ({pitches.length})
+        {/* Main Tabs */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
+            <TabsTrigger value="overview" className="font-technical text-xs">
+              <BarChart3 className="h-3 w-3 mr-1 hidden sm:block" />
+              ANALYTICS
             </TabsTrigger>
-            <TabsTrigger value="partnerships" className="font-technical">
-              PARTNERSHIPS ({lpApplications.length})
+            <TabsTrigger value="deals" className="font-technical text-xs">
+              <Briefcase className="h-3 w-3 mr-1 hidden sm:block" />
+              DEAL FLOW
             </TabsTrigger>
-            <TabsTrigger value="contacts" className="font-technical">
-              CONTACTS ({contacts.length})
+            <TabsTrigger value="crm" className="font-technical text-xs">
+              <TrendingUp className="h-3 w-3 mr-1 hidden sm:block" />
+              CRM
+            </TabsTrigger>
+            <TabsTrigger value="lps" className="font-technical text-xs">
+              <Users className="h-3 w-3 mr-1 hidden sm:block" />
+              LPs
+            </TabsTrigger>
+            <TabsTrigger value="industries" className="font-technical text-xs">
+              <Building2 className="h-3 w-3 mr-1 hidden sm:block" />
+              INDUSTRIES
+            </TabsTrigger>
+            <TabsTrigger value="contacts" className="font-technical text-xs">
+              <MessageSquare className="h-3 w-3 mr-1 hidden sm:block" />
+              CONTACTS
             </TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="pitches">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-technical text-primary">[ PITCH.SUBMISSIONS ]</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {pitches.length === 0 ? (
-                  <div className="text-center py-12">
-                    <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground font-technical">NO.PITCHES.YET</p>
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="font-technical">COMPANY</TableHead>
-                          <TableHead className="font-technical">FOUNDER</TableHead>
-                          <TableHead className="font-technical">EMAIL</TableHead>
-                          <TableHead className="font-technical">SECTOR</TableHead>
-                          <TableHead className="font-technical">STAGE</TableHead>
-                          <TableHead className="font-technical">FUNDING</TableHead>
-                          <TableHead className="font-technical">DECK</TableHead>
-                          <TableHead className="font-technical">STATUS</TableHead>
-                          <TableHead className="font-technical">DATE</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {pitches.map((pitch) => (
-                          <TableRow key={pitch.id}>
-                            <TableCell className="font-medium">{pitch.company_name}</TableCell>
-                            <TableCell>{pitch.founder_name}</TableCell>
-                            <TableCell>
-                              <a href={`mailto:${pitch.email}`} className="text-primary hover:underline flex items-center gap-1">
-                                <Mail className="h-3 w-3" />
-                                {pitch.email}
-                              </a>
-                            </TableCell>
-                            <TableCell><Badge variant="outline">{pitch.sector}</Badge></TableCell>
-                            <TableCell><Badge variant="secondary">{pitch.stage}</Badge></TableCell>
-                            <TableCell className="font-technical">{pitch.funding_target}</TableCell>
-                            <TableCell>
-                              {pitch.pitch_deck_url ? (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => downloadPitchDeck(pitch.pitch_deck_url!, pitch.company_name)}
-                                  className="h-8"
-                                >
-                                  <Download className="h-3 w-3 mr-1" />
-                                  Download
-                                </Button>
-                              ) : (
-                                <span className="text-muted-foreground text-xs">No deck</span>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={pitch.status === 'pending' ? 'default' : 'secondary'}>
-                                {pitch.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-xs text-muted-foreground">{formatDate(pitch.created_at)}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+
+          {/* Analytics Tab */}
+          <TabsContent value="overview">
+            <AnalyticsCharts pitches={pitches} />
           </TabsContent>
-          
-          <TabsContent value="partnerships">
+
+          {/* Deal Flow Tab */}
+          <TabsContent value="deals">
+            <DealFlowTable pitches={pitches} onRefresh={fetchData} />
+          </TabsContent>
+
+          {/* CRM Tab */}
+          <TabsContent value="crm">
+            <InvestorCRM />
+          </TabsContent>
+
+          {/* LP Applications Tab */}
+          <TabsContent value="lps">
             <Card>
               <CardHeader>
                 <CardTitle className="font-technical text-primary">[ LP.APPLICATIONS ]</CardTitle>
@@ -333,14 +288,14 @@ const AdminDashboard: React.FC = () => {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="font-technical">NAME</TableHead>
-                          <TableHead className="font-technical">EMAIL</TableHead>
-                          <TableHead className="font-technical">COMPANY</TableHead>
-                          <TableHead className="font-technical">INVESTMENT</TableHead>
-                          <TableHead className="font-technical">FOCUS</TableHead>
-                          <TableHead className="font-technical">DECK</TableHead>
-                          <TableHead className="font-technical">STATUS</TableHead>
-                          <TableHead className="font-technical">DATE</TableHead>
+                          <TableHead className="font-technical text-xs">NAME</TableHead>
+                          <TableHead className="font-technical text-xs">EMAIL</TableHead>
+                          <TableHead className="font-technical text-xs">COMPANY</TableHead>
+                          <TableHead className="font-technical text-xs">INVESTMENT</TableHead>
+                          <TableHead className="font-technical text-xs">FOCUS</TableHead>
+                          <TableHead className="font-technical text-xs">DECK</TableHead>
+                          <TableHead className="font-technical text-xs">STATUS</TableHead>
+                          <TableHead className="font-technical text-xs">DATE</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -357,7 +312,7 @@ const AdminDashboard: React.FC = () => {
                             <TableCell className="font-technical">{app.investment_amount || '-'}</TableCell>
                             <TableCell>
                               {app.investment_focus?.map((focus, i) => (
-                                <Badge key={i} variant="outline" className="mr-1 mb-1">{focus}</Badge>
+                                <Badge key={i} variant="outline" className="mr-1 mb-1 text-xs">{focus}</Badge>
                               )) || '-'}
                             </TableCell>
                             <TableCell>
@@ -366,7 +321,7 @@ const AdminDashboard: React.FC = () => {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => downloadPitchDeck(app.pitch_deck_url!, app.full_name)}
-                                  className="h-8"
+                                  className="h-7"
                                 >
                                   <Download className="h-3 w-3 mr-1" />
                                   Download
@@ -390,7 +345,13 @@ const AdminDashboard: React.FC = () => {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
+          {/* Industries Tab */}
+          <TabsContent value="industries">
+            <IndustryBreakdown pitches={pitches} />
+          </TabsContent>
+
+          {/* Contacts Tab */}
           <TabsContent value="contacts">
             <Card>
               <CardHeader>
@@ -405,7 +366,7 @@ const AdminDashboard: React.FC = () => {
                 ) : (
                   <div className="space-y-4">
                     {contacts.map((contact) => (
-                      <Card key={contact.id} className="border-technical-line">
+                      <Card key={contact.id} className="border-border">
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between mb-4">
                             <div>
@@ -421,9 +382,11 @@ const AdminDashboard: React.FC = () => {
                                 </span>
                               </div>
                             </div>
-                            <div className="text-xs text-muted-foreground">{formatDate(contact.created_at)}</div>
+                            <span className="text-xs text-muted-foreground font-technical">
+                              {formatDate(contact.created_at)}
+                            </span>
                           </div>
-                          <div className="bg-muted/50 p-4 rounded-lg">
+                          <div className="bg-muted/50 rounded-lg p-4">
                             <p className="text-sm whitespace-pre-wrap">{contact.message}</p>
                           </div>
                         </CardContent>
