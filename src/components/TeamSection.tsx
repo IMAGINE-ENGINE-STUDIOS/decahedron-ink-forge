@@ -19,7 +19,7 @@ const teamMembers: TeamMember[] = [
     title: 'Founder & Managing Partner',
     image: khaliaPadilla,
     linkedin: 'https://www.linkedin.com/in/khaliapadilla/',
-    imagePosition: 'object-[center_30%]',
+    imagePosition: 'object-[center_15%]',
   },
   {
     name: 'Ricardo Font',
