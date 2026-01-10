@@ -120,7 +120,7 @@ const TeamSection = () => {
                   href={member.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-10 h-10 bg-[#0A66C2] rounded-full flex items-center justify-center text-white shadow-lg opacity-0 group-hover:opacity-100 group-hover:-bottom-4 transition-all duration-300 hover:scale-110 hover:bg-[#004182]"
+                  className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-10 h-10 bg-[#0A66C2] rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-[#004182]"
                   aria-label={`${member.name}'s LinkedIn profile`}
                 >
                   <Linkedin size={18} />
