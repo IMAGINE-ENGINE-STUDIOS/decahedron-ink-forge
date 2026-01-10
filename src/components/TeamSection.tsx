@@ -10,6 +10,7 @@ interface TeamMember {
   title: string;
   image: string;
   linkedin: string;
+  imagePosition?: string;
 }
 
 const teamMembers: TeamMember[] = [
@@ -18,6 +19,7 @@ const teamMembers: TeamMember[] = [
     title: 'Founder & Managing Partner',
     image: khaliaPadilla,
     linkedin: 'https://www.linkedin.com/in/khaliapadilla/',
+    imagePosition: 'object-[center_30%]',
   },
   {
     name: 'Ricardo Font',
@@ -109,7 +111,7 @@ const TeamSection = () => {
                   <img
                     src={member.image}
                     alt={member.name}
-                    className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-700"
+                    className={`w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ${member.imagePosition || 'object-center'}`}
                   />
                 </div>
 
