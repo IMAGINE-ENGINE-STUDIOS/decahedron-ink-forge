@@ -15,8 +15,27 @@ import {
   BarChart3,
   Briefcase,
   TrendingUp,
-  Target
+  Target,
+  FileDown,
+  Trash2
 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
@@ -65,12 +84,15 @@ interface LPApplication {
   created_at: string;
 }
 
+const LP_STATUSES = ['pending', 'reviewing', 'approved', 'declined'];
+
 const AdminDashboard: React.FC = () => {
   const [pitches, setPitches] = useState<Pitch[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [lpApplications, setLpApplications] = useState<LPApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [crmStats, setCrmStats] = useState<CRMStats | null>(null);
+  const [deleteConfirmLP, setDeleteConfirmLP] = useState<LPApplication | null>(null);
   const { toast } = useToast();
   const { user, signOut } = useAuth();
   const { fetchStats, loading: crmLoading } = useDecileCRM();
@@ -115,6 +137,111 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const updateLPStatus = async (lpId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from('limited_partner_applications')
+        .update({ status: newStatus })
+        .eq('id', lpId);
+
+      if (error) throw error;
+
+      setLpApplications(prev => 
+        prev.map(lp => lp.id === lpId ? { ...lp, status: newStatus } : lp)
+      );
+
+      toast({
+        title: "Status Updated",
+        description: `Changed to ${newStatus}`,
+      });
+    } catch (error) {
+      console.error('Update error:', error);
+      toast({
+        title: "Update Failed",
+        description: "Could not update status.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteLP = async (lp: LPApplication) => {
+    try {
+      const { error } = await supabase
+        .from('limited_partner_applications')
+        .delete()
+        .eq('id', lp.id);
+
+      if (error) throw error;
+
+      setLpApplications(prev => prev.filter(l => l.id !== lp.id));
+      setDeleteConfirmLP(null);
+
+      toast({
+        title: "Application Deleted",
+        description: `${lp.full_name}'s application has been removed.`,
+      });
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast({
+        title: "Delete Failed",
+        description: "Could not delete the application.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const exportLPsToCSV = () => {
+    const headers = ['Name', 'Email', 'Phone', 'Company', 'Title', 'Investment', 'Focus', 'Status', 'Date'];
+    const rows = lpApplications.map(lp => [
+      lp.full_name,
+      lp.email,
+      lp.phone || '',
+      lp.company_name || '',
+      lp.job_title || '',
+      lp.investment_amount || '',
+      (lp.investment_focus || []).join('; '),
+      lp.status,
+      formatDate(lp.created_at),
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lp-applications-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({ title: "Exported", description: `${lpApplications.length} applications exported to CSV.` });
+  };
+
+  const exportContactsToCSV = () => {
+    const headers = ['Name', 'Email', 'Company', 'Message', 'Date'];
+    const rows = contacts.map(c => [
+      c.name,
+      c.email,
+      c.company,
+      c.message.replace(/"/g, '""'),
+      formatDate(c.created_at),
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `contacts-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({ title: "Exported", description: `${contacts.length} contacts exported to CSV.` });
+  };
+
   const downloadPitchDeck = async (pitchDeckUrl: string, name: string) => {
     try {
       const { data, error } = await supabase.storage
@@ -157,6 +284,21 @@ const AdminDashboard: React.FC = () => {
       title: "Signed Out",
       description: "You have been successfully logged out.",
     });
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'bg-amber-500/10 text-amber-700 border-amber-500/30';
+      case 'reviewing':
+        return 'bg-blue-500/10 text-blue-700 border-blue-500/30';
+      case 'approved':
+        return 'bg-green-500/10 text-green-700 border-green-500/30';
+      case 'declined':
+        return 'bg-red-500/10 text-red-700 border-red-500/30';
+      default:
+        return 'bg-muted text-muted-foreground';
+    }
   };
 
   const thisWeekCount = pitches.filter(p => 
@@ -275,7 +417,18 @@ const AdminDashboard: React.FC = () => {
           <TabsContent value="lps">
             <Card>
               <CardHeader>
-                <CardTitle className="font-technical text-primary">[ LP.APPLICATIONS ]</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="font-technical text-primary">[ LP.APPLICATIONS ]</CardTitle>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="font-technical text-xs"
+                    onClick={exportLPsToCSV}
+                  >
+                    <FileDown className="h-3 w-3 mr-1" />
+                    EXPORT CSV
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 {lpApplications.length === 0 ? (
@@ -296,11 +449,12 @@ const AdminDashboard: React.FC = () => {
                           <TableHead className="font-technical text-xs">DECK</TableHead>
                           <TableHead className="font-technical text-xs">STATUS</TableHead>
                           <TableHead className="font-technical text-xs">DATE</TableHead>
+                          <TableHead className="font-technical text-xs">ACTIONS</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {lpApplications.map((app) => (
-                          <TableRow key={app.id}>
+                          <TableRow key={app.id} className="group">
                             <TableCell className="font-medium">{app.full_name}</TableCell>
                             <TableCell>
                               <a href={`mailto:${app.email}`} className="text-primary hover:underline flex items-center gap-1">
@@ -331,11 +485,33 @@ const AdminDashboard: React.FC = () => {
                               )}
                             </TableCell>
                             <TableCell>
-                              <Badge variant={app.status === 'pending' ? 'default' : 'secondary'}>
-                                {app.status}
-                              </Badge>
+                              <Select
+                                value={app.status}
+                                onValueChange={(value) => updateLPStatus(app.id, value)}
+                              >
+                                <SelectTrigger className={`w-28 h-7 text-xs ${getStatusColor(app.status)}`}>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {LP_STATUSES.map((status) => (
+                                    <SelectItem key={status} value={status}>
+                                      {status}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
                             </TableCell>
                             <TableCell className="text-xs text-muted-foreground">{formatDate(app.created_at)}</TableCell>
+                            <TableCell>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-7 w-7 p-0 text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => setDeleteConfirmLP(app)}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -355,7 +531,18 @@ const AdminDashboard: React.FC = () => {
           <TabsContent value="contacts">
             <Card>
               <CardHeader>
-                <CardTitle className="font-technical text-primary">[ CONTACT.INQUIRIES ]</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="font-technical text-primary">[ CONTACT.INQUIRIES ]</CardTitle>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="font-technical text-xs"
+                    onClick={exportContactsToCSV}
+                  >
+                    <FileDown className="h-3 w-3 mr-1" />
+                    EXPORT CSV
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 {contacts.length === 0 ? (
@@ -399,6 +586,27 @@ const AdminDashboard: React.FC = () => {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* Delete LP Confirmation Dialog */}
+      <AlertDialog open={!!deleteConfirmLP} onOpenChange={() => setDeleteConfirmLP(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {deleteConfirmLP?.full_name}'s application?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the LP application.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => deleteConfirmLP && deleteLP(deleteConfirmLP)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
