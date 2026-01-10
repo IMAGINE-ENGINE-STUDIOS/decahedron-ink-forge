@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ChevronLeft, ChevronRight, Download, Maximize2, Minimize2 } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Download, Maximize2, Minimize2, Play, Pause } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import MatrixSymbols from '@/components/MatrixSymbols';
 
 import slide1 from '@/assets/deck/slide-1.jpg';
 import slide2 from '@/assets/deck/slide-2.jpg';
@@ -25,26 +24,31 @@ const Deck = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isAutoPlay, setIsAutoPlay] = useState(false);
+  const [direction, setDirection] = useState<'next' | 'prev'>('next');
 
-  const goToSlide = useCallback((index: number) => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
+  const goToSlide = useCallback((index: number, dir: 'next' | 'prev' = 'next') => {
+    setDirection(dir);
     setCurrentSlide(index);
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning]);
+  }, []);
 
   const nextSlide = useCallback(() => {
-    goToSlide((currentSlide + 1) % slides.length);
+    goToSlide((currentSlide + 1) % slides.length, 'next');
   }, [currentSlide, goToSlide]);
 
   const prevSlide = useCallback(() => {
-    goToSlide((currentSlide - 1 + slides.length) % slides.length);
+    goToSlide((currentSlide - 1 + slides.length) % slides.length, 'prev');
   }, [currentSlide, goToSlide]);
 
-  const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
-  };
+  const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
+  const toggleAutoPlay = () => setIsAutoPlay(!isAutoPlay);
+
+  // Auto-play
+  useEffect(() => {
+    if (!isAutoPlay) return;
+    const interval = setInterval(nextSlide, 5000);
+    return () => clearInterval(interval);
+  }, [isAutoPlay, nextSlide]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -66,133 +70,213 @@ const Deck = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextSlide, prevSlide, isFullscreen]);
 
-  return (
-    <div className={`min-h-screen bg-background relative overflow-hidden flex flex-col ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
-      {/* Matrix Animation Background */}
-      {!isFullscreen && <MatrixSymbols />}
+  const progress = ((currentSlide + 1) / slides.length) * 100;
 
-      {/* Technical Grid */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <defs>
-            <pattern id="deck-grid" width="4" height="4" patternUnits="userSpaceOnUse">
-              <path d="M 4 0 L 0 0 0 4" fill="none" stroke="hsl(var(--technical-line))" strokeWidth="0.03" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#deck-grid)" />
-        </svg>
+  return (
+    <div className={`min-h-screen bg-black relative overflow-hidden flex flex-col ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
+      {/* Animated Background */}
+      <div className="absolute inset-0">
+        {/* Gradient orbs */}
+        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-geometric-primary/20 rounded-full blur-[100px] animate-[float_8s_ease-in-out_infinite]" />
+        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-geometric-secondary/20 rounded-full blur-[100px] animate-[float_10s_ease-in-out_infinite_reverse]" />
+        
+        {/* Grid overlay */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `
+              linear-gradient(to right, hsl(var(--geometric-primary) / 0.1) 1px, transparent 1px),
+              linear-gradient(to bottom, hsl(var(--geometric-primary) / 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px'
+          }} />
+        </div>
+
+        {/* Scanning line */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div 
+            className="absolute w-full h-px bg-gradient-to-r from-transparent via-geometric-primary to-transparent animate-[scan_4s_linear_infinite]"
+            style={{ top: '50%' }}
+          />
+        </div>
       </div>
 
-      {/* Animated Corner Elements */}
-      {!isFullscreen && (
-        <>
-          <div className="absolute top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-geometric-primary/40 animate-[geometric-pulse_3s_ease-in-out_infinite]" />
-          <div className="absolute top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-geometric-secondary/40 animate-[geometric-pulse_3s_ease-in-out_infinite_0.5s]" />
-          <div className="absolute bottom-4 left-4 w-16 h-16 border-l-2 border-b-2 border-geometric-secondary/40 animate-[geometric-pulse_3s_ease-in-out_infinite_1s]" />
-          <div className="absolute bottom-4 right-4 w-16 h-16 border-r-2 border-b-2 border-geometric-primary/40 animate-[geometric-pulse_3s_ease-in-out_infinite_1.5s]" />
-        </>
-      )}
+      {/* Progress Bar - Top */}
+      <div className="relative z-30 h-1 bg-white/10">
+        <div 
+          className="h-full bg-gradient-to-r from-geometric-primary via-geometric-secondary to-geometric-primary transition-all duration-500 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+        <div 
+          className="absolute top-0 h-full w-20 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-[shimmer_2s_infinite]"
+          style={{ left: `${progress - 5}%` }}
+        />
+      </div>
 
       {/* Navigation Header */}
-      <header className={`relative z-20 p-4 md:p-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-background/80 backdrop-blur-sm border-b border-technical-line/20 ${isFullscreen ? 'absolute top-0 left-0 right-0' : ''}`}>
+      <header className={`relative z-20 px-4 md:px-8 py-4 flex justify-between items-center ${isFullscreen ? 'absolute top-1 left-0 right-0' : ''}`}>
         <Button
           variant="ghost"
           onClick={() => navigate('/')}
-          className="font-technical text-xs tracking-wider uppercase hover:bg-technical-highlight/10"
+          className="font-technical text-xs tracking-wider uppercase text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/10"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
+          Exit
         </Button>
 
-        <div className="font-technical text-xs text-geometric-secondary tracking-widest">
-          SLIDE {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+        {/* Center info */}
+        <div className="hidden md:flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-geometric-primary animate-pulse" />
+            <span className="font-technical text-xs text-white/50 tracking-widest">DECAHEDRON VENTURES</span>
+          </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex items-center gap-2">
           <Button
-            variant="outline"
-            size="sm"
-            onClick={toggleFullscreen}
-            className="font-technical text-xs tracking-wider uppercase border-technical-line hover:bg-technical-highlight/10"
+            variant="ghost"
+            size="icon"
+            onClick={toggleAutoPlay}
+            className={`w-10 h-10 rounded-full border backdrop-blur-sm transition-all ${
+              isAutoPlay 
+                ? 'border-geometric-primary bg-geometric-primary/20 text-geometric-primary' 
+                : 'border-white/20 text-white/70 hover:text-white hover:bg-white/10'
+            }`}
           >
-            {isFullscreen ? <Minimize2 className="mr-2 h-4 w-4" /> : <Maximize2 className="mr-2 h-4 w-4" />}
-            {isFullscreen ? 'Exit' : 'Fullscreen'}
+            {isAutoPlay ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
-          <a href="/Decahedron_Ventures_Fund_I_Deck.pdf" download className="inline-flex">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleFullscreen}
+            className="w-10 h-10 rounded-full border border-white/20 text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm"
+          >
+            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+          </Button>
+          <a href="/Decahedron_Ventures_Fund_I_Deck.pdf" download>
             <Button
-              size="sm"
-              className="font-technical text-xs tracking-wider uppercase bg-geometric-primary hover:bg-geometric-primary/80"
+              variant="ghost"
+              size="icon"
+              className="w-10 h-10 rounded-full border border-white/20 text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm"
             >
-              <Download className="mr-2 h-4 w-4" />
-              PDF
+              <Download className="h-4 w-4" />
             </Button>
           </a>
         </div>
       </header>
 
-      {/* Slide Viewer */}
-      <main className={`relative z-10 flex-1 flex items-center justify-center p-4 md:p-8 ${isFullscreen ? 'pt-20' : ''}`}>
+      {/* Main Slide Area */}
+      <main className={`relative z-10 flex-1 flex items-center justify-center px-4 md:px-20 py-4 ${isFullscreen ? 'pt-16' : ''}`}>
         {/* Previous Button */}
-        <Button
-          variant="ghost"
-          size="lg"
+        <button
           onClick={prevSlide}
-          disabled={isTransitioning}
-          className="absolute left-2 md:left-6 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full border border-technical-line/40 hover:bg-technical-highlight/10 hover:border-geometric-primary transition-all duration-300"
+          className="absolute left-2 md:left-8 z-20 group"
         >
-          <ChevronLeft className="h-6 w-6 md:h-8 md:w-8" />
-        </Button>
+          <div className="relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full border border-white/20 group-hover:border-geometric-primary/60 transition-all duration-300" />
+            <div className="absolute inset-1 rounded-full bg-white/5 group-hover:bg-geometric-primary/10 backdrop-blur-sm transition-all duration-300" />
+            <ChevronLeft className="relative h-6 w-6 md:h-8 md:w-8 text-white/60 group-hover:text-white transition-colors" />
+          </div>
+        </button>
 
         {/* Slide Container */}
-        <div className="relative w-full max-w-5xl mx-auto aspect-video">
-          {/* Slide Frame */}
-          <div className="absolute inset-0 border-2 border-technical-line/30 rounded-lg overflow-hidden shadow-2xl bg-black">
+        <div className="relative w-full max-w-6xl mx-auto">
+          {/* Glow effect */}
+          <div className="absolute -inset-4 bg-gradient-to-r from-geometric-primary/20 via-transparent to-geometric-secondary/20 rounded-2xl blur-xl opacity-50" />
+          
+          {/* Slide frame */}
+          <div className="relative aspect-video rounded-lg overflow-hidden border border-white/20 shadow-2xl">
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-geometric-primary z-10" />
+            <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-geometric-primary z-10" />
+            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-geometric-secondary z-10" />
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-geometric-secondary z-10" />
+            
+            {/* Slide image */}
             <img
+              key={currentSlide}
               src={slides[currentSlide]}
               alt={`Slide ${currentSlide + 1}`}
-              className={`w-full h-full object-contain transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}
+              className="w-full h-full object-contain bg-black animate-fade-in"
             />
-          </div>
 
-          {/* Decorative corners */}
-          <div className="absolute -top-2 -left-2 w-6 h-6 border-l-2 border-t-2 border-geometric-primary" />
-          <div className="absolute -top-2 -right-2 w-6 h-6 border-r-2 border-t-2 border-geometric-primary" />
-          <div className="absolute -bottom-2 -left-2 w-6 h-6 border-l-2 border-b-2 border-geometric-primary" />
-          <div className="absolute -bottom-2 -right-2 w-6 h-6 border-r-2 border-b-2 border-geometric-primary" />
+            {/* Slide number overlay */}
+            <div className="absolute bottom-4 right-4 font-technical text-xs text-white/40 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full border border-white/10">
+              {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+            </div>
+          </div>
         </div>
 
         {/* Next Button */}
-        <Button
-          variant="ghost"
-          size="lg"
+        <button
           onClick={nextSlide}
-          disabled={isTransitioning}
-          className="absolute right-2 md:right-6 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full border border-technical-line/40 hover:bg-technical-highlight/10 hover:border-geometric-primary transition-all duration-300"
+          className="absolute right-2 md:right-8 z-20 group"
         >
-          <ChevronRight className="h-6 w-6 md:h-8 md:w-8" />
-        </Button>
+          <div className="relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full border border-white/20 group-hover:border-geometric-primary/60 transition-all duration-300" />
+            <div className="absolute inset-1 rounded-full bg-white/5 group-hover:bg-geometric-primary/10 backdrop-blur-sm transition-all duration-300" />
+            <ChevronRight className="relative h-6 w-6 md:h-8 md:w-8 text-white/60 group-hover:text-white transition-colors" />
+          </div>
+        </button>
       </main>
 
-      {/* Slide Thumbnails / Dots */}
-      <footer className={`relative z-10 p-4 md:p-6 bg-background/80 backdrop-blur-sm border-t border-technical-line/20 ${isFullscreen ? 'absolute bottom-0 left-0 right-0' : ''}`}>
-        <div className="flex justify-center items-center gap-2 md:gap-3">
-          {slides.map((_, index) => (
+      {/* Bottom Navigation */}
+      <footer className={`relative z-20 px-4 md:px-8 py-4 ${isFullscreen ? 'absolute bottom-0 left-0 right-0' : ''}`}>
+        {/* Thumbnail strip */}
+        <div className="flex justify-center items-center gap-1 md:gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          {slides.map((slide, index) => (
             <button
               key={index}
-              onClick={() => goToSlide(index)}
-              className={`relative transition-all duration-300 ${
+              onClick={() => goToSlide(index, index > currentSlide ? 'next' : 'prev')}
+              className={`relative flex-shrink-0 transition-all duration-300 rounded overflow-hidden ${
                 index === currentSlide
-                  ? 'w-10 md:w-12 h-2 bg-geometric-primary rounded-full'
-                  : 'w-2 h-2 bg-technical-line/40 hover:bg-technical-line/70 rounded-full'
+                  ? 'w-16 md:w-24 h-10 md:h-14 ring-2 ring-geometric-primary ring-offset-2 ring-offset-black'
+                  : 'w-10 md:w-16 h-6 md:h-10 opacity-40 hover:opacity-70 grayscale hover:grayscale-0'
               }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
+            >
+              <img
+                src={slide}
+                alt={`Thumbnail ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+              {index === currentSlide && (
+                <div className="absolute inset-0 bg-gradient-to-t from-geometric-primary/30 to-transparent" />
+              )}
+            </button>
           ))}
         </div>
-        <div className="text-center mt-3 font-technical text-[10px] text-geometric-secondary/50 tracking-widest">
-          USE ← → ARROWS OR CLICK TO NAVIGATE | PRESS F FOR FULLSCREEN
+
+        {/* Keyboard hints */}
+        <div className="flex justify-center gap-4 mt-3">
+          <div className="flex items-center gap-2 text-white/30 text-[10px] font-technical tracking-wider">
+            <kbd className="px-2 py-1 bg-white/10 rounded border border-white/20">←</kbd>
+            <kbd className="px-2 py-1 bg-white/10 rounded border border-white/20">→</kbd>
+            <span>NAVIGATE</span>
+          </div>
+          <div className="flex items-center gap-2 text-white/30 text-[10px] font-technical tracking-wider">
+            <kbd className="px-2 py-1 bg-white/10 rounded border border-white/20">F</kbd>
+            <span>FULLSCREEN</span>
+          </div>
         </div>
       </footer>
+
+      <style>{`
+        @keyframes scan {
+          0% { transform: translateY(-50vh); opacity: 0; }
+          50% { opacity: 1; }
+          100% { transform: translateY(50vh); opacity: 0; }
+        }
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 };
