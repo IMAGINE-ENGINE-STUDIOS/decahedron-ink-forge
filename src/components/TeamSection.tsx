@@ -23,7 +23,7 @@ const teamMembers: TeamMember[] = [
   },
   {
     name: 'Ricardo Font',
-    title: 'Managing Partner',
+    title: 'Founder & Managing Partner',
     image: ricardoFont,
     linkedin: 'https://www.linkedin.com/in/ricardo-font-952034248/',
   },
