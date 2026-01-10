@@ -67,22 +67,10 @@ const HeroSection: React.FC = () => {
           </div>
 
           {/* Main heading */}
-          <h1 className="font-display text-3xl sm:text-5xl md:text-7xl xl:text-8xl font-black text-foreground mb-4 sm:mb-6 leading-[0.85] tracking-tight">
+          <h1 className="font-display text-3xl sm:text-5xl md:text-7xl xl:text-8xl font-black text-foreground mb-6 sm:mb-8 leading-[0.85] tracking-tight">
             DECAHEDRON
             <span className="block text-technical-highlight mt-1 sm:mt-2">VENTURES</span>
           </h1>
-
-          {/* View Deck Button */}
-          <div className="mb-6 sm:mb-8">
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => window.location.href = '/deck'}
-              className="font-technical border-2 border-geometric-primary text-geometric-primary hover:bg-geometric-primary hover:text-primary-foreground px-8 py-3 text-xs sm:text-sm font-medium tracking-wider uppercase transition-all duration-300 animate-[geometric-pulse_3s_ease-in-out_infinite]"
-            >
-              [ VIEW FUND DECK ]
-            </Button>
-          </div>
 
           {/* Technical Subtitle */}
           <div className="font-technical text-sm sm:text-base md:text-lg text-geometric-secondary mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed tracking-wide">
@@ -128,6 +116,15 @@ const HeroSection: React.FC = () => {
 
           {/* Technical Action Interface */}
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => window.location.href = '/deck'}
+              className="group relative w-full sm:w-auto font-technical border-2 border-geometric-primary text-geometric-primary hover:bg-geometric-primary hover:text-primary-foreground px-6 sm:px-10 py-4 sm:py-5 text-xs sm:text-sm font-medium tracking-wider uppercase transition-all duration-300 overflow-hidden"
+            >
+              <span className="relative z-10">[ FUND DECK ]</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-geometric-primary/0 via-geometric-primary/20 to-geometric-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+            </Button>
             <Button 
               variant="outline" 
               size="lg"
