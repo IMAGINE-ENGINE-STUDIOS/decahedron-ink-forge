@@ -92,6 +92,38 @@ export type Database = {
         }
         Relationships: []
       }
+      pitch_notes: {
+        Row: {
+          created_at: string
+          id: string
+          note: string
+          pitch_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note: string
+          pitch_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string
+          pitch_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pitch_notes_pitch_id_fkey"
+            columns: ["pitch_id"]
+            isOneToOne: false
+            referencedRelation: "pitches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pitches: {
         Row: {
           company_name: string
