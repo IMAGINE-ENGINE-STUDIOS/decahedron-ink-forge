@@ -3,33 +3,33 @@ import InvestmentArea from './InvestmentArea';
 import GeometricPattern from './GeometricPattern';
 const InvestmentAreasSection: React.FC = () => {
   const investmentAreas = [{
-    title: "Technology & Compute",
-    description: "Advanced software, AI, autonomy, photonics, and emerging compute architectures that underpin next-generation digital and physical infrastructure.",
+    title: "Technology",
+    description: "Cutting-edge software, AI, blockchain, and emerging technologies that redefine digital infrastructure and human-computer interaction.",
     icon: "technology" as const,
     pattern: "dodecahedron" as const
   }, {
-    title: "Space Systems",
-    description: "Orbital and ground-based space infrastructure, satellite systems, launch platforms, and space-enabled communications that extend global connectivity and operational reach.",
+    title: "Space",
+    description: "Space exploration, satellite technology, launch systems, and commercial space applications that expand humanity's reach beyond Earth.",
     icon: "space" as const,
     pattern: "spiral" as const
   }, {
-    title: "Energy Systems",
-    description: "Next-generation energy generation, storage, transmission, and grid technologies designed for resilience, efficiency, and long-term sustainability.",
+    title: "Energy",
+    description: "Renewable energy systems, energy storage, smart grids, and breakthrough technologies for sustainable power generation.",
     icon: "energy" as const,
     pattern: "cube-array" as const
   }, {
-    title: "Smart Infrastructure",
-    description: "Technologies enabling intelligent cities, mobility systems, industrial automation, sensing, and connected environments that operate at population scale.",
+    title: "Smart Cities",
+    description: "Urban planning technologies, IoT infrastructure, transportation systems, and solutions that make cities more livable and efficient.",
     icon: "smart-cities" as const,
     pattern: "flower-of-life" as const
   }, {
-    title: "Core Infrastructure",
-    description: "Foundational physical and digital infrastructure — from data transport and compute to manufacturing and logistics — that supports modern economies.",
+    title: "Infrastructure",
+    description: "Physical and digital infrastructure investments that form the backbone of modern society and economic growth.",
     icon: "infrastructure" as const,
     pattern: "dodecahedron" as const
   }, {
-    title: "Sustainability & Resilience",
-    description: "Technologies that enhance environmental sustainability, resource efficiency, and system resilience across industrial and societal infrastructure.",
+    title: "Sustainability",
+    description: "Environmental technologies, carbon capture, waste management, and solutions for a more sustainable future.",
     icon: "sustainability" as const,
     pattern: "spiral" as const
   }];
@@ -45,7 +45,7 @@ const InvestmentAreasSection: React.FC = () => {
             Investment Focus Areas
           </h2>
           <div className="w-24 sm:w-32 h-px bg-geometric-primary mx-auto mb-6 sm:mb-8"></div>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">We invest in interconnected technology domains where precision engineering, system integration, and long-term deployment matter most.</p>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">Six interconnected sectors where precision meets transformative innovation, creating a portfolio designed for exponential impact and sustainable growth.</p>
         </div>
 
         {/* Investment areas grid */}
