@@ -10,14 +10,16 @@ import {
   Target,
   Briefcase
 } from 'lucide-react';
-import type { CRMStats } from '@/hooks/useDecileCRM';
+import type { FundStats } from '@/hooks/useFundCRM';
 
 interface DashboardOverviewProps {
   pitchCount: number;
   lpCount: number;
   contactCount: number;
   thisWeekCount: number;
-  crmStats: CRMStats | null;
+  fundStats: FundStats | null;
+  activeDeals: number;
+  portfolioCount: number;
   crmLoading: boolean;
 }
 
@@ -73,7 +75,9 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   lpCount,
   contactCount,
   thisWeekCount,
-  crmStats,
+  fundStats,
+  activeDeals,
+  portfolioCount,
   crmLoading,
 }) => {
   return (
@@ -96,14 +100,14 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         />
         <StatCard
           label="Total AUM"
-          value={crmLoading ? '...' : (crmStats?.totalAUM || '$0')}
+          value={crmLoading ? '...' : (fundStats?.total_aum || '$0')}
           icon={<DollarSign className="h-5 w-5 text-primary" />}
           variant="success"
           subLabel="Under management"
         />
         <StatCard
           label="Active Deals"
-          value={crmLoading ? '...' : (crmStats?.activeDeals || 0)}
+          value={crmLoading ? '...' : activeDeals}
           icon={<Target className="h-5 w-5 text-primary" />}
           subLabel="In pipeline"
         />
@@ -113,24 +117,24 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Portfolio"
-          value={crmLoading ? '...' : (crmStats?.portfolioCompanies || 0)}
+          value={crmLoading ? '...' : portfolioCount}
           icon={<Briefcase className="h-5 w-5 text-primary" />}
           subLabel="Companies"
         />
         <StatCard
           label="Avg Check Size"
-          value={crmLoading ? '...' : (crmStats?.avgCheckSize || '$0')}
+          value={crmLoading ? '...' : (fundStats?.avg_check_size || '$0')}
           icon={<Activity className="h-5 w-5 text-primary" />}
         />
         <StatCard
           label="IRR"
-          value={crmLoading ? '...' : (crmStats?.irr || '0%')}
+          value={crmLoading ? '...' : (fundStats?.irr || '0%')}
           icon={<TrendingUp className="h-5 w-5 text-green-600" />}
           variant="success"
         />
         <StatCard
           label="TVPI"
-          value={crmLoading ? '...' : (crmStats?.tvpi || '0x')}
+          value={crmLoading ? '...' : (fundStats?.tvpi || '1.0x')}
           icon={<TrendingUp className="h-5 w-5 text-primary" />}
         />
       </div>

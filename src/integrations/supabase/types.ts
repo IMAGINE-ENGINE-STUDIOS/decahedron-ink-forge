@@ -44,6 +44,117 @@ export type Database = {
         }
         Relationships: []
       }
+      deals: {
+        Row: {
+          amount: string
+          company: string
+          created_at: string
+          id: string
+          lead_partner: string | null
+          notes: string | null
+          probability: number
+          sector: string
+          stage: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: string
+          company: string
+          created_at?: string
+          id?: string
+          lead_partner?: string | null
+          notes?: string | null
+          probability?: number
+          sector: string
+          stage?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: string
+          company?: string
+          created_at?: string
+          id?: string
+          lead_partner?: string | null
+          notes?: string | null
+          probability?: number
+          sector?: string
+          stage?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      fund_stats: {
+        Row: {
+          avg_check_size: string
+          fund_name: string | null
+          id: string
+          irr: string
+          total_aum: string
+          tvpi: string
+          updated_at: string
+          vintage_year: number | null
+        }
+        Insert: {
+          avg_check_size?: string
+          fund_name?: string | null
+          id?: string
+          irr?: string
+          total_aum?: string
+          tvpi?: string
+          updated_at?: string
+          vintage_year?: number | null
+        }
+        Update: {
+          avg_check_size?: string
+          fund_name?: string | null
+          id?: string
+          irr?: string
+          total_aum?: string
+          tvpi?: string
+          updated_at?: string
+          vintage_year?: number | null
+        }
+        Relationships: []
+      }
+      investors: {
+        Row: {
+          commitment: string
+          created_at: string
+          email: string | null
+          focus: string[] | null
+          id: string
+          last_contact: string | null
+          name: string
+          notes: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          commitment?: string
+          created_at?: string
+          email?: string | null
+          focus?: string[] | null
+          id?: string
+          last_contact?: string | null
+          name: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          commitment?: string
+          created_at?: string
+          email?: string | null
+          focus?: string[] | null
+          id?: string
+          last_contact?: string | null
+          name?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       limited_partner_applications: {
         Row: {
           company_name: string | null
@@ -166,6 +277,48 @@ export type Database = {
           stage?: string
           status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      portfolio_companies: {
+        Row: {
+          created_at: string
+          id: string
+          invested: string
+          investment_date: string | null
+          multiple: string
+          name: string
+          notes: string | null
+          sector: string | null
+          status: string
+          updated_at: string
+          valuation: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invested?: string
+          investment_date?: string | null
+          multiple?: string
+          name: string
+          notes?: string | null
+          sector?: string | null
+          status?: string
+          updated_at?: string
+          valuation?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invested?: string
+          investment_date?: string | null
+          multiple?: string
+          name?: string
+          notes?: string | null
+          sector?: string | null
+          status?: string
+          updated_at?: string
+          valuation?: string
         }
         Relationships: []
       }
