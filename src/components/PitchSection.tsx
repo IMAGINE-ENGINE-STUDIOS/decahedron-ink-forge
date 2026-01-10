@@ -237,7 +237,6 @@ const PitchSection: React.FC = () => {
                         <SelectValue placeholder="Select stage" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="seed">Seed</SelectItem>
                         <SelectItem value="series-a">Series A</SelectItem>
                         <SelectItem value="series-b">Series B</SelectItem>
                         <SelectItem value="series-c">Series C+</SelectItem>
