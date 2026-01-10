@@ -21,7 +21,15 @@ const AboutSection: React.FC = () => {
             Our Mission
           </h2>
           <div className="w-16 sm:w-24 h-px bg-geometric-primary mx-auto mb-6 sm:mb-8"></div>
-          <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">At Decahedron Ventures, we believe in the power of mathematical precision to unlock infinite possibilities. Inspired by the ten faces of a decahedron, our investment philosophy is built on identifying ten or more transformative factors within startups—signals that highlight innovations positioned to deliver exponential growth.</p>
+          <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed mb-6">
+            At Decahedron Ventures, we invest with precision in frontier technologies that move energy, data, and intelligence across Earth and orbit.
+          </p>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-6">
+            Inspired by the geometric rigor of the decahedron, our investment philosophy is built on identifying multiple, reinforcing signals within companies — technical, commercial, and systemic — that indicate the potential to build durable, scalable, infrastructure-grade businesses.
+          </p>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+            We believe that transformational outcomes are not driven by hype, but by disciplined alignment between technology, deployment reality, and capital timing.
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto">
@@ -35,7 +43,17 @@ const AboutSection: React.FC = () => {
                   <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-3 sm:mb-4">
                     Investment Philosophy
                   </h3>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">We invest in early and growth-stage companies that demonstrate strong differentiation factors and breakthrough innovation, with the potential to reshape and transform entire industries</p>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-3">
+                    We invest in early and growth-stage frontier technology companies where:
+                  </p>
+                  <ul className="text-sm sm:text-base text-muted-foreground leading-relaxed space-y-2 list-disc list-inside">
+                    <li>Technical feasibility has been meaningfully validated</li>
+                    <li>Differentiation is rooted in architecture, performance, or system-level advantage</li>
+                    <li>There is a credible path from prototype to real-world deployment</li>
+                  </ul>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mt-3">
+                    Our focus is on companies capable of reshaping industries through step-change advances in how critical systems are built, operated, and scaled.
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -51,7 +69,12 @@ const AboutSection: React.FC = () => {
                   <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-3 sm:mb-4">
                     Global Impact
                   </h3>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">Investing in companies across 4 continents  building the infrastructure of tomorrow— from sustainable energy systems to space exploration technologies that will benefit humanity for generations to come.</p>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-3">
+                    Decahedron Ventures invests globally, supporting companies across multiple continents that are building the foundational technologies of the next industrial era.
+                  </p>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                    Our portfolio companies operate at the intersection of infrastructure, sustainability, and advanced systems, developing solutions that address long-term challenges in energy, communications, mobility, and space — with impact measured in decades, not quarters.
+                  </p>
                 </div>
               </div>
             </CardContent>
