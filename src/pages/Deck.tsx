@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ChevronLeft, ChevronRight, Download, Maximize2, Minimize2, Play, Pause } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { ArrowLeft, ChevronLeft, ChevronRight, Download, Maximize2, Minimize2, Play, Pause, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import slide1 from '@/assets/deck/slide-1.jpg';
@@ -20,12 +21,27 @@ import slide14 from '@/assets/deck/slide-14.jpg';
 
 const slides = [slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8, slide9, slide10, slide11, slide12, slide13, slide14];
 
+const DECK_PASSWORD = 'VentureFund';
+
 const Deck = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isAutoPlay, setIsAutoPlay] = useState(false);
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === DECK_PASSWORD) {
+      setIsAuthenticated(true);
+      setError('');
+    } else {
+      setError('Incorrect password');
+    }
+  };
 
   const goToSlide = useCallback((index: number, dir: 'next' | 'prev' = 'next') => {
     setDirection(dir);
@@ -52,6 +68,8 @@ const Deck = () => {
 
   // Keyboard navigation
   useEffect(() => {
+    if (!isAuthenticated) return;
+    
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' || e.key === ' ') {
         e.preventDefault();
@@ -68,9 +86,91 @@ const Deck = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [nextSlide, prevSlide, isFullscreen]);
+  }, [nextSlide, prevSlide, isFullscreen, isAuthenticated]);
 
   const progress = ((currentSlide + 1) / slides.length) * 100;
+
+  // Password Gate
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center">
+        {/* Animated Background */}
+        <div className="absolute inset-0">
+          {/* Gradient orbs */}
+          <div className="absolute top-1/4 -left-32 w-96 h-96 bg-geometric-primary/20 rounded-full blur-[100px] animate-[float_8s_ease-in-out_infinite]" />
+          <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-geometric-secondary/20 rounded-full blur-[100px] animate-[float_10s_ease-in-out_infinite_reverse]" />
+          
+          {/* Grid overlay */}
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `
+                linear-gradient(to right, hsl(var(--geometric-primary) / 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, hsl(var(--geometric-primary) / 0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '60px 60px'
+            }} />
+          </div>
+        </div>
+
+        {/* Password Form */}
+        <div className="relative z-10 w-full max-w-md mx-4">
+          <div className="relative">
+            {/* Glow effect */}
+            <div className="absolute -inset-4 bg-gradient-to-r from-geometric-primary/20 via-transparent to-geometric-secondary/20 rounded-2xl blur-xl opacity-50" />
+            
+            {/* Form container */}
+            <div className="relative bg-black/50 backdrop-blur-xl border border-white/20 rounded-xl p-8">
+              {/* Corner accents */}
+              <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-geometric-primary" />
+              <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-geometric-primary" />
+              <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-geometric-secondary" />
+              <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-geometric-secondary" />
+
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full border border-white/20 bg-white/5 mb-4">
+                  <Lock className="w-8 h-8 text-geometric-primary" />
+                </div>
+                <h1 className="font-technical text-xs tracking-[0.3em] text-white/50 mb-2">[ PROTECTED.CONTENT ]</h1>
+                <h2 className="font-display text-2xl text-white">Fund I Pitch Deck</h2>
+              </div>
+
+              <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                <div>
+                  <Input
+                    type="password"
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-white/5 border-white/20 text-white placeholder:text-white/40 focus:border-geometric-primary focus:ring-geometric-primary/20"
+                  />
+                  {error && (
+                    <p className="text-red-400 text-sm mt-2 font-technical">{error}</p>
+                  )}
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-geometric-primary to-geometric-secondary hover:opacity-90 text-white font-technical tracking-wider"
+                >
+                  Access Deck
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <Button
+                  variant="ghost"
+                  onClick={() => navigate('/')}
+                  className="text-white/50 hover:text-white text-xs font-technical tracking-wider"
+                >
+                  <ArrowLeft className="mr-2 h-3 w-3" />
+                  Back to Home
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen bg-black relative overflow-hidden flex flex-col ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
