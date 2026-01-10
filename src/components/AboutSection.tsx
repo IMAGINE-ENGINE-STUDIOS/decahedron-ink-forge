@@ -35,7 +35,7 @@ const AboutSection: React.FC = () => {
                   <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-3 sm:mb-4">
                     Investment Philosophy
                   </h3>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">We invest in early and growth-stage companies that demonstrate strong differentiation factors and breakthrough innovation, with the potential to reshape and transform entire industries</p>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">We invest exclusively in growth-stage companies that demonstrate strong differentiation factors and breakthrough innovation, with the potential to reshape and transform entire industries</p>
                 </div>
               </div>
             </CardContent>
