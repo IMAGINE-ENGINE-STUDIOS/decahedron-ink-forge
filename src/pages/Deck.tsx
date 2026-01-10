@@ -11,8 +11,15 @@ import slide4 from '@/assets/deck/slide-4.jpg';
 import slide5 from '@/assets/deck/slide-5.jpg';
 import slide6 from '@/assets/deck/slide-6.jpg';
 import slide7 from '@/assets/deck/slide-7.jpg';
+import slide8 from '@/assets/deck/slide-8.jpg';
+import slide9 from '@/assets/deck/slide-9.jpg';
+import slide10 from '@/assets/deck/slide-10.jpg';
+import slide11 from '@/assets/deck/slide-11.jpg';
+import slide12 from '@/assets/deck/slide-12.jpg';
+import slide13 from '@/assets/deck/slide-13.jpg';
+import slide14 from '@/assets/deck/slide-14.jpg';
 
-const slides = [slide1, slide2, slide3, slide4, slide5, slide6, slide7];
+const slides = [slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8, slide9, slide10, slide11, slide12, slide13, slide14];
 
 const Deck = () => {
   const navigate = useNavigate();
