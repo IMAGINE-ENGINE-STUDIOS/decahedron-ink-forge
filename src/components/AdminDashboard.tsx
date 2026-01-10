@@ -39,7 +39,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { useDecileCRM, type CRMStats } from '@/hooks/useDecileCRM';
+import { useFundCRM, type FundStats } from '@/hooks/useFundCRM';
 import { DashboardOverview } from '@/components/admin/DashboardOverview';
 import { AnalyticsCharts } from '@/components/admin/AnalyticsCharts';
 import { DealFlowTable } from '@/components/admin/DealFlowTable';
@@ -91,11 +91,13 @@ const AdminDashboard: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [lpApplications, setLpApplications] = useState<LPApplication[]>([]);
   const [loading, setLoading] = useState(true);
-  const [crmStats, setCrmStats] = useState<CRMStats | null>(null);
+  const [fundStats, setFundStats] = useState<FundStats | null>(null);
+  const [activeDeals, setActiveDeals] = useState(0);
+  const [portfolioCount, setPortfolioCount] = useState(0);
   const [deleteConfirmLP, setDeleteConfirmLP] = useState<LPApplication | null>(null);
   const { toast } = useToast();
   const { user, signOut } = useAuth();
-  const { fetchStats, loading: crmLoading } = useDecileCRM();
+  const { fetchFundStats, fetchDeals, fetchPortfolio, loading: crmLoading } = useFundCRM();
 
   useEffect(() => {
     fetchData();
@@ -103,8 +105,14 @@ const AdminDashboard: React.FC = () => {
   }, []);
 
   const loadCRMStats = async () => {
-    const stats = await fetchStats();
-    if (stats) setCrmStats(stats);
+    const [stats, deals, portfolio] = await Promise.all([
+      fetchFundStats(),
+      fetchDeals(),
+      fetchPortfolio(),
+    ]);
+    if (stats) setFundStats(stats);
+    setActiveDeals(deals.filter(d => !['passed', 'portfolio'].includes(d.stage.toLowerCase())).length);
+    setPortfolioCount(portfolio.filter(p => p.status === 'active').length);
   };
 
   const fetchData = async () => {
@@ -365,7 +373,9 @@ const AdminDashboard: React.FC = () => {
           lpCount={lpApplications.length}
           contactCount={contacts.length}
           thisWeekCount={thisWeekCount}
-          crmStats={crmStats}
+          fundStats={fundStats}
+          activeDeals={activeDeals}
+          portfolioCount={portfolioCount}
           crmLoading={crmLoading}
         />
 
