@@ -67,10 +67,22 @@ const HeroSection: React.FC = () => {
           </div>
 
           {/* Main heading */}
-          <h1 className="font-display text-3xl sm:text-5xl md:text-7xl xl:text-8xl font-black text-foreground mb-6 sm:mb-8 leading-[0.85] tracking-tight">
+          <h1 className="font-display text-3xl sm:text-5xl md:text-7xl xl:text-8xl font-black text-foreground mb-4 sm:mb-6 leading-[0.85] tracking-tight">
             DECAHEDRON
             <span className="block text-technical-highlight mt-1 sm:mt-2">VENTURES</span>
           </h1>
+
+          {/* View Deck Button */}
+          <div className="mb-6 sm:mb-8">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => window.location.href = '/deck'}
+              className="font-technical border-2 border-geometric-primary text-geometric-primary hover:bg-geometric-primary hover:text-primary-foreground px-8 py-3 text-xs sm:text-sm font-medium tracking-wider uppercase transition-all duration-300 animate-[geometric-pulse_3s_ease-in-out_infinite]"
+            >
+              [ VIEW FUND DECK ]
+            </Button>
+          </div>
 
           {/* Technical Subtitle */}
           <div className="font-technical text-sm sm:text-base md:text-lg text-geometric-secondary mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed tracking-wide">
