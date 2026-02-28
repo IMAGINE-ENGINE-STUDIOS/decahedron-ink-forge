@@ -18,8 +18,12 @@ import slide11 from '@/assets/deck/slide-11.jpg';
 import slide12 from '@/assets/deck/slide-12.jpg';
 import slide13 from '@/assets/deck/slide-13.jpg';
 import slide14 from '@/assets/deck/slide-14.jpg';
+import slide15 from '@/assets/deck/slide-15.jpg';
+import slide16 from '@/assets/deck/slide-16.jpg';
+import slide17 from '@/assets/deck/slide-17.jpg';
+import slide18 from '@/assets/deck/slide-18.jpg';
 
-const slides = [slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8, slide9, slide10, slide11, slide12, slide13, slide14];
+const slides = [slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8, slide9, slide10, slide11, slide12, slide13, slide14, slide15, slide16, slide17, slide18];
 
 const DECK_PASSWORD = 'VentureFund';
 
