@@ -2,7 +2,7 @@ import React from 'react';
 import { Linkedin } from 'lucide-react';
 import khaliaPadilla from '@/assets/team/khalia-padilla.jpg';
 import ricardoFont from '@/assets/team/ricardo-font.jpg';
-import stevenLindgren from '@/assets/team/steven-lindgren.png';
+
 import jamesStuber from '@/assets/team/james-stuber.jpg';
 
 interface TeamMember {
@@ -26,12 +26,6 @@ const teamMembers: TeamMember[] = [
     title: 'Founder & Managing Partner',
     image: ricardoFont,
     linkedin: 'https://www.linkedin.com/in/ricardo-font-952034248/',
-  },
-  {
-    name: 'Steven Lindgren',
-    title: 'Managing Director',
-    image: stevenLindgren,
-    linkedin: 'https://www.linkedin.com/in/stevenlindgren/',
   },
   {
     name: 'James Stuber',
