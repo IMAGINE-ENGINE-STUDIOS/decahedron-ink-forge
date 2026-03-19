@@ -33,6 +33,12 @@ const teamMembers: TeamMember[] = [
     image: jamesStuber,
     linkedin: 'https://www.linkedin.com/in/jamesstuber/',
   },
+  {
+    name: 'N. MacDonnell Ulsch',
+    title: 'Senior Advisor',
+    image: nMacdonnellUlsch,
+    linkedin: 'https://www.linkedin.com/in/n-macdonnell-ulsch-38abb21/',
+  },
 ];
 
 const TeamSection = () => {
