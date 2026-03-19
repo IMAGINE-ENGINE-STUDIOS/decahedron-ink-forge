@@ -2,8 +2,8 @@ import React from 'react';
 import { Linkedin } from 'lucide-react';
 import khaliaPadilla from '@/assets/team/khalia-padilla.jpg';
 import ricardoFont from '@/assets/team/ricardo-font.jpg';
-
 import jamesStuber from '@/assets/team/james-stuber.jpg';
+import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 
 interface TeamMember {
   name: string;
