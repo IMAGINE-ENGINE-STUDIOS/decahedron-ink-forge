@@ -2,8 +2,8 @@ import React from 'react';
 import { Linkedin } from 'lucide-react';
 import khaliaPadilla from '@/assets/team/khalia-padilla.jpg';
 import ricardoFont from '@/assets/team/ricardo-font.jpg';
-
 import jamesStuber from '@/assets/team/james-stuber.jpg';
+import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 
 interface TeamMember {
   name: string;
@@ -32,6 +32,12 @@ const teamMembers: TeamMember[] = [
     title: 'Legal Counsel',
     image: jamesStuber,
     linkedin: 'https://www.linkedin.com/in/jamesstuber/',
+  },
+  {
+    name: 'N. MacDonnell Ulsch',
+    title: 'Senior Advisor',
+    image: nMacdonnellUlsch,
+    linkedin: 'https://www.linkedin.com/in/n-macdonnell-ulsch-38abb21/',
   },
 ];
 
