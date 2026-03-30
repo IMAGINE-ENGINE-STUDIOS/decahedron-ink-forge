@@ -230,6 +230,25 @@ const DataRoom: React.FC = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Investment Deck Quick Access */}
+        <Link
+          to="/slidedeck"
+          className="flex items-center justify-between p-5 mb-8 border border-primary/20 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors group"
+        >
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-primary/10 rounded">
+              <Briefcase className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <p className="font-technical text-sm text-foreground tracking-wider">INVESTMENT.PRESENTATION</p>
+              <p className="text-xs text-muted-foreground font-technical mt-1">Decahedron Ventures Fund I — Slide Deck</p>
+            </div>
+          </div>
+          <span className="font-technical text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+            VIEW.DECK →
+          </span>
+        </Link>
+
         {/* Admin Upload Section */}
         {isAdmin && (
           <Card className="mb-8 border-primary/20 bg-primary/5">
