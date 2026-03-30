@@ -231,8 +231,10 @@ const DataRoom: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Investment Deck Quick Access */}
-        <Link
-          to="/slidedeck"
+        <a
+          href="/Decahedron_Ventures_Fund_I.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center justify-between p-5 mb-8 border border-primary/20 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors group"
         >
           <div className="flex items-center gap-4">
@@ -241,13 +243,13 @@ const DataRoom: React.FC = () => {
             </div>
             <div>
               <p className="font-technical text-sm text-foreground tracking-wider">INVESTMENT.PRESENTATION</p>
-              <p className="text-xs text-muted-foreground font-technical mt-1">Decahedron Ventures Fund I — Slide Deck</p>
+              <p className="text-xs text-muted-foreground font-technical mt-1">Decahedron Ventures Fund I — Pitch Deck (PDF)</p>
             </div>
           </div>
           <span className="font-technical text-xs text-muted-foreground group-hover:text-foreground transition-colors">
-            VIEW.DECK →
+            VIEW.PDF →
           </span>
-        </Link>
+        </a>
 
         {/* Admin Upload Section */}
         {isAdmin && (
