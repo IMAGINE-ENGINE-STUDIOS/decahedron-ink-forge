@@ -78,14 +78,6 @@ const DataRoom: React.FC = () => {
 
     setUploading(true);
 
-    // Need to be authenticated as admin to upload
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      toast({ title: 'Please log in as admin at /admin first to upload files', variant: 'destructive' });
-      setUploading(false);
-      return;
-    }
-
     for (const file of Array.from(files)) {
       const filePath = `${uploadCategory}/${Date.now()}-${file.name}`;
       
@@ -106,7 +98,6 @@ const DataRoom: React.FC = () => {
           file_path: filePath,
           file_size: file.size,
           mime_type: file.type,
-          uploaded_by: session.user.id,
         });
 
       if (dbError) {
