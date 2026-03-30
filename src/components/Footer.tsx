@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import GeometricPattern from './GeometricPattern';
 const Footer: React.FC = () => {
@@ -106,17 +107,20 @@ const Footer: React.FC = () => {
             <div className="font-technical text-xs text-geometric-secondary">
               © 2024 DECAHEDRON.VENTURES | ALL.RIGHTS.RESERVED | PROTOCOL.v2.1
             </div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 font-technical text-xs">
-              <a href="#" className="text-geometric-secondary hover:text-technical-highlight transition-colors">
-                PRIVACY.POLICY
-              </a>
-              <a href="#" className="text-geometric-secondary hover:text-technical-highlight transition-colors">
-                TERMS.SERVICE
-              </a>
-              <a href="#" className="text-geometric-secondary hover:text-technical-highlight transition-colors">
-                INVESTMENT.DISCLAIMER
-              </a>
-            </div>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 font-technical text-xs">
+                <Link to="/dataroom" className="text-geometric-secondary hover:text-technical-highlight transition-colors">
+                  INVESTOR.DATA.ROOM
+                </Link>
+                <a href="#" className="text-geometric-secondary hover:text-technical-highlight transition-colors">
+                  PRIVACY.POLICY
+                </a>
+                <a href="#" className="text-geometric-secondary hover:text-technical-highlight transition-colors">
+                  TERMS.SERVICE
+                </a>
+                <a href="#" className="text-geometric-secondary hover:text-technical-highlight transition-colors">
+                  INVESTMENT.DISCLAIMER
+                </a>
+              </div>
           </div>
           
           {/* Technical Coordinates */}

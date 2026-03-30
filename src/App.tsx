@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Research from "./pages/Research";
 import Deck from "./pages/Deck";
 import SlideDeck from "./pages/SlideDeck";
+import DataRoom from "./pages/DataRoom";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/research" element={<Research />} />
           <Route path="/deck" element={<Deck />} />
           <Route path="/slidedeck" element={<SlideDeck />} />
+          <Route path="/dataroom" element={<DataRoom />} />
           <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
