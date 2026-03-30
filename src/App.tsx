@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Research from "./pages/Research";
 import Deck from "./pages/Deck";
 import SlideDeck from "./pages/SlideDeck";
+import DataRoom from "./pages/DataRoom";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
