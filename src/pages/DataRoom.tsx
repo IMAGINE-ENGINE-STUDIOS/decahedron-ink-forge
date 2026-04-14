@@ -8,8 +8,9 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { 
   ArrowLeft, FileText, Upload, Trash2, Download, Lock, 
-  FolderOpen, Building2, Users, FileCheck, Briefcase, File
+  FolderOpen, Building2, Users, FileCheck, Briefcase, File, LogOut
 } from 'lucide-react';
+import LPGate from '@/components/dataroom/LPGate';
 
 const CATEGORIES = [
   { id: 'lp-agreements', label: 'LP Agreements', icon: FileCheck },
