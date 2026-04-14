@@ -224,6 +224,8 @@ const DataRoom: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b border-border">
         <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -239,21 +241,34 @@ const DataRoom: React.FC = () => {
             </div>
           </div>
 
-          {!isAdmin ? (
-            <Button
-              variant="outline"
-              size="sm"
-              className="font-technical text-xs"
-              onClick={() => setShowAdminLogin(!showAdminLogin)}
-            >
-              <Lock className="h-3 w-3 mr-1" />
-              ADMIN
-            </Button>
-          ) : (
-            <span className="text-xs font-technical text-primary bg-primary/10 px-3 py-1 border border-primary/20">
-              ADMIN.MODE
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {!isAdmin && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="font-technical text-xs"
+                onClick={handleLPLogout}
+              >
+                <LogOut className="h-3 w-3 mr-1" />
+                LOGOUT
+              </Button>
+            )}
+            {!isAdmin ? (
+              <Button
+                variant="outline"
+                size="sm"
+                className="font-technical text-xs"
+                onClick={() => setShowAdminLogin(!showAdminLogin)}
+              >
+                <Lock className="h-3 w-3 mr-1" />
+                ADMIN
+              </Button>
+            ) : (
+              <span className="text-xs font-technical text-primary bg-primary/10 px-3 py-1 border border-primary/20">
+                ADMIN.MODE
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Admin login panel */}
