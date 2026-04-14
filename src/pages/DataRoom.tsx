@@ -41,6 +41,7 @@ const DataRoom: React.FC = () => {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadCategory, setUploadCategory] = useState(CATEGORIES[0].id);
+  const [lpAccess, setLpAccess] = useState(() => !!localStorage.getItem('lp_access_email'));
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
