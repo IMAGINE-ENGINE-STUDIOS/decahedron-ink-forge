@@ -166,10 +166,64 @@ const DataRoom: React.FC = () => {
     return cat ? cat.label : categoryId;
   };
 
+  const handleLPLogout = () => {
+    localStorage.removeItem('lp_access_email');
+    setLpAccess(false);
+  };
+
+  if (!lpAccess && !isAdmin) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+              <div>
+                <h1 className="text-2xl font-technical tracking-wider text-foreground">
+                  [ INVESTOR.DATA.ROOM ]
+                </h1>
+                <p className="text-sm text-muted-foreground font-technical mt-1">
+                  DECAHEDRON VENTURES — CONFIDENTIAL DOCUMENTS
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="font-technical text-xs"
+              onClick={() => setShowAdminLogin(!showAdminLogin)}
+            >
+              <Lock className="h-3 w-3 mr-1" />
+              ADMIN
+            </Button>
+          </div>
+          {showAdminLogin && (
+            <div className="max-w-7xl mx-auto px-6 pb-4">
+              <div className="flex items-center gap-3 max-w-sm">
+                <Input
+                  type="password"
+                  placeholder="Admin password"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAdminLogin()}
+                  className="font-technical text-sm"
+                />
+                <Button size="sm" onClick={handleAdminLogin} className="font-technical text-xs">
+                  ENTER
+                </Button>
+              </div>
+            </div>
+          )}
+        </header>
+        <LPGate onAccessGranted={() => setLpAccess(true)} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border">
         <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
