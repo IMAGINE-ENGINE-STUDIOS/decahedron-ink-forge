@@ -4,20 +4,32 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Lock, LogIn, Clock, ShieldCheck } from 'lucide-react';
+import { Lock, LogIn, Clock, ShieldCheck, KeyRound } from 'lucide-react';
 import LPRegistrationForm from './LPRegistrationForm';
 
 interface LPGateProps {
   onAccessGranted: () => void;
 }
 
+const LP_PASSWORD = 'VentureFund';
+
 const LPGate: React.FC<LPGateProps> = ({ onAccessGranted }) => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [checking, setChecking] = useState(false);
   const [pendingMessage, setPendingMessage] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
+
+  const handlePasswordSubmit = () => {
+    if (password === LP_PASSWORD) {
+      localStorage.setItem('lp_access_email', 'password-access');
+      onAccessGranted();
+    } else {
+      toast({ title: 'Invalid password', variant: 'destructive' });
+    }
+  };
 
   const handleEmailCheck = async () => {
     if (!email) {
@@ -126,6 +138,34 @@ const LPGate: React.FC<LPGateProps> = ({ onAccessGranted }) => {
               >
                 <ShieldCheck className="h-3.5 w-3.5 mr-2" />
                 {checking ? 'VERIFYING...' : 'ACCESS.DATA.ROOM'}
+              </Button>
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground font-technical">or use access password</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Input
+                type="password"
+                placeholder="Enter access password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handlePasswordSubmit()}
+                className="font-technical text-sm"
+              />
+              <Button
+                variant="secondary"
+                onClick={handlePasswordSubmit}
+                className="w-full font-technical text-xs tracking-wider"
+              >
+                <KeyRound className="h-3.5 w-3.5 mr-2" />
+                UNLOCK.WITH.PASSWORD
               </Button>
             </div>
 
