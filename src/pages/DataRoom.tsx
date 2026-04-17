@@ -512,6 +512,52 @@ const DataRoom: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* PDF Viewer Modal */}
+      <Dialog open={!!viewerUrl} onOpenChange={(open) => !open && setViewerUrl(null)}>
+        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] p-0 gap-0 flex flex-col bg-card border-border">
+          <DialogTitle className="sr-only">{viewerTitle}</DialogTitle>
+          <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-background/60">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="p-1.5 bg-primary/10 rounded">
+                <FileText className="h-4 w-4 text-primary" />
+              </div>
+              <p className="font-technical text-xs tracking-wider text-foreground truncate">
+                {viewerTitle}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {viewerUrl && (
+                <a
+                  href={viewerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border rounded text-xs font-technical hover:bg-accent transition-colors"
+                >
+                  <ExternalLink className="h-3 w-3" />
+                  OPEN.IN.TAB
+                </a>
+              )}
+              <button
+                onClick={() => setViewerUrl(null)}
+                className="p-1.5 border border-border rounded hover:bg-accent transition-colors"
+                aria-label="Close"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 bg-muted/20">
+            {viewerUrl && (
+              <iframe
+                src={`${viewerUrl}#view=FitH`}
+                title={viewerTitle}
+                className="w-full h-full border-0"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
