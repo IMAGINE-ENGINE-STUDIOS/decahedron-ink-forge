@@ -5,10 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { 
   ArrowLeft, FileText, Upload, Trash2, Download, Lock, 
-  FolderOpen, Building2, Users, FileCheck, Briefcase, File, LogOut
+  FolderOpen, Building2, Users, FileCheck, Briefcase, File, LogOut, X, ExternalLink
 } from 'lucide-react';
 import LPGate from '@/components/dataroom/LPGate';
 
@@ -42,6 +43,8 @@ const DataRoom: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadCategory, setUploadCategory] = useState(CATEGORIES[0].id);
   const [lpAccess, setLpAccess] = useState(() => !!localStorage.getItem('lp_access_email'));
+  const [viewerUrl, setViewerUrl] = useState<string | null>(null);
+  const [viewerTitle, setViewerTitle] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -302,11 +305,13 @@ const DataRoom: React.FC = () => {
             <div className="h-px flex-1 bg-gradient-to-l from-primary/40 to-transparent" />
           </div>
 
-          <a
-            href="/Decahedron_Ventures_Fund_I.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="relative block overflow-hidden rounded-lg border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background hover:border-primary/60 hover:shadow-[0_0_40px_-10px_hsl(var(--primary)/0.4)] transition-all duration-300 group"
+          <button
+            type="button"
+            onClick={() => {
+              setViewerTitle('Decahedron Ventures Fund I — Investment Presentation');
+              setViewerUrl('/Decahedron_Ventures_Fund_I.pdf');
+            }}
+            className="relative w-full text-left block overflow-hidden rounded-lg border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background hover:border-primary/60 hover:shadow-[0_0_40px_-10px_hsl(var(--primary)/0.4)] transition-all duration-300 group"
           >
             {/* Decorative geometric pattern */}
             <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
@@ -352,12 +357,12 @@ const DataRoom: React.FC = () => {
               {/* Right: CTA */}
               <div className="flex items-center justify-center md:w-56 p-6 md:p-8 md:border-l border-primary/20 bg-background/40">
                 <div className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded font-technical text-xs tracking-[0.2em] group-hover:gap-5 transition-all shadow-lg">
-                  <span>OPEN.DECK</span>
+                  <span>VIEW.DECK</span>
                   <span className="text-base">→</span>
                 </div>
               </div>
             </div>
-          </a>
+          </button>
         </div>
 
         {/* Admin Upload Section */}
@@ -507,6 +512,52 @@ const DataRoom: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* PDF Viewer Modal */}
+      <Dialog open={!!viewerUrl} onOpenChange={(open) => !open && setViewerUrl(null)}>
+        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] p-0 gap-0 flex flex-col bg-card border-border">
+          <DialogTitle className="sr-only">{viewerTitle}</DialogTitle>
+          <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-background/60">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="p-1.5 bg-primary/10 rounded">
+                <FileText className="h-4 w-4 text-primary" />
+              </div>
+              <p className="font-technical text-xs tracking-wider text-foreground truncate">
+                {viewerTitle}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {viewerUrl && (
+                <a
+                  href={viewerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border rounded text-xs font-technical hover:bg-accent transition-colors"
+                >
+                  <ExternalLink className="h-3 w-3" />
+                  OPEN.IN.TAB
+                </a>
+              )}
+              <button
+                onClick={() => setViewerUrl(null)}
+                className="p-1.5 border border-border rounded hover:bg-accent transition-colors"
+                aria-label="Close"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 bg-muted/20">
+            {viewerUrl && (
+              <iframe
+                src={`${viewerUrl}#view=FitH`}
+                title={viewerTitle}
+                className="w-full h-full border-0"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
