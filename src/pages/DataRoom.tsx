@@ -292,26 +292,73 @@ const DataRoom: React.FC = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Investment Deck Quick Access */}
-        <a
-          href="/Decahedron_Ventures_Fund_I.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-between p-5 mb-8 border border-primary/20 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors group"
-        >
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-primary/10 rounded">
-              <Briefcase className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <p className="font-technical text-sm text-foreground tracking-wider">INVESTMENT.PRESENTATION</p>
-              <p className="text-xs text-muted-foreground font-technical mt-1">Decahedron Ventures Fund I — Pitch Deck (PDF)</p>
-            </div>
+        {/* Investment Deck — Featured */}
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="h-px flex-1 bg-gradient-to-r from-primary/40 to-transparent" />
+            <span className="font-technical text-[10px] tracking-[0.2em] text-primary/70">
+              ★ FEATURED.DOCUMENT
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-l from-primary/40 to-transparent" />
           </div>
-          <span className="font-technical text-xs text-muted-foreground group-hover:text-foreground transition-colors">
-            VIEW.PDF →
-          </span>
-        </a>
+
+          <a
+            href="/Decahedron_Ventures_Fund_I.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative block overflow-hidden rounded-lg border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background hover:border-primary/60 hover:shadow-[0_0_40px_-10px_hsl(var(--primary)/0.4)] transition-all duration-300 group"
+          >
+            {/* Decorative geometric pattern */}
+            <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
+                 style={{
+                   backgroundImage: 'repeating-linear-gradient(45deg, hsl(var(--primary)) 0, hsl(var(--primary)) 1px, transparent 0, transparent 12px)'
+                 }}
+            />
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-primary/40" />
+            <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-primary/40" />
+            <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-primary/40" />
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-primary/40" />
+
+            <div className="relative flex flex-col md:flex-row items-stretch">
+              {/* Left: Icon panel */}
+              <div className="flex items-center justify-center md:w-48 p-8 bg-primary/10 border-b md:border-b-0 md:border-r border-primary/20">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/30 blur-2xl group-hover:bg-primary/50 transition-colors" />
+                  <div className="relative p-5 bg-background/80 backdrop-blur border border-primary/40 rounded">
+                    <Briefcase className="h-10 w-10 text-primary" strokeWidth={1.5} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Middle: Content */}
+              <div className="flex-1 p-6 md:p-8 flex flex-col justify-center">
+                <p className="font-technical text-[10px] tracking-[0.25em] text-primary mb-2">
+                  DECAHEDRON.VENTURES — FUND.I
+                </p>
+                <h2 className="font-technical text-xl md:text-2xl tracking-wider text-foreground mb-2 group-hover:text-primary transition-colors">
+                  INVESTMENT.PRESENTATION
+                </h2>
+                <p className="text-sm text-muted-foreground font-technical leading-relaxed mb-4 max-w-xl">
+                  The complete pitch deck — thesis, 10-factor criteria, sourcing engine, and fund economics.
+                </p>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-technical text-muted-foreground tracking-wider">
+                  <span>▸ 14.SLIDES</span>
+                  <span>▸ PDF.FORMAT</span>
+                  <span>▸ CONFIDENTIAL</span>
+                </div>
+              </div>
+
+              {/* Right: CTA */}
+              <div className="flex items-center justify-center md:w-56 p-6 md:p-8 md:border-l border-primary/20 bg-background/40">
+                <div className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded font-technical text-xs tracking-[0.2em] group-hover:gap-5 transition-all shadow-lg">
+                  <span>OPEN.DECK</span>
+                  <span className="text-base">→</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
 
         {/* Admin Upload Section */}
         {isAdmin && (
