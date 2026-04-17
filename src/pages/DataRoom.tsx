@@ -43,6 +43,8 @@ const DataRoom: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadCategory, setUploadCategory] = useState(CATEGORIES[0].id);
   const [lpAccess, setLpAccess] = useState(() => !!localStorage.getItem('lp_access_email'));
+  const [viewerUrl, setViewerUrl] = useState<string | null>(null);
+  const [viewerTitle, setViewerTitle] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -303,11 +305,13 @@ const DataRoom: React.FC = () => {
             <div className="h-px flex-1 bg-gradient-to-l from-primary/40 to-transparent" />
           </div>
 
-          <a
-            href="/Decahedron_Ventures_Fund_I.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="relative block overflow-hidden rounded-lg border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background hover:border-primary/60 hover:shadow-[0_0_40px_-10px_hsl(var(--primary)/0.4)] transition-all duration-300 group"
+          <button
+            type="button"
+            onClick={() => {
+              setViewerTitle('Decahedron Ventures Fund I — Investment Presentation');
+              setViewerUrl('/Decahedron_Ventures_Fund_I.pdf');
+            }}
+            className="relative w-full text-left block overflow-hidden rounded-lg border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background hover:border-primary/60 hover:shadow-[0_0_40px_-10px_hsl(var(--primary)/0.4)] transition-all duration-300 group"
           >
             {/* Decorative geometric pattern */}
             <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
@@ -353,12 +357,12 @@ const DataRoom: React.FC = () => {
               {/* Right: CTA */}
               <div className="flex items-center justify-center md:w-56 p-6 md:p-8 md:border-l border-primary/20 bg-background/40">
                 <div className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded font-technical text-xs tracking-[0.2em] group-hover:gap-5 transition-all shadow-lg">
-                  <span>OPEN.DECK</span>
+                  <span>VIEW.DECK</span>
                   <span className="text-base">→</span>
                 </div>
               </div>
             </div>
-          </a>
+          </button>
         </div>
 
         {/* Admin Upload Section */}
