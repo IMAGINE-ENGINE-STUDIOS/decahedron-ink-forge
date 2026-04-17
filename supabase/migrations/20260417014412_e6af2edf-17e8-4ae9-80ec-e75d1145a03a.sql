@@ -1,0 +1,1 @@
+DELETE FROM public.data_room_documents WHERE id IN ('d828a586-0962-4c9d-b712-c45ba177ef1b', '08cc1f9d-7fd0-4549-9960-c474afc1d8c3');
