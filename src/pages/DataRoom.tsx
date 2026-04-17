@@ -5,10 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { 
   ArrowLeft, FileText, Upload, Trash2, Download, Lock, 
-  FolderOpen, Building2, Users, FileCheck, Briefcase, File, LogOut
+  FolderOpen, Building2, Users, FileCheck, Briefcase, File, LogOut, X, ExternalLink
 } from 'lucide-react';
 import LPGate from '@/components/dataroom/LPGate';
 
