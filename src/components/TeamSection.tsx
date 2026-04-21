@@ -4,6 +4,7 @@ import khaliaPadilla from '@/assets/team/khalia-padilla.jpg';
 import ricardoFont from '@/assets/team/ricardo-font.jpg';
 import jamesStuber from '@/assets/team/james-stuber.jpg';
 import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
+import dominicCatrambone from '@/assets/team/dominic-catrambone.jpg';
 
 interface TeamMember {
   name: string;
@@ -26,6 +27,12 @@ const teamMembers: TeamMember[] = [
     title: 'Founder & Managing Partner',
     image: ricardoFont,
     linkedin: 'https://www.linkedin.com/in/ricardo-font-952034248/',
+  },
+  {
+    name: 'Dominic Catrambone',
+    title: 'Chief Financial Officer',
+    image: dominicCatrambone,
+    linkedin: 'https://www.linkedin.com/',
   },
   {
     name: 'James Stuber',
