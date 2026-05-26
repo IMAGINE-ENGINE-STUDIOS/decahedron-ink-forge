@@ -53,6 +53,7 @@ export type Database = {
           id: string
           mime_type: string | null
           name: string
+          subfolder: string | null
           updated_at: string
           uploaded_by: string | null
         }
@@ -64,6 +65,7 @@ export type Database = {
           id?: string
           mime_type?: string | null
           name: string
+          subfolder?: string | null
           updated_at?: string
           uploaded_by?: string | null
         }
@@ -75,8 +77,45 @@ export type Database = {
           id?: string
           mime_type?: string | null
           name?: string
+          subfolder?: string | null
           updated_at?: string
           uploaded_by?: string | null
+        }
+        Relationships: []
+      }
+      data_room_share_links: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          label: string | null
+          scope: string
+          subfolder: string | null
+          token: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          label?: string | null
+          scope?: string
+          subfolder?: string | null
+          token: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          label?: string | null
+          scope?: string
+          subfolder?: string | null
+          token?: string
         }
         Relationships: []
       }
