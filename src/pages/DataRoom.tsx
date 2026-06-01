@@ -519,41 +519,40 @@ const DataRoom: React.FC = () => {
           </Card>
         )}
 
-        {/* Category tabs */}
+        {/* Category carousel */}
+        <div className="relative mb-8">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory scroll-smooth">
+            <button
+              onClick={() => setSelectedCategory(null)}
+              disabled={!!activeShare && activeShare.scope !== 'all'}
+              className={`snap-start flex items-center gap-1.5 px-3 py-1.5 border rounded-full font-technical text-[10px] whitespace-nowrap transition-all hover:border-primary hover:bg-primary/5 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0 ${
+                selectedCategory === null ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
+              }`}
+            >
+              <FolderOpen className="h-3 w-3" />
+              <span>ALL ({scopedDocs.length})</span>
+            </button>
+            {CATEGORIES.map(cat => {
+              if (ADMIN_ONLY_CATEGORIES.has(cat.id) && (!isAdmin || !!activeShare)) return null;
+              const count = scopedDocs.filter(d => d.category === cat.id).length;
+              if (activeShare && activeShare.scope !== 'all' && activeShare.category !== cat.id) return null;
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-8">
-          <button
-            onClick={() => setSelectedCategory(null)}
-            disabled={!!activeShare && activeShare.scope !== 'all'}
-            className={`aspect-square flex flex-col items-center justify-center gap-2 p-3 border rounded-md font-technical text-[10px] transition-all hover:border-primary hover:bg-primary/5 disabled:opacity-40 disabled:cursor-not-allowed ${
-              selectedCategory === null ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
-            }`}
-          >
-            <FolderOpen className="h-6 w-6" />
-            <span className="text-center leading-tight uppercase">All</span>
-            <span className="text-[9px] opacity-60">({scopedDocs.length})</span>
-          </button>
-          {CATEGORIES.map(cat => {
-            if (ADMIN_ONLY_CATEGORIES.has(cat.id) && (!isAdmin || !!activeShare)) return null;
-            const count = scopedDocs.filter(d => d.category === cat.id).length;
-            if (activeShare && activeShare.scope !== 'all' && activeShare.category !== cat.id) return null;
-
-            const Icon = cat.icon;
-            const isActive = selectedCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`aspect-square flex flex-col items-center justify-center gap-2 p-3 border rounded-md font-technical text-[10px] transition-all hover:border-primary hover:bg-primary/5 ${
-                  isActive ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
-                }`}
-              >
-                <Icon className="h-6 w-6" />
-                <span className="text-center leading-tight uppercase line-clamp-2">{cat.label}</span>
-                <span className="text-[9px] opacity-60">({count})</span>
-              </button>
-            );
-          })}
+              const Icon = cat.icon;
+              const isActive = selectedCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`snap-start flex items-center gap-1.5 px-3 py-1.5 border rounded-full font-technical text-[10px] whitespace-nowrap transition-all hover:border-primary hover:bg-primary/5 flex-shrink-0 ${
+                    isActive ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
+                  }`}
+                >
+                  <Icon className="h-3 w-3" />
+                  <span>{cat.label.toUpperCase()} ({count})</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
         {isAdmin && selectedCategory && (
           <div className="flex justify-end mb-4">
