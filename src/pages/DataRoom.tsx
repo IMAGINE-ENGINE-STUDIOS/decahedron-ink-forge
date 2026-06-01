@@ -534,8 +534,10 @@ const DataRoom: React.FC = () => {
             <span className="text-[9px] opacity-60">({scopedDocs.length})</span>
           </button>
           {CATEGORIES.map(cat => {
+            if (ADMIN_ONLY_CATEGORIES.has(cat.id) && (!isAdmin || !!activeShare)) return null;
             const count = scopedDocs.filter(d => d.category === cat.id).length;
             if (activeShare && activeShare.scope !== 'all' && activeShare.category !== cat.id) return null;
+
             const Icon = cat.icon;
             const isActive = selectedCategory === cat.id;
             return (
