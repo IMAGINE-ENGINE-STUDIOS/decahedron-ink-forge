@@ -30,6 +30,8 @@ const CATEGORIES = [
   // Supplementary folders for second-fund / institutional LP items
   { id: '09-operations-compliance', label: '09 · Operations & Compliance', icon: ShieldCheck },
   { id: '10-esg-dei-bcp', label: '10 · ESG, DEI & Business Continuity', icon: Briefcase },
+  // Admin-only internal library — hidden from LPs and from share links
+  { id: 'articles', label: 'Articles', icon: BookOpen, adminOnly: true },
   // Legacy buckets — kept so previously uploaded files remain visible & movable
   { id: '01-firm-team', label: 'Legacy · Firm & Team', icon: Users },
   { id: '02-strategy-market', label: 'Legacy · Fund Strategy & Market', icon: Target },
@@ -48,6 +50,9 @@ const CATEGORIES = [
   { id: 'fund-documents', label: 'Legacy · Fund Documents', icon: Briefcase },
   { id: 'other', label: 'Legacy · Other', icon: File },
 ];
+
+const ADMIN_ONLY_CATEGORIES = new Set(CATEGORIES.filter(c => (c as any).adminOnly).map(c => c.id));
+
 
 
 
