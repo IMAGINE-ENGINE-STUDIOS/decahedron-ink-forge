@@ -33,10 +33,11 @@ const CATEGORIES = [
   // Legacy buckets — kept so previously uploaded files remain visible & movable
   { id: '01-firm-team', label: 'Legacy · Firm & Team', icon: Users },
   { id: '02-strategy-market', label: 'Legacy · Fund Strategy & Market', icon: Target },
-  { id: '03-track-record', label: 'Legacy · Track Record (old)', icon: TrendingUp },
-  { id: '04-fund-economics', label: 'Legacy · Fund Economics', icon: Calculator },
-  { id: '05-legal-offering', label: 'Legacy · Legal & Offering', icon: Scale },
-  { id: '06-operations-compliance', label: 'Legacy · Ops & Compliance', icon: ShieldCheck },
+  { id: 'legacy-03-track-record', label: 'Legacy · Track Record (old)', icon: TrendingUp },
+  { id: 'legacy-04-fund-economics', label: 'Legacy · Fund Economics', icon: Calculator },
+  { id: 'legacy-05-legal-offering', label: 'Legacy · Legal & Offering', icon: Scale },
+  { id: 'legacy-06-operations-compliance', label: 'Legacy · Ops & Compliance', icon: ShieldCheck },
+
   { id: '07-ddq-qa', label: 'Legacy · DDQ & Q&A', icon: HelpCircle },
   { id: '08-audited-financials', label: 'Legacy · Audited Financials', icon: FileCheck },
   { id: '09-esg-dei-bcp', label: 'Legacy · ESG/DEI/BCP', icon: Briefcase },
