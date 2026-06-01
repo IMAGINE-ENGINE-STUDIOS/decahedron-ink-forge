@@ -16,7 +16,7 @@ import {
 import LPGate from '@/components/dataroom/LPGate';
 
 // ILPA DDQ 2.0 aligned structure — 7 numbered top-level folders
-// Reference: "How Do You Organize a Data Room for a First-Time Real Estate Fund Manager Raising $100M"
+// + 2 additional folders covering LP best-practice items (SVB / Mercer guidance)
 const CATEGORIES = [
   { id: '01-firm-team', label: '01 · Firm & Team', icon: Users },
   { id: '02-strategy-market', label: '02 · Fund Strategy & Market', icon: Target },
@@ -25,6 +25,8 @@ const CATEGORIES = [
   { id: '05-legal-offering', label: '05 · Legal & Offering Documents', icon: Scale },
   { id: '06-operations-compliance', label: '06 · Operations & Compliance', icon: ShieldCheck },
   { id: '07-ddq-qa', label: '07 · DDQ & Q&A', icon: HelpCircle },
+  { id: '08-audited-financials', label: '08 · Audited Financials & Capital Calls', icon: FileCheck },
+  { id: '09-esg-dei-bcp', label: '09 · ESG, DEI & Business Continuity', icon: Briefcase },
   // Legacy buckets — kept so previously uploaded files remain visible & movable
   { id: 'lp-agreements', label: 'Legacy · LP Agreements', icon: FileCheck },
   { id: 'company-profiles', label: 'Legacy · Company Profiles', icon: Building2 },
@@ -32,6 +34,7 @@ const CATEGORIES = [
   { id: 'fund-documents', label: 'Legacy · Fund Documents', icon: Briefcase },
   { id: 'other', label: 'Legacy · Other', icon: File },
 ];
+
 
 
 interface DataRoomDocument {
