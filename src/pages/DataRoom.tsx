@@ -406,7 +406,34 @@ const DataRoom: React.FC = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Featured Deck */}
+        {/* LP Principles — framing the experience */}
+        {!activeShare && (
+          <div className="mb-8 border border-primary/20 bg-card/30 rounded-lg overflow-hidden">
+            <div className="px-4 py-2 bg-primary/10 border-b border-primary/20 flex items-center gap-2">
+              <FileCheck className="h-3 w-3 text-primary" />
+              <span className="font-technical text-[10px] tracking-[0.2em] text-primary uppercase">Data Room Principles · According to LPs</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-border/40">
+              {[
+                { t: 'Art + Science', d: 'Qualitative conviction + quantitative rigor.' },
+                { t: 'Every LP Differs', d: 'Comprehensive VDR. Request specific items.' },
+                { t: 'Best Foot Forward', d: 'Lead with outstanding numbers first.' },
+                { t: 'Transparent on Gaps', d: 'Pre-empt questions. Open builds trust.' },
+                { t: 'Counsel-Reviewed', d: 'Legal review on key docs before publish.' },
+              ].map((p) => (
+                <div key={p.t} className="p-3">
+                  <p className="text-[10px] font-technical text-foreground font-semibold tracking-wider mb-1">{p.t}</p>
+                  <p className="text-[10px] font-technical text-muted-foreground leading-snug">{p.d}</p>
+                </div>
+              ))}
+            </div>
+            <div className="px-3 py-1.5 border-t border-border/40 bg-background/30">
+              <p className="text-[9px] text-muted-foreground/60 font-technical uppercase tracking-wider">Source: SVB Emerging Manager Insights · Mercer Alternatives Group</p>
+            </div>
+          </div>
+        )}
+
+        {/* Featured Deck — Best Foot Forward */}
         {!activeShare && (
           <div className="mb-10">
             <div className="flex items-center gap-2 mb-3">
@@ -489,34 +516,36 @@ const DataRoom: React.FC = () => {
           </Card>
         )}
 
-        {/* LP best-practice principles (SVB / Mercer guidance) */}
+        {/* Table of Contents — Every LP Differs */}
         {!activeShare && (
-          <Card className="mb-6 border-primary/30 bg-card/40">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-technical uppercase tracking-wider text-primary flex items-center gap-2">
-                <FileCheck className="h-3 w-3" /> Data Room Principles · According to LPs
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 text-[11px] font-technical">
-                {[
-                  { t: 'Art + Science', d: 'Speak to both qualitative conviction and quantitative rigor — alignment, GP commit, vesting, sourcing edge.' },
-                  { t: 'Every LP Differs', d: 'Comprehensive VDR + downloadable subset. Share a table of contents and let LPs request specific items.' },
-                  { t: 'Best Foot Forward', d: 'Waterfall your story — lead with outstanding numbers; add qualitative context where the track record is thinner.' },
-                  { t: 'Transparent on Gaps', d: 'Pre-empt questions. Be open about what a first-time manager cannot yet provide — builds trust.' },
-                  { t: 'Counsel-Reviewed', d: 'Legal review on key docs; prior-fund approval on track-record attribution before publishing.' },
-                ].map((p) => (
-                  <div key={p.t} className="border border-border/40 p-2 bg-background/40">
-                    <p className="text-foreground font-semibold mb-1">{p.t}</p>
-                    <p className="text-muted-foreground leading-snug">{p.d}</p>
-                  </div>
-                ))}
-              </div>
-              <p className="text-[10px] text-muted-foreground/70 font-technical mt-3 uppercase tracking-wider">
-                Source: SVB Emerging Manager Insights · Mercer Alternatives Group
-              </p>
-            </CardContent>
-          </Card>
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
+              <span className="font-technical text-[10px] tracking-[0.2em] text-primary/70 uppercase">Table of Contents</span>
+              <div className="h-px flex-1 bg-gradient-to-l from-primary/30 to-transparent" />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+              {CATEGORIES.filter(c => !c.id.startsWith('legacy-') && c.id !== 'articles' && c.id !== 'other' && !c.id.startsWith('lp-') && !c.id.startsWith('company-') && !c.id.startsWith('team-') && !c.id.startsWith('fund-doc')).map(cat => {
+                const count = scopedDocs.filter(d => d.category === cat.id).length;
+                const Icon = cat.icon;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`text-left p-3 border rounded-md transition-all hover:border-primary hover:bg-primary/5 flex items-center gap-2 ${
+                      selectedCategory === cat.id ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/30 text-foreground'
+                    }`}
+                  >
+                    <Icon className="h-3.5 w-3.5 flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-technical text-[10px] truncate leading-tight">{cat.label}</p>
+                      <p className="font-technical text-[9px] text-muted-foreground">{count} doc{count !== 1 ? 's' : ''}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         )}
 
         {/* Category carousel */}
