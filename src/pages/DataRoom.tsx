@@ -30,6 +30,8 @@ const CATEGORIES = [
   // Supplementary folders for second-fund / institutional LP items
   { id: '09-operations-compliance', label: '09 · Operations & Compliance', icon: ShieldCheck },
   { id: '10-esg-dei-bcp', label: '10 · ESG, DEI & Business Continuity', icon: Briefcase },
+  // Admin-only internal library — hidden from LPs and from share links
+  { id: 'articles', label: 'Articles', icon: BookOpen, adminOnly: true },
   // Legacy buckets — kept so previously uploaded files remain visible & movable
   { id: '01-firm-team', label: 'Legacy · Firm & Team', icon: Users },
   { id: '02-strategy-market', label: 'Legacy · Fund Strategy & Market', icon: Target },
@@ -48,6 +50,9 @@ const CATEGORIES = [
   { id: 'fund-documents', label: 'Legacy · Fund Documents', icon: Briefcase },
   { id: 'other', label: 'Legacy · Other', icon: File },
 ];
+
+const ADMIN_ONLY_CATEGORIES = new Set(CATEGORIES.filter(c => (c as any).adminOnly).map(c => c.id));
+
 
 
 
@@ -233,13 +238,18 @@ const DataRoom: React.FC = () => {
 
   // Apply share scope filter
   const scopedDocs = useMemo(() => {
-    if (!activeShare) return documents;
-    if (activeShare.scope === 'all') return documents;
-    if (activeShare.scope === 'category') return documents.filter(d => d.category === activeShare.category);
+    // Hide admin-only categories from LP view and from any share link view
+    const base = isAdmin && !activeShare
+      ? documents
+      : documents.filter(d => !ADMIN_ONLY_CATEGORIES.has(d.category));
+    if (!activeShare) return base;
+    if (activeShare.scope === 'all') return base;
+    if (activeShare.scope === 'category') return base.filter(d => d.category === activeShare.category);
     if (activeShare.scope === 'subfolder')
-      return documents.filter(d => d.category === activeShare.category && d.subfolder === activeShare.subfolder);
-    return documents;
-  }, [documents, activeShare]);
+      return base.filter(d => d.category === activeShare.category && d.subfolder === activeShare.subfolder);
+    return base;
+  }, [documents, activeShare, isAdmin]);
+
 
   const filteredDocs = selectedCategory
     ? scopedDocs.filter(d => d.category === selectedCategory)
@@ -524,8 +534,10 @@ const DataRoom: React.FC = () => {
             <span className="text-[9px] opacity-60">({scopedDocs.length})</span>
           </button>
           {CATEGORIES.map(cat => {
+            if (ADMIN_ONLY_CATEGORIES.has(cat.id) && (!isAdmin || !!activeShare)) return null;
             const count = scopedDocs.filter(d => d.category === cat.id).length;
             if (activeShare && activeShare.scope !== 'all' && activeShare.category !== cat.id) return null;
+
             const Icon = cat.icon;
             const isActive = selectedCategory === cat.id;
             return (
