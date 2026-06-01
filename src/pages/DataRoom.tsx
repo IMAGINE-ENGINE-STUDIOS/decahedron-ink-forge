@@ -11,16 +11,28 @@ import {
   ArrowLeft, FileText, Upload, Trash2, Download, Lock,
   FolderOpen, Building2, Users, FileCheck, Briefcase, File, LogOut, X, ExternalLink,
   Share2, Move, ChevronDown, ChevronRight, Copy, Folder,
+  Target, TrendingUp, Calculator, Scale, ShieldCheck, HelpCircle,
 } from 'lucide-react';
 import LPGate from '@/components/dataroom/LPGate';
 
+// ILPA DDQ 2.0 aligned structure — 7 numbered top-level folders
+// Reference: "How Do You Organize a Data Room for a First-Time Real Estate Fund Manager Raising $100M"
 const CATEGORIES = [
-  { id: 'lp-agreements', label: 'LP Agreements', icon: FileCheck },
-  { id: 'company-profiles', label: 'Company Profiles', icon: Building2 },
-  { id: 'team-cvs', label: 'Team CVs', icon: Users },
-  { id: 'fund-documents', label: 'Fund Documents', icon: Briefcase },
-  { id: 'other', label: 'Other', icon: File },
+  { id: '01-firm-team', label: '01 · Firm & Team', icon: Users },
+  { id: '02-strategy-market', label: '02 · Fund Strategy & Market', icon: Target },
+  { id: '03-track-record', label: '03 · Track Record & Case Studies', icon: TrendingUp },
+  { id: '04-fund-economics', label: '04 · Fund Economics & Financial Model', icon: Calculator },
+  { id: '05-legal-offering', label: '05 · Legal & Offering Documents', icon: Scale },
+  { id: '06-operations-compliance', label: '06 · Operations & Compliance', icon: ShieldCheck },
+  { id: '07-ddq-qa', label: '07 · DDQ & Q&A', icon: HelpCircle },
+  // Legacy buckets — kept so previously uploaded files remain visible & movable
+  { id: 'lp-agreements', label: 'Legacy · LP Agreements', icon: FileCheck },
+  { id: 'company-profiles', label: 'Legacy · Company Profiles', icon: Building2 },
+  { id: 'team-cvs', label: 'Legacy · Team CVs', icon: Users },
+  { id: 'fund-documents', label: 'Legacy · Fund Documents', icon: Briefcase },
+  { id: 'other', label: 'Legacy · Other', icon: File },
 ];
+
 
 interface DataRoomDocument {
   id: string;
