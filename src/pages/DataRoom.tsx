@@ -238,13 +238,18 @@ const DataRoom: React.FC = () => {
 
   // Apply share scope filter
   const scopedDocs = useMemo(() => {
-    if (!activeShare) return documents;
-    if (activeShare.scope === 'all') return documents;
-    if (activeShare.scope === 'category') return documents.filter(d => d.category === activeShare.category);
+    // Hide admin-only categories from LP view and from any share link view
+    const base = isAdmin && !activeShare
+      ? documents
+      : documents.filter(d => !ADMIN_ONLY_CATEGORIES.has(d.category));
+    if (!activeShare) return base;
+    if (activeShare.scope === 'all') return base;
+    if (activeShare.scope === 'category') return base.filter(d => d.category === activeShare.category);
     if (activeShare.scope === 'subfolder')
-      return documents.filter(d => d.category === activeShare.category && d.subfolder === activeShare.subfolder);
-    return documents;
-  }, [documents, activeShare]);
+      return base.filter(d => d.category === activeShare.category && d.subfolder === activeShare.subfolder);
+    return base;
+  }, [documents, activeShare, isAdmin]);
+
 
   const filteredDocs = selectedCategory
     ? scopedDocs.filter(d => d.category === selectedCategory)
