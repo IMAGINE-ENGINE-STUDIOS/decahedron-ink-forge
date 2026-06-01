@@ -38,9 +38,10 @@ const CATEGORIES = [
   { id: 'legacy-05-legal-offering', label: 'Legacy · Legal & Offering', icon: Scale },
   { id: 'legacy-06-operations-compliance', label: 'Legacy · Ops & Compliance', icon: ShieldCheck },
 
-  { id: '07-ddq-qa', label: 'Legacy · DDQ & Q&A', icon: HelpCircle },
-  { id: '08-audited-financials', label: 'Legacy · Audited Financials', icon: FileCheck },
-  { id: '09-esg-dei-bcp', label: 'Legacy · ESG/DEI/BCP', icon: Briefcase },
+  { id: 'legacy-07-ddq-qa', label: 'Legacy · DDQ & Q&A', icon: HelpCircle },
+  { id: 'legacy-08-audited-financials', label: 'Legacy · Audited Financials', icon: FileCheck },
+  { id: 'legacy-09-esg-dei-bcp', label: 'Legacy · ESG/DEI/BCP', icon: Briefcase },
+
   { id: 'lp-agreements', label: 'Legacy · LP Agreements', icon: FileCheck },
   { id: 'company-profiles', label: 'Legacy · Company Profiles', icon: Building2 },
   { id: 'team-cvs', label: 'Legacy · Team CVs', icon: Users },
