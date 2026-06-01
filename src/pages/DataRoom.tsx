@@ -16,7 +16,7 @@ import {
 import LPGate from '@/components/dataroom/LPGate';
 
 // ILPA DDQ 2.0 aligned structure — 7 numbered top-level folders
-// Reference: "How Do You Organize a Data Room for a First-Time Real Estate Fund Manager Raising $100M"
+// + 2 additional folders covering LP best-practice items (SVB / Mercer guidance)
 const CATEGORIES = [
   { id: '01-firm-team', label: '01 · Firm & Team', icon: Users },
   { id: '02-strategy-market', label: '02 · Fund Strategy & Market', icon: Target },
@@ -25,6 +25,8 @@ const CATEGORIES = [
   { id: '05-legal-offering', label: '05 · Legal & Offering Documents', icon: Scale },
   { id: '06-operations-compliance', label: '06 · Operations & Compliance', icon: ShieldCheck },
   { id: '07-ddq-qa', label: '07 · DDQ & Q&A', icon: HelpCircle },
+  { id: '08-audited-financials', label: '08 · Audited Financials & Capital Calls', icon: FileCheck },
+  { id: '09-esg-dei-bcp', label: '09 · ESG, DEI & Business Continuity', icon: Briefcase },
   // Legacy buckets — kept so previously uploaded files remain visible & movable
   { id: 'lp-agreements', label: 'Legacy · LP Agreements', icon: FileCheck },
   { id: 'company-profiles', label: 'Legacy · Company Profiles', icon: Building2 },
@@ -32,6 +34,7 @@ const CATEGORIES = [
   { id: 'fund-documents', label: 'Legacy · Fund Documents', icon: Briefcase },
   { id: 'other', label: 'Legacy · Other', icon: File },
 ];
+
 
 
 interface DataRoomDocument {
@@ -461,7 +464,38 @@ const DataRoom: React.FC = () => {
           </Card>
         )}
 
+        {/* LP best-practice principles (SVB / Mercer guidance) */}
+        {!activeShare && (
+          <Card className="mb-6 border-primary/30 bg-card/40">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-technical uppercase tracking-wider text-primary flex items-center gap-2">
+                <FileCheck className="h-3 w-3" /> Data Room Principles · According to LPs
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 text-[11px] font-technical">
+                {[
+                  { t: 'Art + Science', d: 'Speak to both qualitative conviction and quantitative rigor — alignment, GP commit, vesting, sourcing edge.' },
+                  { t: 'Every LP Differs', d: 'Comprehensive VDR + downloadable subset. Share a table of contents and let LPs request specific items.' },
+                  { t: 'Best Foot Forward', d: 'Waterfall your story — lead with outstanding numbers; add qualitative context where the track record is thinner.' },
+                  { t: 'Transparent on Gaps', d: 'Pre-empt questions. Be open about what a first-time manager cannot yet provide — builds trust.' },
+                  { t: 'Counsel-Reviewed', d: 'Legal review on key docs; prior-fund approval on track-record attribution before publishing.' },
+                ].map((p) => (
+                  <div key={p.t} className="border border-border/40 p-2 bg-background/40">
+                    <p className="text-foreground font-semibold mb-1">{p.t}</p>
+                    <p className="text-muted-foreground leading-snug">{p.d}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-muted-foreground/70 font-technical mt-3 uppercase tracking-wider">
+                Source: SVB Emerging Manager Insights · Mercer Alternatives Group
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Category tabs */}
+
         <div className="flex flex-wrap gap-2 mb-8">
           <Button variant={selectedCategory === null ? 'default' : 'outline'} size="sm"
             onClick={() => setSelectedCategory(null)} className="font-technical text-xs"
