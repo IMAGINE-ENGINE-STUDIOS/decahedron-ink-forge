@@ -525,12 +525,13 @@ const DataRoom: React.FC = () => {
             <button
               onClick={() => setSelectedCategory(null)}
               disabled={!!activeShare && activeShare.scope !== 'all'}
-              className={`snap-start flex items-center gap-1.5 px-3 py-1.5 border rounded-full font-technical text-[10px] whitespace-nowrap transition-all hover:border-primary hover:bg-primary/5 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0 ${
+              className={`snap-start flex flex-col items-center justify-center gap-1 w-[72px] h-[72px] p-2 border rounded-md font-technical text-[9px] transition-all hover:border-primary hover:bg-primary/5 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0 ${
                 selectedCategory === null ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
               }`}
             >
-              <FolderOpen className="h-3 w-3" />
-              <span>ALL ({scopedDocs.length})</span>
+              <FolderOpen className="h-4 w-4" />
+              <span className="text-center leading-tight">ALL</span>
+              <span className="text-[8px] opacity-60">({scopedDocs.length})</span>
             </button>
             {CATEGORIES.map(cat => {
               if (ADMIN_ONLY_CATEGORIES.has(cat.id) && (!isAdmin || !!activeShare)) return null;
@@ -543,12 +544,13 @@ const DataRoom: React.FC = () => {
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`snap-start flex items-center gap-1.5 px-3 py-1.5 border rounded-full font-technical text-[10px] whitespace-nowrap transition-all hover:border-primary hover:bg-primary/5 flex-shrink-0 ${
+                  className={`snap-start flex flex-col items-center justify-center gap-1 w-[72px] h-[72px] p-2 border rounded-md font-technical text-[9px] transition-all hover:border-primary hover:bg-primary/5 flex-shrink-0 ${
                     isActive ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
                   }`}
                 >
-                  <Icon className="h-3 w-3" />
-                  <span>{cat.label.toUpperCase()} ({count})</span>
+                  <Icon className="h-4 w-4" />
+                  <span className="text-center leading-tight line-clamp-2">{cat.label}</span>
+                  <span className="text-[8px] opacity-60">({count})</span>
                 </button>
               );
             })}
