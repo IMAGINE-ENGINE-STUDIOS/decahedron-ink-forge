@@ -511,30 +511,47 @@ const DataRoom: React.FC = () => {
 
         {/* Category tabs */}
 
-        <div className="flex flex-wrap gap-2 mb-8">
-          <Button variant={selectedCategory === null ? 'default' : 'outline'} size="sm"
-            onClick={() => setSelectedCategory(null)} className="font-technical text-xs"
-            disabled={!!activeShare && activeShare.scope !== 'all'}>
-            <FolderOpen className="h-3 w-3 mr-1" />ALL ({scopedDocs.length})
-          </Button>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-8">
+          <button
+            onClick={() => setSelectedCategory(null)}
+            disabled={!!activeShare && activeShare.scope !== 'all'}
+            className={`aspect-square flex flex-col items-center justify-center gap-2 p-3 border rounded-md font-technical text-[10px] transition-all hover:border-primary hover:bg-primary/5 disabled:opacity-40 disabled:cursor-not-allowed ${
+              selectedCategory === null ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
+            }`}
+          >
+            <FolderOpen className="h-6 w-6" />
+            <span className="text-center leading-tight uppercase">All</span>
+            <span className="text-[9px] opacity-60">({scopedDocs.length})</span>
+          </button>
           {CATEGORIES.map(cat => {
             const count = scopedDocs.filter(d => d.category === cat.id).length;
             if (activeShare && activeShare.scope !== 'all' && activeShare.category !== cat.id) return null;
             const Icon = cat.icon;
+            const isActive = selectedCategory === cat.id;
             return (
-              <Button key={cat.id} variant={selectedCategory === cat.id ? 'default' : 'outline'} size="sm"
-                onClick={() => setSelectedCategory(cat.id)} className="font-technical text-xs">
-                <Icon className="h-3 w-3 mr-1" />{cat.label.toUpperCase()} ({count})
-              </Button>
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`aspect-square flex flex-col items-center justify-center gap-2 p-3 border rounded-md font-technical text-[10px] transition-all hover:border-primary hover:bg-primary/5 ${
+                  isActive ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
+                }`}
+              >
+                <Icon className="h-6 w-6" />
+                <span className="text-center leading-tight uppercase line-clamp-2">{cat.label}</span>
+                <span className="text-[9px] opacity-60">({count})</span>
+              </button>
             );
           })}
-          {isAdmin && selectedCategory && (
-            <Button size="sm" variant="outline" className="font-technical text-xs ml-auto"
+        </div>
+        {isAdmin && selectedCategory && (
+          <div className="flex justify-end mb-4">
+            <Button size="sm" variant="outline" className="font-technical text-xs"
               onClick={() => setShareDialog({ scope: 'category', category: selectedCategory, label: getCategoryLabel(selectedCategory) })}>
               <Share2 className="h-3 w-3 mr-1" />SHARE.{getCategoryLabel(selectedCategory).toUpperCase()}
             </Button>
-          )}
-        </div>
+          </div>
+        )}
+
 
         {/* Docs grouped by subfolder */}
         {loading ? (
