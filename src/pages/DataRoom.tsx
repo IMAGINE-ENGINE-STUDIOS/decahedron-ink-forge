@@ -516,37 +516,8 @@ const DataRoom: React.FC = () => {
           </Card>
         )}
 
-        {/* Table of Contents — Every LP Differs */}
-        {!activeShare && (
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
-              <span className="font-technical text-[10px] tracking-[0.2em] text-primary/70 uppercase">Table of Contents</span>
-              <div className="h-px flex-1 bg-gradient-to-l from-primary/30 to-transparent" />
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
-              {CATEGORIES.filter(c => !c.id.startsWith('legacy-') && c.id !== 'articles' && c.id !== 'other' && !c.id.startsWith('lp-') && !c.id.startsWith('company-') && !c.id.startsWith('team-') && !c.id.startsWith('fund-doc')).map(cat => {
-                const count = scopedDocs.filter(d => d.category === cat.id).length;
-                const Icon = cat.icon;
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className={`text-left p-3 border rounded-md transition-all hover:border-primary hover:bg-primary/5 flex items-center gap-2 ${
-                      selectedCategory === cat.id ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/30 text-foreground'
-                    }`}
-                  >
-                    <Icon className="h-3.5 w-3.5 flex-shrink-0" />
-                    <div className="min-w-0">
-                      <p className="font-technical text-[10px] truncate leading-tight">{cat.label}</p>
-                      <p className="font-technical text-[9px] text-muted-foreground">{count} doc{count !== 1 ? 's' : ''}</p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
+
+
 
         {/* Category carousel */}
         <div className="relative mb-8">
