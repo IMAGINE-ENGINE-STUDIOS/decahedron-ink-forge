@@ -483,32 +483,36 @@ const DataRoom: React.FC = () => {
             <button
               onClick={() => setSelectedCategory(null)}
               disabled={!!activeShare && activeShare.scope !== 'all'}
-              className={`snap-start flex flex-col items-center justify-center gap-1 w-[72px] h-[72px] p-2 border rounded-md font-technical text-[9px] transition-all hover:border-primary hover:bg-primary/5 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0 ${
+              title="All documents"
+              className={`snap-start flex flex-col items-center justify-center gap-1.5 w-[120px] h-[112px] p-3 border rounded-md font-technical text-[11px] transition-all hover:border-primary hover:bg-primary/5 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0 ${
                 selectedCategory === null ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
               }`}
             >
-              <FolderOpen className="h-4 w-4" />
+              <FolderOpen className="h-5 w-5" />
               <span className="text-center leading-tight">ALL</span>
-              <span className="text-[8px] opacity-60">({scopedDocs.length})</span>
+              <span className="text-[9px] opacity-60">({scopedDocs.length})</span>
             </button>
-            {CATEGORIES.map(cat => {
+            {CATEGORIES.map((cat, idx) => {
               if (ADMIN_ONLY_CATEGORIES.has(cat.id) && (!isAdmin || !!activeShare)) return null;
               const count = scopedDocs.filter(d => d.category === cat.id).length;
               if (activeShare && activeShare.scope !== 'all' && activeShare.category !== cat.id) return null;
 
               const Icon = cat.icon;
               const isActive = selectedCategory === cat.id;
+              const number = (cat as any).adminOnly ? '' : String(idx + 1).padStart(2, '0');
               return (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`snap-start flex flex-col items-center justify-center gap-1 w-[72px] h-[72px] p-2 border rounded-md font-technical text-[9px] transition-all hover:border-primary hover:bg-primary/5 flex-shrink-0 ${
+                  title={cat.label}
+                  className={`snap-start flex flex-col items-center justify-center gap-1.5 w-[120px] h-[112px] p-3 border rounded-md font-technical text-[11px] transition-all hover:border-primary hover:bg-primary/5 flex-shrink-0 ${
                     isActive ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
-                  <span className="text-center leading-tight line-clamp-2">{cat.label}</span>
-                  <span className="text-[8px] opacity-60">({count})</span>
+                  {number && <span className="text-[9px] opacity-50 tracking-wider">{number}</span>}
+                  <Icon className="h-5 w-5" />
+                  <span className="text-center leading-tight">{cat.label}</span>
+                  <span className="text-[9px] opacity-60">({count})</span>
                 </button>
               );
             })}
