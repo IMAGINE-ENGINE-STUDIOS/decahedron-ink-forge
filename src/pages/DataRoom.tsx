@@ -389,32 +389,7 @@ const DataRoom: React.FC = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* LP Principles — framing the experience */}
-        {!activeShare && (
-          <div className="mb-8 border border-primary/20 bg-card/30 rounded-lg overflow-hidden">
-            <div className="px-4 py-2 bg-primary/10 border-b border-primary/20 flex items-center gap-2">
-              <FileCheck className="h-3 w-3 text-primary" />
-              <span className="font-technical text-[10px] tracking-[0.2em] text-primary uppercase">Data Room Principles · According to LPs</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-border/40">
-              {[
-                { t: 'Art + Science', d: 'Qualitative conviction + quantitative rigor.' },
-                { t: 'Every LP Differs', d: 'Comprehensive VDR. Request specific items.' },
-                { t: 'Best Foot Forward', d: 'Lead with outstanding numbers first.' },
-                { t: 'Transparent on Gaps', d: 'Pre-empt questions. Open builds trust.' },
-                { t: 'Counsel-Reviewed', d: 'Legal review on key docs before publish.' },
-              ].map((p) => (
-                <div key={p.t} className="p-3">
-                  <p className="text-[10px] font-technical text-foreground font-semibold tracking-wider mb-1">{p.t}</p>
-                  <p className="text-[10px] font-technical text-muted-foreground leading-snug">{p.d}</p>
-                </div>
-              ))}
-            </div>
-            <div className="px-3 py-1.5 border-t border-border/40 bg-background/30">
-              <p className="text-[9px] text-muted-foreground/60 font-technical uppercase tracking-wider">Source: SVB Emerging Manager Insights · Mercer Alternatives Group</p>
-            </div>
-          </div>
-        )}
+        {/* Principles banner removed per Jim's 6/1/2026 memo — internal language not for LP view */}
 
         {/* Featured Deck — Best Foot Forward */}
         {!activeShare && (
