@@ -1,0 +1,2 @@
+UPDATE public.data_room_documents SET category = '02-team-cvs' WHERE category = 'team-cvs';
+UPDATE public.data_room_documents SET category = '06-legal-offering' WHERE category IN ('lp-agreements', 'fund-documents');
