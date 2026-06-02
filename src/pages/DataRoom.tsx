@@ -16,39 +16,22 @@ import {
 } from 'lucide-react';
 import LPGate from '@/components/dataroom/LPGate';
 
-// SVB "9 Key Components of a Data Room" framework
-// Source: SVB Emerging Manager Insights — Data Room Best Practices series
+// Data room folder structure — per Jim's 6/1/2026 memo
+// Order, names, and inclusions reflect his recommended revisions.
 const CATEGORIES = [
-  { id: '01-pitch-deck', label: '01 · Pitch Deck', icon: Presentation },
-  { id: '02-track-record', label: '02 · Track Record', icon: TrendingUp },
-  { id: '03-investment-memos', label: '03 · Investment Memos', icon: BookOpen },
-  { id: '04-ddq', label: '04 · DD Questionnaire', icon: ClipboardList },
-  { id: '05-lpa', label: '05 · LP Agreement', icon: Scale },
-  { id: '06-fund-model', label: '06 · Fund Model', icon: Calculator },
-  { id: '07-reference-list', label: '07 · Reference List', icon: UserCheck },
-  { id: '08-contact-list', label: '08 · Fund Contact List', icon: Phone },
-  // Supplementary folders for second-fund / institutional LP items
-  { id: '09-operations-compliance', label: '09 · Operations & Compliance', icon: ShieldCheck },
-  { id: '10-esg-dei-bcp', label: '10 · ESG, DEI & Business Continuity', icon: Briefcase },
-  // Admin-only internal library — hidden from LPs and from share links
+  { id: '01-pitch-deck', label: 'Pitch Deck', icon: Presentation },
+  { id: '02-team-cvs', label: 'Team CVs', icon: Users },
+  { id: '03-track-record', label: 'Track Record', icon: TrendingUp },
+  { id: '04-investment-memos', label: 'Investment Memos', icon: BookOpen },
+  { id: '05-fund-model', label: 'Fund Model', icon: Calculator },
+  { id: '06-legal-offering', label: 'Legal & Offering Documents', icon: Scale },
+  { id: '07-operations', label: 'Operations Documents', icon: ShieldCheck },
+  { id: '08-ddq', label: 'DD Questionnaire', icon: ClipboardList },
+  { id: '09-references', label: 'References', icon: UserCheck },
+  { id: '10-fund-contacts', label: 'Fund Contacts', icon: Phone },
+  { id: '11-other', label: 'Other Documents', icon: File },
+  // Admin-only internal library — hidden from LPs and share links
   { id: 'articles', label: 'Articles', icon: BookOpen, adminOnly: true },
-  // Legacy buckets — kept so previously uploaded files remain visible & movable
-  { id: '01-firm-team', label: 'Legacy · Firm & Team', icon: Users },
-  { id: '02-strategy-market', label: 'Legacy · Fund Strategy & Market', icon: Target },
-  { id: 'legacy-03-track-record', label: 'Legacy · Track Record (old)', icon: TrendingUp },
-  { id: 'legacy-04-fund-economics', label: 'Legacy · Fund Economics', icon: Calculator },
-  { id: 'legacy-05-legal-offering', label: 'Legacy · Legal & Offering', icon: Scale },
-  { id: 'legacy-06-operations-compliance', label: 'Legacy · Ops & Compliance', icon: ShieldCheck },
-
-  { id: 'legacy-07-ddq-qa', label: 'Legacy · DDQ & Q&A', icon: HelpCircle },
-  { id: 'legacy-08-audited-financials', label: 'Legacy · Audited Financials', icon: FileCheck },
-  { id: 'legacy-09-esg-dei-bcp', label: 'Legacy · ESG/DEI/BCP', icon: Briefcase },
-
-  { id: 'lp-agreements', label: 'Legacy · LP Agreements', icon: FileCheck },
-  { id: 'company-profiles', label: 'Legacy · Company Profiles', icon: Building2 },
-  { id: 'team-cvs', label: 'Legacy · Team CVs', icon: Users },
-  { id: 'fund-documents', label: 'Legacy · Fund Documents', icon: Briefcase },
-  { id: 'other', label: 'Legacy · Other', icon: File },
 ];
 
 const ADMIN_ONLY_CATEGORIES = new Set(CATEGORIES.filter(c => (c as any).adminOnly).map(c => c.id));
