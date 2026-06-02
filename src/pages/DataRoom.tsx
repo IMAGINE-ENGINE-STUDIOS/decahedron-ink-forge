@@ -16,39 +16,22 @@ import {
 } from 'lucide-react';
 import LPGate from '@/components/dataroom/LPGate';
 
-// SVB "9 Key Components of a Data Room" framework
-// Source: SVB Emerging Manager Insights — Data Room Best Practices series
+// Data room folder structure — per Jim's 6/1/2026 memo
+// Order, names, and inclusions reflect his recommended revisions.
 const CATEGORIES = [
-  { id: '01-pitch-deck', label: '01 · Pitch Deck', icon: Presentation },
-  { id: '02-track-record', label: '02 · Track Record', icon: TrendingUp },
-  { id: '03-investment-memos', label: '03 · Investment Memos', icon: BookOpen },
-  { id: '04-ddq', label: '04 · DD Questionnaire', icon: ClipboardList },
-  { id: '05-lpa', label: '05 · LP Agreement', icon: Scale },
-  { id: '06-fund-model', label: '06 · Fund Model', icon: Calculator },
-  { id: '07-reference-list', label: '07 · Reference List', icon: UserCheck },
-  { id: '08-contact-list', label: '08 · Fund Contact List', icon: Phone },
-  // Supplementary folders for second-fund / institutional LP items
-  { id: '09-operations-compliance', label: '09 · Operations & Compliance', icon: ShieldCheck },
-  { id: '10-esg-dei-bcp', label: '10 · ESG, DEI & Business Continuity', icon: Briefcase },
-  // Admin-only internal library — hidden from LPs and from share links
+  { id: '01-pitch-deck', label: 'Pitch Deck', icon: Presentation },
+  { id: '02-team-cvs', label: 'Team CVs', icon: Users },
+  { id: '03-track-record', label: 'Track Record', icon: TrendingUp },
+  { id: '04-investment-memos', label: 'Investment Memos', icon: BookOpen },
+  { id: '05-fund-model', label: 'Fund Model', icon: Calculator },
+  { id: '06-legal-offering', label: 'Legal & Offering Documents', icon: Scale },
+  { id: '07-operations', label: 'Operations Documents', icon: ShieldCheck },
+  { id: '08-ddq', label: 'DD Questionnaire', icon: ClipboardList },
+  { id: '09-references', label: 'References', icon: UserCheck },
+  { id: '10-fund-contacts', label: 'Fund Contacts', icon: Phone },
+  { id: '11-other', label: 'Other Documents', icon: File },
+  // Admin-only internal library — hidden from LPs and share links
   { id: 'articles', label: 'Articles', icon: BookOpen, adminOnly: true },
-  // Legacy buckets — kept so previously uploaded files remain visible & movable
-  { id: '01-firm-team', label: 'Legacy · Firm & Team', icon: Users },
-  { id: '02-strategy-market', label: 'Legacy · Fund Strategy & Market', icon: Target },
-  { id: 'legacy-03-track-record', label: 'Legacy · Track Record (old)', icon: TrendingUp },
-  { id: 'legacy-04-fund-economics', label: 'Legacy · Fund Economics', icon: Calculator },
-  { id: 'legacy-05-legal-offering', label: 'Legacy · Legal & Offering', icon: Scale },
-  { id: 'legacy-06-operations-compliance', label: 'Legacy · Ops & Compliance', icon: ShieldCheck },
-
-  { id: 'legacy-07-ddq-qa', label: 'Legacy · DDQ & Q&A', icon: HelpCircle },
-  { id: 'legacy-08-audited-financials', label: 'Legacy · Audited Financials', icon: FileCheck },
-  { id: 'legacy-09-esg-dei-bcp', label: 'Legacy · ESG/DEI/BCP', icon: Briefcase },
-
-  { id: 'lp-agreements', label: 'Legacy · LP Agreements', icon: FileCheck },
-  { id: 'company-profiles', label: 'Legacy · Company Profiles', icon: Building2 },
-  { id: 'team-cvs', label: 'Legacy · Team CVs', icon: Users },
-  { id: 'fund-documents', label: 'Legacy · Fund Documents', icon: Briefcase },
-  { id: 'other', label: 'Legacy · Other', icon: File },
 ];
 
 const ADMIN_ONLY_CATEGORIES = new Set(CATEGORIES.filter(c => (c as any).adminOnly).map(c => c.id));
@@ -406,32 +389,7 @@ const DataRoom: React.FC = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* LP Principles — framing the experience */}
-        {!activeShare && (
-          <div className="mb-8 border border-primary/20 bg-card/30 rounded-lg overflow-hidden">
-            <div className="px-4 py-2 bg-primary/10 border-b border-primary/20 flex items-center gap-2">
-              <FileCheck className="h-3 w-3 text-primary" />
-              <span className="font-technical text-[10px] tracking-[0.2em] text-primary uppercase">Data Room Principles · According to LPs</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-border/40">
-              {[
-                { t: 'Art + Science', d: 'Qualitative conviction + quantitative rigor.' },
-                { t: 'Every LP Differs', d: 'Comprehensive VDR. Request specific items.' },
-                { t: 'Best Foot Forward', d: 'Lead with outstanding numbers first.' },
-                { t: 'Transparent on Gaps', d: 'Pre-empt questions. Open builds trust.' },
-                { t: 'Counsel-Reviewed', d: 'Legal review on key docs before publish.' },
-              ].map((p) => (
-                <div key={p.t} className="p-3">
-                  <p className="text-[10px] font-technical text-foreground font-semibold tracking-wider mb-1">{p.t}</p>
-                  <p className="text-[10px] font-technical text-muted-foreground leading-snug">{p.d}</p>
-                </div>
-              ))}
-            </div>
-            <div className="px-3 py-1.5 border-t border-border/40 bg-background/30">
-              <p className="text-[9px] text-muted-foreground/60 font-technical uppercase tracking-wider">Source: SVB Emerging Manager Insights · Mercer Alternatives Group</p>
-            </div>
-          </div>
-        )}
+        {/* Principles banner removed per Jim's 6/1/2026 memo — internal language not for LP view */}
 
         {/* Featured Deck — Best Foot Forward */}
         {!activeShare && (
@@ -525,32 +483,36 @@ const DataRoom: React.FC = () => {
             <button
               onClick={() => setSelectedCategory(null)}
               disabled={!!activeShare && activeShare.scope !== 'all'}
-              className={`snap-start flex flex-col items-center justify-center gap-1 w-[72px] h-[72px] p-2 border rounded-md font-technical text-[9px] transition-all hover:border-primary hover:bg-primary/5 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0 ${
+              title="All documents"
+              className={`snap-start flex flex-col items-center justify-center gap-1.5 w-[120px] h-[112px] p-3 border rounded-md font-technical text-[11px] transition-all hover:border-primary hover:bg-primary/5 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0 ${
                 selectedCategory === null ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
               }`}
             >
-              <FolderOpen className="h-4 w-4" />
+              <FolderOpen className="h-5 w-5" />
               <span className="text-center leading-tight">ALL</span>
-              <span className="text-[8px] opacity-60">({scopedDocs.length})</span>
+              <span className="text-[9px] opacity-60">({scopedDocs.length})</span>
             </button>
-            {CATEGORIES.map(cat => {
+            {CATEGORIES.map((cat, idx) => {
               if (ADMIN_ONLY_CATEGORIES.has(cat.id) && (!isAdmin || !!activeShare)) return null;
               const count = scopedDocs.filter(d => d.category === cat.id).length;
               if (activeShare && activeShare.scope !== 'all' && activeShare.category !== cat.id) return null;
 
               const Icon = cat.icon;
               const isActive = selectedCategory === cat.id;
+              const number = (cat as any).adminOnly ? '' : String(idx + 1).padStart(2, '0');
               return (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`snap-start flex flex-col items-center justify-center gap-1 w-[72px] h-[72px] p-2 border rounded-md font-technical text-[9px] transition-all hover:border-primary hover:bg-primary/5 flex-shrink-0 ${
+                  title={cat.label}
+                  className={`snap-start flex flex-col items-center justify-center gap-1.5 w-[120px] h-[112px] p-3 border rounded-md font-technical text-[11px] transition-all hover:border-primary hover:bg-primary/5 flex-shrink-0 ${
                     isActive ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card/40 text-foreground'
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
-                  <span className="text-center leading-tight line-clamp-2">{cat.label}</span>
-                  <span className="text-[8px] opacity-60">({count})</span>
+                  {number && <span className="text-[9px] opacity-50 tracking-wider">{number}</span>}
+                  <Icon className="h-5 w-5" />
+                  <span className="text-center leading-tight">{cat.label}</span>
+                  <span className="text-[9px] opacity-60">({count})</span>
                 </button>
               );
             })}
