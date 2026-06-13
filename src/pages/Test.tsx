@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Lock, LockOpen, Plus, Trash2, Trophy } from 'lucide-react';
+import { ArrowLeft, Activity, Lock, LockOpen, Plus, RefreshCw, Trash2, Trophy, Zap } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
