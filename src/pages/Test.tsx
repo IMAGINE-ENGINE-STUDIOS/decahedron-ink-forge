@@ -51,10 +51,23 @@ const TOTAL_WEIGHT = FACTORS.reduce((s, f) => s + f.weight, 0);
 interface RankedCompany {
   id: string;
   name: string;
+  sector?: string;
   scores: Record<FactorKey, number>;
   cc: number;
   totalPoints: number;
 }
+
+const SECTORS = [
+  { value: 'semiconductors',     label: 'Semiconductors' },
+  { value: 'defense_aerospace',  label: 'Defense & Aerospace' },
+  { value: 'energy',             label: 'Energy' },
+  { value: 'industrials',        label: 'Industrials' },
+  { value: 'technology',         label: 'Technology' },
+  { value: 'healthcare',         label: 'Healthcare' },
+  { value: 'financials',         label: 'Financials' },
+  { value: 'materials',          label: 'Materials' },
+  { value: 'utilities',          label: 'Utilities' },
+] as const;
 
 const PHI = (1 + Math.sqrt(5)) / 2;
 const GOLDEN_ALLOC = (() => {
