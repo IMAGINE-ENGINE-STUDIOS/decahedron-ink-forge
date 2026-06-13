@@ -153,14 +153,50 @@ const Test: React.FC = () => {
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
 
-        <header className="mb-10">
-          <Badge variant="outline" className="mb-3">Decahedron Methodology</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-3">Company Coefficient Calculator</h1>
-          <p className="text-muted-foreground max-w-3xl">
-            Score a company across our 10 diligence factors. Each factor is rated 1–10 and weighted by its
-            importance to long-term, growth-stage outcomes. The Company Coefficient (CC) is the weighted
-            average — companies are ranked from highest to lowest CC.
-          </p>
+        <header className="mb-10 flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+          <div>
+            <Badge variant="outline" className="mb-3">Decahedron Methodology</Badge>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-3">Company Coefficient Calculator</h1>
+            <p className="text-muted-foreground max-w-3xl">
+              Score a company across our 10 diligence factors. Each factor is rated 1–10 and weighted by its
+              importance to long-term, growth-stage outcomes. The Company Coefficient (CC) is the weighted
+              average — companies are ranked from highest to lowest CC.
+            </p>
+          </div>
+
+          <Card className="w-full md:w-80 shrink-0">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                {isAdmin ? <LockOpen className="h-4 w-4 text-primary" /> : <Lock className="h-4 w-4" />}
+                Admin Cache
+              </CardTitle>
+              <CardDescription className="text-xs">
+                {isAdmin
+                  ? 'Rankings are saved to this browser only.'
+                  : 'Enter the admin password to cache rankings locally.'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {isAdmin ? (
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={handleLock} className="flex-1">Lock</Button>
+                  <Button size="sm" variant="outline" onClick={handleClearCache} className="flex-1">Clear</Button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Input
+                    type="password"
+                    value={passwordInput}
+                    onChange={e => setPasswordInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') handleUnlock(); }}
+                    placeholder="Password"
+                    className="h-9"
+                  />
+                  <Button size="sm" onClick={handleUnlock}>Unlock</Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </header>
 
         {/* Calculator */}
