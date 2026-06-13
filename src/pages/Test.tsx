@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2, Trophy } from 'lucide-react';
+import { ArrowLeft, Lock, LockOpen, Plus, Trash2, Trophy } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,10 @@ import { Slider } from '@/components/ui/slider';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
+
+const ADMIN_PASSWORD = 'VenturePartners';
+const ADMIN_FLAG_KEY = 'cc_admin_unlocked';
+const RANKINGS_CACHE_KEY = 'cc_rankings_cache';
 
 type FactorKey =
   | 'team'
