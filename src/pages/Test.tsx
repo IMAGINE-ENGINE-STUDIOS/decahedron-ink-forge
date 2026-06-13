@@ -81,6 +81,7 @@ const initialScores = (): Record<FactorKey, number> =>
 
 const Test: React.FC = () => {
   const [companyName, setCompanyName] = useState('');
+  const [companySector, setCompanySector] = useState<string>('');
   const [scores, setScores] = useState<Record<FactorKey, number>>(initialScores());
   const [isAdmin, setIsAdmin] = useState<boolean>(() => {
     try { return sessionStorage.getItem(ADMIN_FLAG_KEY) === '1'; } catch { return false; }
