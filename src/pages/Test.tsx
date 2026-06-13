@@ -143,12 +143,14 @@ const Test: React.FC = () => {
     const entry: RankedCompany = {
       id: crypto.randomUUID(),
       name: companyName.trim(),
+      sector: companySector || undefined,
       scores: { ...scores },
       cc,
       totalPoints,
     };
     setCompanies(prev => [...prev, entry].sort((a, b) => b.cc - a.cc));
     setCompanyName('');
+    setCompanySector('');
     setScores(initialScores());
     toast({
       title: 'Company added',
