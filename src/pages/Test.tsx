@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2, Trophy } from 'lucide-react';
+import { ArrowLeft, Lock, LockOpen, Plus, Trash2, Trophy } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,10 @@ import { Slider } from '@/components/ui/slider';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
+
+const ADMIN_PASSWORD = 'VenturePartners';
+const ADMIN_FLAG_KEY = 'cc_admin_unlocked';
+const RANKINGS_CACHE_KEY = 'cc_rankings_cache';
 
 type FactorKey =
   | 'team'
@@ -65,12 +69,57 @@ const initialScores = (): Record<FactorKey, number> =>
 const Test: React.FC = () => {
   const [companyName, setCompanyName] = useState('');
   const [scores, setScores] = useState<Record<FactorKey, number>>(initialScores());
-  const [companies, setCompanies] = useState<RankedCompany[]>([]);
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    try { return sessionStorage.getItem(ADMIN_FLAG_KEY) === '1'; } catch { return false; }
+  });
+  const [passwordInput, setPasswordInput] = useState('');
+  const [companies, setCompanies] = useState<RankedCompany[]>(() => {
+    try {
+      const unlocked = sessionStorage.getItem(ADMIN_FLAG_KEY) === '1';
+      if (!unlocked) return [];
+      const raw = localStorage.getItem(RANKINGS_CACHE_KEY);
+      return raw ? (JSON.parse(raw) as RankedCompany[]) : [];
+    } catch { return []; }
+  });
+
+  // Persist rankings to localStorage only when admin is unlocked
+  useEffect(() => {
+    if (!isAdmin) return;
+    try { localStorage.setItem(RANKINGS_CACHE_KEY, JSON.stringify(companies)); } catch { /* noop */ }
+  }, [companies, isAdmin]);
 
   const { cc, totalPoints } = useMemo(() => {
     const weighted = FACTORS.reduce((sum, f) => sum + scores[f.key] * f.weight, 0);
     return { cc: weighted / TOTAL_WEIGHT, totalPoints: weighted };
   }, [scores]);
+
+  const handleUnlock = () => {
+    if (passwordInput === ADMIN_PASSWORD) {
+      try {
+        sessionStorage.setItem(ADMIN_FLAG_KEY, '1');
+        const raw = localStorage.getItem(RANKINGS_CACHE_KEY);
+        if (raw) setCompanies(JSON.parse(raw));
+      } catch { /* noop */ }
+      setIsAdmin(true);
+      setPasswordInput('');
+      toast({ title: 'Admin unlocked', description: 'Rankings will now be cached locally.' });
+    } else {
+      toast({ title: 'Incorrect password', variant: 'destructive' });
+    }
+  };
+
+  const handleLock = () => {
+    try { sessionStorage.removeItem(ADMIN_FLAG_KEY); } catch { /* noop */ }
+    setIsAdmin(false);
+    setCompanies([]);
+    toast({ title: 'Locked', description: 'Cached rankings hidden from this session.' });
+  };
+
+  const handleClearCache = () => {
+    try { localStorage.removeItem(RANKINGS_CACHE_KEY); } catch { /* noop */ }
+    setCompanies([]);
+    toast({ title: 'Cache cleared' });
+  };
 
   const handleAdd = () => {
     if (!companyName.trim()) {
@@ -87,7 +136,12 @@ const Test: React.FC = () => {
     setCompanies(prev => [...prev, entry].sort((a, b) => b.cc - a.cc));
     setCompanyName('');
     setScores(initialScores());
-    toast({ title: 'Company added', description: `${entry.name} ranked with CC ${entry.cc.toFixed(2)}` });
+    toast({
+      title: 'Company added',
+      description: isAdmin
+        ? `${entry.name} ranked with CC ${entry.cc.toFixed(2)} (cached)`
+        : `${entry.name} ranked with CC ${entry.cc.toFixed(2)} — unlock admin to cache`,
+    });
   };
 
   const handleRemove = (id: string) => setCompanies(prev => prev.filter(c => c.id !== id));
@@ -99,14 +153,50 @@ const Test: React.FC = () => {
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
 
-        <header className="mb-10">
-          <Badge variant="outline" className="mb-3">Decahedron Methodology</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-3">Company Coefficient Calculator</h1>
-          <p className="text-muted-foreground max-w-3xl">
-            Score a company across our 10 diligence factors. Each factor is rated 1–10 and weighted by its
-            importance to long-term, growth-stage outcomes. The Company Coefficient (CC) is the weighted
-            average — companies are ranked from highest to lowest CC.
-          </p>
+        <header className="mb-10 flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+          <div>
+            <Badge variant="outline" className="mb-3">Decahedron Methodology</Badge>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-3">Company Coefficient Calculator</h1>
+            <p className="text-muted-foreground max-w-3xl">
+              Score a company across our 10 diligence factors. Each factor is rated 1–10 and weighted by its
+              importance to long-term, growth-stage outcomes. The Company Coefficient (CC) is the weighted
+              average — companies are ranked from highest to lowest CC.
+            </p>
+          </div>
+
+          <Card className="w-full md:w-80 shrink-0">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                {isAdmin ? <LockOpen className="h-4 w-4 text-primary" /> : <Lock className="h-4 w-4" />}
+                Admin Cache
+              </CardTitle>
+              <CardDescription className="text-xs">
+                {isAdmin
+                  ? 'Rankings are saved to this browser only.'
+                  : 'Enter the admin password to cache rankings locally.'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {isAdmin ? (
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={handleLock} className="flex-1">Lock</Button>
+                  <Button size="sm" variant="outline" onClick={handleClearCache} className="flex-1">Clear</Button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Input
+                    type="password"
+                    value={passwordInput}
+                    onChange={e => setPasswordInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') handleUnlock(); }}
+                    placeholder="Password"
+                    className="h-9"
+                  />
+                  <Button size="sm" onClick={handleUnlock}>Unlock</Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </header>
 
         {/* Calculator */}
