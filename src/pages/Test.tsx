@@ -129,6 +129,63 @@ const Test: React.FC = () => {
     try { localStorage.setItem(RANKINGS_CACHE_KEY, JSON.stringify(companies)); } catch { /* noop */ }
   }, [companies, isAdmin]);
 
+  // ── Real-time industry signals + adjusted allocation ────────────────────
+  const [signals, setSignals] = useState<IndustrySignal[]>([]);
+  const [signalsLoading, setSignalsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [adjusted, setAdjusted] = useState<AllocationResponse | null>(null);
+  const [computing, setComputing] = useState(false);
+
+  const loadSignals = async () => {
+    setSignalsLoading(true);
+    const { data, error } = await supabase
+      .from('industry_signals')
+      .select('sector,source,metric,value,z_score,unit,as_of,fetched_at')
+      .order('fetched_at', { ascending: false })
+      .limit(200);
+    setSignalsLoading(false);
+    if (error) {
+      toast({ title: 'Could not load signals', description: error.message, variant: 'destructive' });
+      return;
+    }
+    setSignals(data ?? []);
+  };
+
+  useEffect(() => { loadSignals(); }, []);
+
+  const handleRefreshSignals = async () => {
+    setRefreshing(true);
+    const { data, error } = await supabase.functions.invoke('industry-signals-refresh', { body: {} });
+    setRefreshing(false);
+    if (error) {
+      toast({ title: 'Refresh failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+    toast({ title: 'Signals refreshed', description: `${data?.refreshed ?? 0} metrics updated from public sources` });
+    await loadSignals();
+  };
+
+  const handleRecompute = async () => {
+    if (!companies.length) {
+      toast({ title: 'Add companies first', variant: 'destructive' });
+      return;
+    }
+    setComputing(true);
+    const { data, error } = await supabase.functions.invoke<AllocationResponse>('compute-allocation', {
+      body: { companies: companies.map(c => ({ id: c.id, name: c.name, sector: c.sector, scores: c.scores })) },
+    });
+    setComputing(false);
+    if (error || !data) {
+      toast({ title: 'Compute failed', description: error?.message ?? 'Unknown error', variant: 'destructive' });
+      return;
+    }
+    setAdjusted(data);
+    toast({ title: 'Allocation re-adjusted', description: `φ exponent = ${data.phiExponent.toFixed(3)} from ${data.signalsCount} live signals` });
+  };
+
+  const macroSignals = useMemo(() => signals.filter(s => s.sector === 'macro' || s.sector === 'energy').slice(0, 8), [signals]);
+  const sectorSignals = useMemo(() => signals.filter(s => s.sector !== 'macro' && s.sector !== 'energy').slice(0, 18), [signals]);
+
   const { cc, totalPoints } = useMemo(() => {
     const weighted = FACTORS.reduce((sum, f) => sum + scores[f.key] * f.weight, 0);
     return { cc: weighted / TOTAL_WEIGHT, totalPoints: weighted };
