@@ -191,6 +191,48 @@ export type Database = {
         }
         Relationships: []
       }
+      industry_signals: {
+        Row: {
+          as_of: string | null
+          created_at: string
+          fetched_at: string
+          id: string
+          metric: string
+          sector: string
+          source: string
+          unit: string | null
+          updated_at: string
+          value: number
+          z_score: number | null
+        }
+        Insert: {
+          as_of?: string | null
+          created_at?: string
+          fetched_at?: string
+          id?: string
+          metric: string
+          sector: string
+          source: string
+          unit?: string | null
+          updated_at?: string
+          value: number
+          z_score?: number | null
+        }
+        Update: {
+          as_of?: string | null
+          created_at?: string
+          fetched_at?: string
+          id?: string
+          metric?: string
+          sector?: string
+          source?: string
+          unit?: string | null
+          updated_at?: string
+          value?: number
+          z_score?: number | null
+        }
+        Relationships: []
+      }
       investors: {
         Row: {
           commitment: string

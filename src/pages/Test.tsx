@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Lock, LockOpen, Plus, Trash2, Trophy } from 'lucide-react';
+import { ArrowLeft, Activity, Lock, LockOpen, Plus, RefreshCw, Trash2, Trophy, Zap } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,33 @@ import { Slider } from '@/components/ui/slider';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+
+interface IndustrySignal {
+  sector: string;
+  source: string;
+  metric: string;
+  value: number;
+  z_score: number | null;
+  unit: string | null;
+  as_of: string | null;
+  fetched_at: string;
+}
+
+interface AdjustedCompany {
+  id: string;
+  name: string;
+  sector: string | null;
+  adjustedCc: number;
+  rank: number;
+  allocationPct: number;
+}
+
+interface AllocationResponse {
+  phiExponent: number;
+  signalsCount: number;
+  companies: AdjustedCompany[];
+}
 
 const ADMIN_PASSWORD = 'VenturePartners';
 const ADMIN_FLAG_KEY = 'cc_admin_unlocked';
@@ -51,10 +78,23 @@ const TOTAL_WEIGHT = FACTORS.reduce((s, f) => s + f.weight, 0);
 interface RankedCompany {
   id: string;
   name: string;
+  sector?: string;
   scores: Record<FactorKey, number>;
   cc: number;
   totalPoints: number;
 }
+
+const SECTORS = [
+  { value: 'semiconductors',     label: 'Semiconductors' },
+  { value: 'defense_aerospace',  label: 'Defense & Aerospace' },
+  { value: 'energy',             label: 'Energy' },
+  { value: 'industrials',        label: 'Industrials' },
+  { value: 'technology',         label: 'Technology' },
+  { value: 'healthcare',         label: 'Healthcare' },
+  { value: 'financials',         label: 'Financials' },
+  { value: 'materials',          label: 'Materials' },
+  { value: 'utilities',          label: 'Utilities' },
+] as const;
 
 const PHI = (1 + Math.sqrt(5)) / 2;
 const GOLDEN_ALLOC = (() => {
@@ -68,6 +108,7 @@ const initialScores = (): Record<FactorKey, number> =>
 
 const Test: React.FC = () => {
   const [companyName, setCompanyName] = useState('');
+  const [companySector, setCompanySector] = useState<string>('');
   const [scores, setScores] = useState<Record<FactorKey, number>>(initialScores());
   const [isAdmin, setIsAdmin] = useState<boolean>(() => {
     try { return sessionStorage.getItem(ADMIN_FLAG_KEY) === '1'; } catch { return false; }
@@ -87,6 +128,63 @@ const Test: React.FC = () => {
     if (!isAdmin) return;
     try { localStorage.setItem(RANKINGS_CACHE_KEY, JSON.stringify(companies)); } catch { /* noop */ }
   }, [companies, isAdmin]);
+
+  // ── Real-time industry signals + adjusted allocation ────────────────────
+  const [signals, setSignals] = useState<IndustrySignal[]>([]);
+  const [signalsLoading, setSignalsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [adjusted, setAdjusted] = useState<AllocationResponse | null>(null);
+  const [computing, setComputing] = useState(false);
+
+  const loadSignals = async () => {
+    setSignalsLoading(true);
+    const { data, error } = await supabase
+      .from('industry_signals')
+      .select('sector,source,metric,value,z_score,unit,as_of,fetched_at')
+      .order('fetched_at', { ascending: false })
+      .limit(200);
+    setSignalsLoading(false);
+    if (error) {
+      toast({ title: 'Could not load signals', description: error.message, variant: 'destructive' });
+      return;
+    }
+    setSignals(data ?? []);
+  };
+
+  useEffect(() => { loadSignals(); }, []);
+
+  const handleRefreshSignals = async () => {
+    setRefreshing(true);
+    const { data, error } = await supabase.functions.invoke('industry-signals-refresh', { body: {} });
+    setRefreshing(false);
+    if (error) {
+      toast({ title: 'Refresh failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+    toast({ title: 'Signals refreshed', description: `${data?.refreshed ?? 0} metrics updated from public sources` });
+    await loadSignals();
+  };
+
+  const handleRecompute = async () => {
+    if (!companies.length) {
+      toast({ title: 'Add companies first', variant: 'destructive' });
+      return;
+    }
+    setComputing(true);
+    const { data, error } = await supabase.functions.invoke<AllocationResponse>('compute-allocation', {
+      body: { companies: companies.map(c => ({ id: c.id, name: c.name, sector: c.sector, scores: c.scores })) },
+    });
+    setComputing(false);
+    if (error || !data) {
+      toast({ title: 'Compute failed', description: error?.message ?? 'Unknown error', variant: 'destructive' });
+      return;
+    }
+    setAdjusted(data);
+    toast({ title: 'Allocation re-adjusted', description: `φ exponent = ${data.phiExponent.toFixed(3)} from ${data.signalsCount} live signals` });
+  };
+
+  const macroSignals = useMemo(() => signals.filter(s => s.sector === 'macro' || s.sector === 'energy').slice(0, 8), [signals]);
+  const sectorSignals = useMemo(() => signals.filter(s => s.sector !== 'macro' && s.sector !== 'energy').slice(0, 18), [signals]);
 
   const { cc, totalPoints } = useMemo(() => {
     const weighted = FACTORS.reduce((sum, f) => sum + scores[f.key] * f.weight, 0);
@@ -129,12 +227,14 @@ const Test: React.FC = () => {
     const entry: RankedCompany = {
       id: crypto.randomUUID(),
       name: companyName.trim(),
+      sector: companySector || undefined,
       scores: { ...scores },
       cc,
       totalPoints,
     };
     setCompanies(prev => [...prev, entry].sort((a, b) => b.cc - a.cc));
     setCompanyName('');
+    setCompanySector('');
     setScores(initialScores());
     toast({
       title: 'Company added',
@@ -208,7 +308,7 @@ const Test: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="company">Company Name</Label>
                 <Input
@@ -220,12 +320,24 @@ const Test: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="sector">Sector (for live adjustment)</Label>
+                <select
+                  id="sector"
+                  value={companySector}
+                  onChange={e => setCompanySector(e.target.value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">— none —</option>
+                  {SECTORS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                </select>
+              </div>
+              <div className="space-y-2">
                 <Label>Live Score</Label>
                 <div className="flex items-baseline gap-4 rounded-md border border-border bg-muted/30 px-4 py-2 h-10">
                   <span className="text-2xl font-bold tabular-nums">{cc.toFixed(2)}</span>
-                  <span className="text-xs text-muted-foreground">CC (out of 10)</span>
+                  <span className="text-xs text-muted-foreground">CC</span>
                   <span className="ml-auto text-sm tabular-nums text-muted-foreground">
-                    {totalPoints.toFixed(1)} total pts
+                    {totalPoints.toFixed(1)} pts
                   </span>
                 </div>
               </div>
@@ -304,6 +416,126 @@ const Test: React.FC = () => {
                   ))}
                 </TableBody>
               </Table>
+            )}
+          </CardContent>
+        </Card>
+
+
+        {/* Live Industry Signals */}
+        <Card className="mb-10">
+          <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" /> Live Industry Signals
+              </CardTitle>
+              <CardDescription>
+                Real-time data pulled from FRED (US Federal Reserve), World Bank, OECD, and public market sources.
+                Refreshed daily — feeds the Golden Ratio adjustment.
+              </CardDescription>
+            </div>
+            <Button size="sm" variant="outline" onClick={handleRefreshSignals} disabled={refreshing} className="gap-2">
+              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+              {refreshing ? 'Refreshing…' : 'Refresh now'}
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {signalsLoading && <p className="text-sm text-muted-foreground">Loading signals…</p>}
+            {!signalsLoading && signals.length === 0 && (
+              <p className="text-sm text-muted-foreground">No signals yet. Click "Refresh now" to pull live data.</p>
+            )}
+
+            {macroSignals.length > 0 && (
+              <div>
+                <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Macro</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {macroSignals.map(s => (
+                    <div key={`${s.source}-${s.metric}`} className="rounded-md border border-border p-3">
+                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{s.source} · {s.metric}</div>
+                      <div className="text-lg font-bold tabular-nums">{s.value.toFixed(2)}<span className="text-xs text-muted-foreground ml-1">{s.unit ?? ''}</span></div>
+                      {s.z_score != null && (
+                        <div className={`text-xs tabular-nums ${s.z_score > 1 ? 'text-destructive' : s.z_score < -1 ? 'text-primary' : 'text-muted-foreground'}`}>
+                          z = {s.z_score.toFixed(2)}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {sectorSignals.length > 0 && (
+              <div>
+                <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Sector ETFs (vol & momentum)</h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {sectorSignals.map(s => (
+                    <div key={`${s.source}-${s.metric}`} className="rounded-md border border-border p-3">
+                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{s.sector.replace(/_/g, ' ')} · {s.metric}</div>
+                      <div className="text-base font-semibold tabular-nums">
+                        {s.metric.endsWith('_MOM90') ? `${(s.value * 100).toFixed(1)}%` : s.value.toFixed(3)}
+                      </div>
+                      {s.z_score != null && (
+                        <div className="text-xs tabular-nums text-muted-foreground">z = {s.z_score.toFixed(2)}</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Adjusted Allocation */}
+        <Card className="mb-10">
+          <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="h-5 w-5" /> Live-Adjusted Golden Ratio Allocation
+              </CardTitle>
+              <CardDescription>
+                Runs the Decahedron algorithm in an edge function. Modulates factor weights from
+                live signals and re-shapes the φ decay based on macro stress (VIX, yield curve).
+              </CardDescription>
+            </div>
+            <Button size="sm" onClick={handleRecompute} disabled={computing || companies.length === 0} className="gap-2">
+              <Zap className="h-4 w-4" />
+              {computing ? 'Computing…' : 'Re-adjust with live data'}
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {!adjusted && (
+              <p className="text-sm text-muted-foreground py-8 text-center">
+                Add companies and click "Re-adjust" to compute live allocations.
+              </p>
+            )}
+            {adjusted && (
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-4 text-sm">
+                  <Badge variant="outline" className="tabular-nums">φ exponent: {adjusted.phiExponent.toFixed(3)}</Badge>
+                  <Badge variant="outline" className="tabular-nums">{adjusted.signalsCount} signals</Badge>
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-12">#</TableHead>
+                      <TableHead>Company</TableHead>
+                      <TableHead>Sector</TableHead>
+                      <TableHead className="text-right">Adjusted CC</TableHead>
+                      <TableHead className="text-right">Allocation</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {adjusted.companies.map(c => (
+                      <TableRow key={c.id}>
+                        <TableCell className="font-bold">{c.rank}</TableCell>
+                        <TableCell>{c.name}</TableCell>
+                        <TableCell className="text-muted-foreground text-xs">{c.sector?.replace(/_/g, ' ') ?? '—'}</TableCell>
+                        <TableCell className="text-right tabular-nums font-semibold">{c.adjustedCc.toFixed(2)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{(c.allocationPct * 100).toFixed(2)}%</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>
