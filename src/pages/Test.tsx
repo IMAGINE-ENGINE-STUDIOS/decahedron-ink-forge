@@ -9,6 +9,33 @@ import { Slider } from '@/components/ui/slider';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+
+interface IndustrySignal {
+  sector: string;
+  source: string;
+  metric: string;
+  value: number;
+  z_score: number | null;
+  unit: string | null;
+  as_of: string | null;
+  fetched_at: string;
+}
+
+interface AdjustedCompany {
+  id: string;
+  name: string;
+  sector: string | null;
+  adjustedCc: number;
+  rank: number;
+  allocationPct: number;
+}
+
+interface AllocationResponse {
+  phiExponent: number;
+  signalsCount: number;
+  companies: AdjustedCompany[];
+}
 
 const ADMIN_PASSWORD = 'VenturePartners';
 const ADMIN_FLAG_KEY = 'cc_admin_unlocked';
