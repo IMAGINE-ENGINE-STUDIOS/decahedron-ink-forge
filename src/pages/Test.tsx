@@ -420,6 +420,126 @@ const Test: React.FC = () => {
           </CardContent>
         </Card>
 
+
+        {/* Live Industry Signals */}
+        <Card className="mb-10">
+          <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" /> Live Industry Signals
+              </CardTitle>
+              <CardDescription>
+                Real-time data pulled from FRED (US Federal Reserve), World Bank, OECD, and public market sources.
+                Refreshed daily — feeds the Golden Ratio adjustment.
+              </CardDescription>
+            </div>
+            <Button size="sm" variant="outline" onClick={handleRefreshSignals} disabled={refreshing} className="gap-2">
+              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+              {refreshing ? 'Refreshing…' : 'Refresh now'}
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {signalsLoading && <p className="text-sm text-muted-foreground">Loading signals…</p>}
+            {!signalsLoading && signals.length === 0 && (
+              <p className="text-sm text-muted-foreground">No signals yet. Click "Refresh now" to pull live data.</p>
+            )}
+
+            {macroSignals.length > 0 && (
+              <div>
+                <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Macro</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {macroSignals.map(s => (
+                    <div key={`${s.source}-${s.metric}`} className="rounded-md border border-border p-3">
+                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{s.source} · {s.metric}</div>
+                      <div className="text-lg font-bold tabular-nums">{s.value.toFixed(2)}<span className="text-xs text-muted-foreground ml-1">{s.unit ?? ''}</span></div>
+                      {s.z_score != null && (
+                        <div className={`text-xs tabular-nums ${s.z_score > 1 ? 'text-destructive' : s.z_score < -1 ? 'text-primary' : 'text-muted-foreground'}`}>
+                          z = {s.z_score.toFixed(2)}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {sectorSignals.length > 0 && (
+              <div>
+                <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Sector ETFs (vol & momentum)</h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {sectorSignals.map(s => (
+                    <div key={`${s.source}-${s.metric}`} className="rounded-md border border-border p-3">
+                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{s.sector.replace(/_/g, ' ')} · {s.metric}</div>
+                      <div className="text-base font-semibold tabular-nums">
+                        {s.metric.endsWith('_MOM90') ? `${(s.value * 100).toFixed(1)}%` : s.value.toFixed(3)}
+                      </div>
+                      {s.z_score != null && (
+                        <div className="text-xs tabular-nums text-muted-foreground">z = {s.z_score.toFixed(2)}</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Adjusted Allocation */}
+        <Card className="mb-10">
+          <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="h-5 w-5" /> Live-Adjusted Golden Ratio Allocation
+              </CardTitle>
+              <CardDescription>
+                Runs the Decahedron algorithm in an edge function. Modulates factor weights from
+                live signals and re-shapes the φ decay based on macro stress (VIX, yield curve).
+              </CardDescription>
+            </div>
+            <Button size="sm" onClick={handleRecompute} disabled={computing || companies.length === 0} className="gap-2">
+              <Zap className="h-4 w-4" />
+              {computing ? 'Computing…' : 'Re-adjust with live data'}
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {!adjusted && (
+              <p className="text-sm text-muted-foreground py-8 text-center">
+                Add companies and click "Re-adjust" to compute live allocations.
+              </p>
+            )}
+            {adjusted && (
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-4 text-sm">
+                  <Badge variant="outline" className="tabular-nums">φ exponent: {adjusted.phiExponent.toFixed(3)}</Badge>
+                  <Badge variant="outline" className="tabular-nums">{adjusted.signalsCount} signals</Badge>
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-12">#</TableHead>
+                      <TableHead>Company</TableHead>
+                      <TableHead>Sector</TableHead>
+                      <TableHead className="text-right">Adjusted CC</TableHead>
+                      <TableHead className="text-right">Allocation</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {adjusted.companies.map(c => (
+                      <TableRow key={c.id}>
+                        <TableCell className="font-bold">{c.rank}</TableCell>
+                        <TableCell>{c.name}</TableCell>
+                        <TableCell className="text-muted-foreground text-xs">{c.sector?.replace(/_/g, ' ') ?? '—'}</TableCell>
+                        <TableCell className="text-right tabular-nums font-semibold">{c.adjustedCc.toFixed(2)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{(c.allocationPct * 100).toFixed(2)}%</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Methodology */}
         <Card className="mb-10">
           <CardHeader>
