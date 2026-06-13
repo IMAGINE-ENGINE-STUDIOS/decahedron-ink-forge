@@ -69,12 +69,57 @@ const initialScores = (): Record<FactorKey, number> =>
 const Test: React.FC = () => {
   const [companyName, setCompanyName] = useState('');
   const [scores, setScores] = useState<Record<FactorKey, number>>(initialScores());
-  const [companies, setCompanies] = useState<RankedCompany[]>([]);
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    try { return sessionStorage.getItem(ADMIN_FLAG_KEY) === '1'; } catch { return false; }
+  });
+  const [passwordInput, setPasswordInput] = useState('');
+  const [companies, setCompanies] = useState<RankedCompany[]>(() => {
+    try {
+      const unlocked = sessionStorage.getItem(ADMIN_FLAG_KEY) === '1';
+      if (!unlocked) return [];
+      const raw = localStorage.getItem(RANKINGS_CACHE_KEY);
+      return raw ? (JSON.parse(raw) as RankedCompany[]) : [];
+    } catch { return []; }
+  });
+
+  // Persist rankings to localStorage only when admin is unlocked
+  useEffect(() => {
+    if (!isAdmin) return;
+    try { localStorage.setItem(RANKINGS_CACHE_KEY, JSON.stringify(companies)); } catch { /* noop */ }
+  }, [companies, isAdmin]);
 
   const { cc, totalPoints } = useMemo(() => {
     const weighted = FACTORS.reduce((sum, f) => sum + scores[f.key] * f.weight, 0);
     return { cc: weighted / TOTAL_WEIGHT, totalPoints: weighted };
   }, [scores]);
+
+  const handleUnlock = () => {
+    if (passwordInput === ADMIN_PASSWORD) {
+      try {
+        sessionStorage.setItem(ADMIN_FLAG_KEY, '1');
+        const raw = localStorage.getItem(RANKINGS_CACHE_KEY);
+        if (raw) setCompanies(JSON.parse(raw));
+      } catch { /* noop */ }
+      setIsAdmin(true);
+      setPasswordInput('');
+      toast({ title: 'Admin unlocked', description: 'Rankings will now be cached locally.' });
+    } else {
+      toast({ title: 'Incorrect password', variant: 'destructive' });
+    }
+  };
+
+  const handleLock = () => {
+    try { sessionStorage.removeItem(ADMIN_FLAG_KEY); } catch { /* noop */ }
+    setIsAdmin(false);
+    setCompanies([]);
+    toast({ title: 'Locked', description: 'Cached rankings hidden from this session.' });
+  };
+
+  const handleClearCache = () => {
+    try { localStorage.removeItem(RANKINGS_CACHE_KEY); } catch { /* noop */ }
+    setCompanies([]);
+    toast({ title: 'Cache cleared' });
+  };
 
   const handleAdd = () => {
     if (!companyName.trim()) {
@@ -91,7 +136,12 @@ const Test: React.FC = () => {
     setCompanies(prev => [...prev, entry].sort((a, b) => b.cc - a.cc));
     setCompanyName('');
     setScores(initialScores());
-    toast({ title: 'Company added', description: `${entry.name} ranked with CC ${entry.cc.toFixed(2)}` });
+    toast({
+      title: 'Company added',
+      description: isAdmin
+        ? `${entry.name} ranked with CC ${entry.cc.toFixed(2)} (cached)`
+        : `${entry.name} ranked with CC ${entry.cc.toFixed(2)} — unlock admin to cache`,
+    });
   };
 
   const handleRemove = (id: string) => setCompanies(prev => prev.filter(c => c.id !== id));
