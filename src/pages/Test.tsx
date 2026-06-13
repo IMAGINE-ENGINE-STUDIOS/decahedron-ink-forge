@@ -224,7 +224,7 @@ const Test: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="company">Company Name</Label>
                 <Input
@@ -236,12 +236,24 @@ const Test: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="sector">Sector (for live adjustment)</Label>
+                <select
+                  id="sector"
+                  value={companySector}
+                  onChange={e => setCompanySector(e.target.value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">— none —</option>
+                  {SECTORS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                </select>
+              </div>
+              <div className="space-y-2">
                 <Label>Live Score</Label>
                 <div className="flex items-baseline gap-4 rounded-md border border-border bg-muted/30 px-4 py-2 h-10">
                   <span className="text-2xl font-bold tabular-nums">{cc.toFixed(2)}</span>
-                  <span className="text-xs text-muted-foreground">CC (out of 10)</span>
+                  <span className="text-xs text-muted-foreground">CC</span>
                   <span className="ml-auto text-sm tabular-nums text-muted-foreground">
-                    {totalPoints.toFixed(1)} total pts
+                    {totalPoints.toFixed(1)} pts
                   </span>
                 </div>
               </div>
