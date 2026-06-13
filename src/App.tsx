@@ -10,6 +10,7 @@ import SlideDeck from "./pages/SlideDeck";
 import DataRoom from "./pages/DataRoom";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import Test from "./pages/Test";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/slidedeck" element={<SlideDeck />} />
           <Route path="/dataroom" element={<DataRoom />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/test" element={<Test />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
