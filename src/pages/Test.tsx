@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import PublicCompanyScorer from '@/components/test/PublicCompanyScorer';
 import PaperTradingPanel from '@/components/test/PaperTradingPanel';
 import LiveTradingViewport from '@/components/test/LiveTradingViewport';
+import AlgoAutoPilot from '@/components/test/AlgoAutoPilot';
 
 interface IndustrySignal {
   sector: string;
@@ -546,6 +547,7 @@ const Test: React.FC = () => {
         {/* Public market: auto-score + paper trade */}
         <PublicCompanyScorer isAdmin={isAdmin} password={ADMIN_PASSWORD} />
         <PaperTradingPanel isAdmin={isAdmin} password={ADMIN_PASSWORD} />
+        <AlgoAutoPilot isAdmin={isAdmin} password={ADMIN_PASSWORD} />
         <LiveTradingViewport isAdmin={isAdmin} password={ADMIN_PASSWORD} />
 
         {/* Methodology */}
