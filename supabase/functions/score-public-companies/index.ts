@@ -112,59 +112,69 @@ function nthFact(facts: any, concept: string, n: number, unit = "USD"): number |
   } catch { return null; }
 }
 
-function scoreCompany(yahoo: any, facts: any): { scores: Record<FactorKey, number>; cc: number; name: string; sector: string } {
-  // Yahoo extracts
-  const recMean = yahoo?.financialData?.recommendationMean?.raw ?? 3;          // 1=strong buy, 5=strong sell
-  const profitMargin = yahoo?.financialData?.profitMargins?.raw ?? 0;
-  const grossMargin = yahoo?.financialData?.grossMargins?.raw ?? 0;
-  const opMargin = yahoo?.financialData?.operatingMargins?.raw ?? 0;
-  const revGrowth = yahoo?.financialData?.revenueGrowth?.raw ?? 0;             // YoY
-  const earningsGrowth = yahoo?.financialData?.earningsGrowth?.raw ?? 0;
-  const debtEq = yahoo?.financialData?.debtToEquity?.raw ?? 100;
-  const fcf = yahoo?.financialData?.freeCashflow?.raw ?? 0;
-  const opCash = yahoo?.financialData?.operatingCashflow?.raw ?? 1;
-  const marketCap = yahoo?.summaryDetail?.marketCap?.raw ?? yahoo?.defaultKeyStatistics?.marketCap?.raw ?? 0;
-  const instOwn = yahoo?.majorHoldersBreakdown?.institutionsPercentHeld?.raw ?? 0;
-  const insiderHold = yahoo?.majorHoldersBreakdown?.insidersPercentHeld?.raw ?? 0;
-  const sector = yahoo?.assetProfile?.sector ?? "Unknown";
-  const industry = yahoo?.assetProfile?.industry ?? "";
-  const name = yahoo?.assetProfile?.longName ?? yahoo?.summaryDetail?.longName ?? "";
+function scoreCompany(ticker: string, meta: any, facts: any): { scores: Record<FactorKey, number>; cc: number; name: string; sector: string } {
+  // Yahoo chart meta — price + marketCap proxy (regularMarketPrice * shares). The
+  // chart endpoint doesn't return shares outstanding, so marketCap is estimated
+  // from EDGAR `CommonStockSharesOutstanding` × current price when available.
+  const price = meta?.meta?.regularMarketPrice ?? meta?.meta?.previousClose ?? 0;
+  const closes: number[] = (meta?.indicators?.quote?.[0]?.close ?? []).filter((x: number) => x != null);
+  const yoyReturn = closes.length > 200 ? (closes[closes.length - 1] / closes[0]) - 1 : 0;
+  // Realised vol (annualised)
+  let vol = 0;
+  if (closes.length > 30) {
+    const rets: number[] = [];
+    for (let i = 1; i < closes.length; i++) rets.push(Math.log(closes[i] / closes[i - 1]));
+    const mean = rets.reduce((a, b) => a + b, 0) / rets.length;
+    const variance = rets.reduce((a, b) => a + (b - mean) ** 2, 0) / rets.length;
+    vol = Math.sqrt(variance) * Math.sqrt(252);
+  }
 
-  // EDGAR extracts
+  // EDGAR fundamentals
   const rev0 = latestFact(facts, "Revenues") ?? latestFact(facts, "RevenueFromContractWithCustomerExcludingAssessedTax");
   const rev2 = nthFact(facts, "Revenues", 2) ?? nthFact(facts, "RevenueFromContractWithCustomerExcludingAssessedTax", 2);
   const rd = latestFact(facts, "ResearchAndDevelopmentExpense");
   const capex = latestFact(facts, "PaymentsToAcquirePropertyPlantAndEquipment");
   const inventory = latestFact(facts, "InventoryNet");
   const cogs = latestFact(facts, "CostOfRevenue") ?? latestFact(facts, "CostOfGoodsAndServicesSold");
+  const opIncome = latestFact(facts, "OperatingIncomeLoss");
+  const netIncome = latestFact(facts, "NetIncomeLoss");
+  const opCashflow = latestFact(facts, "NetCashProvidedByUsedInOperatingActivities");
+  const longTermDebt = latestFact(facts, "LongTermDebtNoncurrent") ?? latestFact(facts, "LongTermDebt") ?? 0;
+  const equity = latestFact(facts, "StockholdersEquity") ?? 1;
+  const sharesOut = latestFact(facts, "CommonStockSharesOutstanding", "shares") ?? 0;
+  const entityName = facts?.entityName ?? ticker;
+  const sicDesc = facts?.facts?.dei?.EntityRegistrantName?.units || ""; // not useful
+  const sector = (facts?.sicDescription as string) ?? "Listed";
 
-  const cagr3y = (rev0 && rev2 && rev2 > 0) ? Math.pow(rev0 / rev2, 1 / 2) - 1 : revGrowth;
+  const grossMargin = (rev0 && cogs && rev0 > 0) ? (rev0 - cogs) / rev0 : 0;
+  const opMargin = (rev0 && opIncome) ? opIncome / rev0 : 0;
+  const cagr3y = (rev0 && rev2 && rev2 > 0) ? Math.pow(rev0 / rev2, 1 / 2) - 1 : 0;
   const rdIntensity = (rd && rev0) ? rd / rev0 : 0;
   const capexIntensity = (capex && rev0) ? Math.abs(capex) / rev0 : 0;
   const inventoryTurns = (cogs && inventory && inventory > 0) ? cogs / inventory : 0;
-  const fcfQuality = opCash > 0 ? fcf / opCash : 0;
+  const fcf = (opCashflow && capex) ? opCashflow - Math.abs(capex) : 0;
+  const fcfQuality = opCashflow && opCashflow > 0 ? fcf / opCashflow : 0;
+  const debtEq = equity > 0 ? (longTermDebt / equity) * 100 : 200;
+  const marketCap = sharesOut && price ? sharesOut * price : 0;
 
   const scores: Record<FactorKey, number> = {
-    // 1 = strong buy → 10, 5 = sell → 1; insider hold 0..30% adds up to +2
-    team: clamp(score01to10(-recMean, -5, -1) + score01to10(insiderHold, 0, 0.3) * 0.2, 1, 10),
-    // gross margin 10..70%
-    advantages: score01to10(grossMargin, 0.10, 0.70),
-    // R&D / revenue 1..25%
-    ipTech: score01to10(rdIntensity, 0.01, 0.25),
-    // 3y CAGR -10..+50%
-    validation: score01to10(cagr3y, -0.10, 0.50),
-    // institutional ownership 20..95%
-    strategicPartners: score01to10(instOwn, 0.20, 0.95),
-    // forward earnings growth -10..+40%
-    roadmap: score01to10(earningsGrowth, -0.10, 0.40),
-    // marketCap 100M..500B (log) + revenue growth bonus
-    revenuePotential: clamp(score01to10(Math.log10(Math.max(marketCap, 1e8)), 8, 11.7) * 0.7 + score01to10(revGrowth, 0, 0.40) * 0.3, 1, 10),
-    // inventory turns 2..15
-    supplyChain: score01to10(inventoryTurns, 2, 15),
-    // operating margin -10..+35%
+    // Team: net-income positivity + capital allocation quality (proxies for execution)
+    team: clamp(score01to10(netIncome && rev0 ? netIncome / rev0 : 0, -0.10, 0.25) * 0.6 + score01to10(fcfQuality, 0, 1) * 0.4, 1, 10),
+    advantages: score01to10(grossMargin, 0.10, 0.70),                       // gross margin 10..70%
+    ipTech: score01to10(rdIntensity, 0.01, 0.25),                           // R&D intensity 1..25%
+    validation: score01to10(cagr3y, -0.10, 0.50),                            // 3y revenue CAGR
+    // Stock market validation = 12m total return -30..+60%
+    strategicPartners: score01to10(yoyReturn, -0.30, 0.60),
+    // Roadmap: latest YoY revenue growth + R&D ramp
+    roadmap: clamp(score01to10(rev2 ? (rev0 ?? 0) / rev2 - 1 : 0, -0.10, 0.40) * 0.7 + score01to10(rdIntensity, 0, 0.20) * 0.3, 1, 10),
+    // Revenue potential: marketCap scale (log) + growth
+    revenuePotential: clamp(score01to10(Math.log10(Math.max(marketCap, 1e8)), 8, 11.7) * 0.6 + score01to10(cagr3y, 0, 0.40) * 0.4, 1, 10),
+    // Supply chain: inventory turnover (services companies → high default via cogs=0)
+    supplyChain: inventory ? score01to10(inventoryTurns, 2, 15) : 6,
+    // Strategy: operating margin
     strategy: score01to10(opMargin, -0.10, 0.35),
-    // FCF/OpCF 0..1 (capital efficiency) + low debt
-    capitalDistribution: clamp(score01to10(fcfQuality, 0, 1) * 0.6 + inverseScore(debtEq, 0, 300) * 0.4, 1, 10),
+    // Capital distribution: FCF quality + low debt + low realised vol
+    capitalDistribution: clamp(score01to10(fcfQuality, 0, 1) * 0.5 + inverseScore(debtEq, 0, 300) * 0.3 + inverseScore(vol, 0.15, 0.80) * 0.2, 1, 10),
   };
 
   let num = 0, den = 0;
@@ -172,7 +182,7 @@ function scoreCompany(yahoo: any, facts: any): { scores: Record<FactorKey, numbe
     num += scores[k] * BASE_WEIGHTS[k];
     den += BASE_WEIGHTS[k];
   }
-  return { scores, cc: num / den, name, sector: `${sector}${industry ? " · " + industry : ""}` };
+  return { scores, cc: num / den, name: entityName, sector };
 }
 
 Deno.serve(async (req) => {
