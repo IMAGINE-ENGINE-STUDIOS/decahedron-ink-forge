@@ -48,18 +48,18 @@ const YAHOO_HEADERS = {
   "Accept": "application/json,text/plain,*/*",
 };
 
-async function fetchYahooSummary(ticker: string): Promise<any | null> {
-  const modules = [
-    "summaryDetail", "financialData", "defaultKeyStatistics",
-    "assetProfile", "majorHoldersBreakdown", "recommendationTrend",
-    "incomeStatementHistory", "cashflowStatementHistory", "balanceSheetHistory",
-  ].join(",");
-  const url = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=${modules}`;
+// Yahoo v8/finance/chart works without a crumb — gives us price + marketCap via
+// the `meta` block. Good enough as the price/marketcap source; fundamentals
+// come from SEC EDGAR.
+async function fetchYahooMeta(ticker: string): Promise<any | null> {
   try {
-    const r = await fetch(url, { headers: YAHOO_HEADERS });
+    const r = await fetch(
+      `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1y`,
+      { headers: YAHOO_HEADERS },
+    );
     if (!r.ok) return null;
     const j = await r.json();
-    return j?.quoteSummary?.result?.[0] ?? null;
+    return j?.chart?.result?.[0] ?? null;
   } catch { return null; }
 }
 
