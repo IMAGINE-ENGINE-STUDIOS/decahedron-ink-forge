@@ -44,15 +44,18 @@ const YAHOO_HEADERS = {
 };
 
 async function fetchPrices(tickers: string[]): Promise<Record<string, number>> {
-  if (!tickers.length) return {};
-  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${tickers.map(t => t.toUpperCase()).join(",")}`;
-  const r = await fetch(url, { headers: YAHOO_HEADERS });
-  if (!r.ok) return {};
-  const j = await r.json();
   const out: Record<string, number> = {};
-  for (const q of j?.quoteResponse?.result ?? []) {
-    if (q.symbol && typeof q.regularMarketPrice === "number") out[q.symbol.toUpperCase()] = q.regularMarketPrice;
-  }
+  await Promise.all(tickers.map(async (raw) => {
+    const t = raw.toUpperCase();
+    try {
+      const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=5d`, { headers: YAHOO_HEADERS });
+      if (!r.ok) return;
+      const j = await r.json();
+      const meta = j?.chart?.result?.[0]?.meta;
+      const px = meta?.regularMarketPrice ?? meta?.previousClose;
+      if (typeof px === "number") out[t] = px;
+    } catch { /* noop */ }
+  }));
   return out;
 }
 
