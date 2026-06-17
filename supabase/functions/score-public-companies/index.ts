@@ -205,28 +205,25 @@ Deno.serve(async (req) => {
 
   for (const rawTicker of parsed.data.tickers) {
     const ticker = rawTicker.toUpperCase().trim();
-    const [yahoo, cik] = await Promise.all([fetchYahooSummary(ticker), fetchEdgarCik(ticker)]);
+    const [meta, cik] = await Promise.all([fetchYahooMeta(ticker), fetchEdgarCik(ticker)]);
     const facts = cik ? await fetchEdgarFacts(cik) : null;
-    if (!yahoo) {
-      results.push({ ticker, ok: false, error: "Yahoo lookup failed" });
+    if (!meta && !facts) {
+      results.push({ ticker, ok: false, error: "No data from Yahoo or EDGAR" });
       continue;
     }
-    const scored = scoreCompany(yahoo, facts);
+    const scored = scoreCompany(ticker, meta, facts);
     const row = {
       ticker,
       name: scored.name || ticker,
       sector: scored.sector,
       factor_scores: scored.scores,
       cc_total: Number(scored.cc.toFixed(2)),
-      source_payload: { hasEdgar: !!facts, marketCap: yahoo?.summaryDetail?.marketCap?.raw ?? null },
+      source_payload: { hasEdgar: !!facts, hasYahoo: !!meta, price: meta?.meta?.regularMarketPrice ?? null },
       fetched_at: new Date().toISOString(),
     };
     const { error: upErr } = await sb.from("public_company_scores").upsert(row, { onConflict: "ticker" });
-    if (upErr) {
-      results.push({ ticker, ok: false, error: upErr.message });
-    } else {
-      results.push({ ticker, ok: true, cc: row.cc_total, scores: scored.scores, name: row.name, sector: row.sector });
-    }
+    if (upErr) results.push({ ticker, ok: false, error: upErr.message });
+    else results.push({ ticker, ok: true, cc: row.cc_total, scores: scored.scores, name: row.name, sector: row.sector });
   }
 
   return new Response(JSON.stringify({ results }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
