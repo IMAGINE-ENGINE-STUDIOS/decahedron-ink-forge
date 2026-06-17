@@ -12,6 +12,7 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PublicCompanyScorer from '@/components/test/PublicCompanyScorer';
 import PaperTradingPanel from '@/components/test/PaperTradingPanel';
+import LiveTradingViewport from '@/components/test/LiveTradingViewport';
 
 interface IndustrySignal {
   sector: string;
@@ -545,6 +546,7 @@ const Test: React.FC = () => {
         {/* Public market: auto-score + paper trade */}
         <PublicCompanyScorer isAdmin={isAdmin} password={ADMIN_PASSWORD} />
         <PaperTradingPanel isAdmin={isAdmin} password={ADMIN_PASSWORD} />
+        <LiveTradingViewport isAdmin={isAdmin} password={ADMIN_PASSWORD} />
 
         {/* Methodology */}
         <Card className="mb-10">
