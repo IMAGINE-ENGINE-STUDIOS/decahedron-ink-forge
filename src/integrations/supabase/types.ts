@@ -320,6 +320,153 @@ export type Database = {
         }
         Relationships: []
       }
+      paper_equity_curve: {
+        Row: {
+          as_of: string
+          id: string
+          nav: number
+          pnl: number
+          portfolio_id: string
+        }
+        Insert: {
+          as_of?: string
+          id?: string
+          nav: number
+          pnl: number
+          portfolio_id: string
+        }
+        Update: {
+          as_of?: string
+          id?: string
+          nav?: number
+          pnl?: number
+          portfolio_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paper_equity_curve_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "paper_portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paper_portfolios: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          nav_current: number
+          nav_start: number
+          phi_exponent: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          nav_current?: number
+          nav_start?: number
+          phi_exponent?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          nav_current?: number
+          nav_start?: number
+          phi_exponent?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      paper_positions: {
+        Row: {
+          avg_cost: number
+          id: string
+          last_price: number | null
+          market_value: number | null
+          portfolio_id: string
+          shares: number
+          target_weight: number
+          ticker: string
+          updated_at: string
+        }
+        Insert: {
+          avg_cost?: number
+          id?: string
+          last_price?: number | null
+          market_value?: number | null
+          portfolio_id: string
+          shares?: number
+          target_weight: number
+          ticker: string
+          updated_at?: string
+        }
+        Update: {
+          avg_cost?: number
+          id?: string
+          last_price?: number | null
+          market_value?: number | null
+          portfolio_id?: string
+          shares?: number
+          target_weight?: number
+          ticker?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paper_positions_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "paper_portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paper_trades: {
+        Row: {
+          executed_at: string
+          id: string
+          portfolio_id: string
+          price: number
+          qty: number
+          rationale: Json | null
+          side: string
+          ticker: string
+        }
+        Insert: {
+          executed_at?: string
+          id?: string
+          portfolio_id: string
+          price: number
+          qty: number
+          rationale?: Json | null
+          side: string
+          ticker: string
+        }
+        Update: {
+          executed_at?: string
+          id?: string
+          portfolio_id?: string
+          price?: number
+          qty?: number
+          rationale?: Json | null
+          side?: string
+          ticker?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paper_trades_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "paper_portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pitch_notes: {
         Row: {
           created_at: string
@@ -436,6 +583,45 @@ export type Database = {
           status?: string
           updated_at?: string
           valuation?: string
+        }
+        Relationships: []
+      }
+      public_company_scores: {
+        Row: {
+          cc_total: number | null
+          created_at: string
+          factor_scores: Json
+          fetched_at: string
+          id: string
+          name: string | null
+          sector: string | null
+          source_payload: Json | null
+          ticker: string
+          updated_at: string
+        }
+        Insert: {
+          cc_total?: number | null
+          created_at?: string
+          factor_scores?: Json
+          fetched_at?: string
+          id?: string
+          name?: string | null
+          sector?: string | null
+          source_payload?: Json | null
+          ticker: string
+          updated_at?: string
+        }
+        Update: {
+          cc_total?: number | null
+          created_at?: string
+          factor_scores?: Json
+          fetched_at?: string
+          id?: string
+          name?: string | null
+          sector?: string | null
+          source_payload?: Json | null
+          ticker?: string
+          updated_at?: string
         }
         Relationships: []
       }

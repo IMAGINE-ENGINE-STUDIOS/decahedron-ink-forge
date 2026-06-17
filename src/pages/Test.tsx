@@ -10,6 +10,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import PublicCompanyScorer from '@/components/test/PublicCompanyScorer';
+import PaperTradingPanel from '@/components/test/PaperTradingPanel';
 
 interface IndustrySignal {
   sector: string;
@@ -539,6 +541,10 @@ const Test: React.FC = () => {
             )}
           </CardContent>
         </Card>
+
+        {/* Public market: auto-score + paper trade */}
+        <PublicCompanyScorer isAdmin={isAdmin} password={ADMIN_PASSWORD} />
+        <PaperTradingPanel isAdmin={isAdmin} password={ADMIN_PASSWORD} />
 
         {/* Methodology */}
         <Card className="mb-10">
