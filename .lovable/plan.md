@@ -1,73 +1,83 @@
 
-# Real-Time Public-Company Scoring & Paper Trading
+# Restructure `/test` as an Origami-folded workspace
 
-Extends the existing `/test` Decahedron page so the algorithm can (1) auto-score real listed companies from SEC EDGAR + Yahoo fundamentals, and (2) run a paper-traded portfolio whose weights come from the Golden Ratio formula, all re-runnable on demand. Compute stays on Supabase Edge Functions (Deno port of the Python math) — no external Python service.
+Reorganise the page into two clearly separated tracks, each presented as a folded "origami panel" the user opens to reveal its modules. Today everything is stacked in one column — overwhelming and hard to navigate. After this pass, the page reads top-to-bottom as a deliberate sequence with origami fold/unfold motion between modules.
 
-## What the user will see on `/test`
+## New page structure
 
-Three new sections appended under the existing Company Coefficient calculator and Live Signals panel:
+```text
+┌─ Hero strip ──────────────────────────────────────────┐
+│  Decahedron Methodology · admin lock · track switcher │
+└───────────────────────────────────────────────────────┘
 
-1. **Public Company Auto-Scorer**
-   - Admin (password `VenturePartners`) pastes one or more tickers (e.g. `KTOS, RKLB, ASTS`) or picks a sector ETF universe (ITA, SMH, ICLN, XLE…).
-   - Click **Auto-score** → edge function pulls SEC EDGAR (10-K/10-Q facts) + Yahoo fundamentals, maps them to the 10 CC factors via heuristics, returns 0–10 per factor and total CC.
-   - Results table: ticker, company, sector, 10 factor bars, CC, last-updated.
-   - Cached in `public_company_scores` table; "Recompute" button per row.
+╔═══════════════════════════════════════════════════════╗
+║ TRACK A — Inbound Diligence                           ║
+║ "Companies pitching us for investment"                ║
+║                                                       ║
+║   ▸ Module A1 · Score a company (CC calculator)       ║
+║   ▸ Module A2 · Live ranking table                    ║
+║   ▸ Module A3 · Methodology paper (how CC works)      ║
+╚═══════════════════════════════════════════════════════╝
 
-2. **Golden Ratio Allocation (live)**
-   - Takes scored tickers, applies the live-adjusted φ weights from `compute-allocation`, outputs target portfolio %.
-   - Shows current prices (Yahoo) and target $ given an editable portfolio NAV.
+╔═══════════════════════════════════════════════════════╗
+║ TRACK B — Algorithmic Trading                         ║
+║ "Applying the formula to the public market"           ║
+║                                                       ║
+║   ▸ Module B1 · Trading whitepaper (how to use it)    ║
+║   ▸ Module B2 · Live industry signals                 ║
+║   ▸ Module B3 · Public company auto-scorer            ║
+║   ▸ Module B4 · Live-adjusted Golden Ratio allocation ║
+║   ▸ Module B5 · Paper portfolio manager               ║
+║   ▸ Module B6 · Algorithm auto-pilot                  ║
+║   ▸ Module B7 · Live trading viewport                 ║
+╚═══════════════════════════════════════════════════════╝
+```
 
-3. **Paper Trading Simulator**
-   - "Start paper portfolio" snapshots current allocation + prices into `paper_portfolios` / `paper_positions`.
-   - "Mark-to-market" button refetches prices, recomputes P&L, equity curve (recharts), Sharpe, max drawdown.
-   - "Rebalance now" re-runs scorer + allocation and records a new trade set in `paper_trades`.
-   - Cadence is purely on-demand (button); no broker, no real orders.
+A sticky track switcher at the top lets the user jump between Track A and Track B. Modules inside each track are collapsible origami panels — closed by default except the first in each track — so the surface stays calm until the user unfolds what they need.
 
-All three are admin-gated behind the existing `VenturePartners` password already on `/test`.
+## Origami design language
+
+- **Panel chrome**: each module is a folded sheet — diagonal crease line across the header, sharp 1px edges, off-white "paper" surface (`hsl(var(--card))`), ink-black accent on the active fold. Subtle paper-grain SVG noise behind the header.
+- **Fold animation** (open/close): two-stage CSS transform — `rotateX(-90deg) → 0deg` on the top half plus a `clip-path` reveal on the body, 280 ms cubic-bezier(.65,.05,.36,1). When closing, reverse to fold back up like origami paper.
+- **Track switch animation**: outgoing track collapses each module sequentially (60 ms stagger, fold-up); incoming track unfolds top-down with the same stagger. Feels like reshuffling a book of folded sheets.
+- **Module entry**: when a panel first mounts in view, `clip-path: polygon(...)` reveals diagonally (top-left to bottom-right) over 350 ms — the "fold-open" gesture.
+- **Hover affordance**: collapsed module headers tilt 2° on the X-axis with a soft shadow, hinting they can be unfolded.
+- **Icons**: each module's icon sits inside a small folded-corner badge (CSS triangle pseudo-element), reinforcing the paper metaphor.
+- **Reduced-motion**: respect `prefers-reduced-motion` — drop transforms, keep simple opacity fades.
+
+No colours change — we stay in the existing dark "parchment & ink" palette (per project memory). The origami feel comes from geometry, edges, and motion, not new colours.
 
 ## Technical section
 
-### New edge functions
-- `score-public-companies` — input: `{ tickers?: string[], universe?: 'ITA'|'SMH'|... }`. Fetches:
-  - SEC EDGAR `companyfacts` (R&D %, gross margin, revenue CAGR, capex intensity, debt ratio, cash runway, supplier concentration text from 10-K)
-  - Yahoo `quoteSummary` (sector, beta, marginEstimates, recommendationTrend → proxy for Team/Strategy quality)
-  - Maps to the 10 CC factors with documented heuristics (formulas spelled out in the function and surfaced in the UI "How scoring works" accordion).
-  - Upserts into `public_company_scores`.
-- `paper-trade` — actions: `snapshot`, `mark`, `rebalance`. Pure math + Yahoo price fetch, writes to `paper_portfolios`, `paper_positions`, `paper_trades`, `paper_equity_curve`.
+### New components
+- `src/components/test/OrigamiPanel.tsx` — reusable collapsible module wrapper. Props: `title`, `icon`, `description`, `defaultOpen`, `accent`. Owns the fold animation via Framer Motion (already a transitive dep through other libs; add explicitly if missing). Uses Radix `Collapsible` for a11y semantics, custom motion for the fold visuals.
+- `src/components/test/TrackSwitcher.tsx` — sticky 2-tab switcher (`Inbound Diligence` / `Algorithmic Trading`). Persists choice to `sessionStorage` so refreshes don't disorient.
+- `src/components/test/OrigamiHero.tsx` — top strip with title, admin lock card, and the track switcher mounted below it.
 
-Both reuse the φ-adjusted weights from the existing `compute-allocation` function (called internally), so the same Golden Ratio math drives scoring weights and allocation.
+### Refactor of `Test.tsx`
+- Extract the existing inline blocks into small content components so each can be dropped into an `OrigamiPanel`:
+  - `ScoreCompanyForm` (A1) — current sliders + add button
+  - `RankingTable` (A2) — current ranking card body
+  - `MethodologyPaper` (A3) — current "How We Rank Companies" + Golden Ratio reference table; rewritten as the inbound-diligence paper.
+  - `TradingWhitepaper` (B1) — **new** content authored from the existing methodology, framed as "How to apply the formula to public-market trading": data sources, scoring heuristics per factor, φ-adjusted weights, allocation, paper-trading methodology, risk caveats. Static prose + small inline diagrams.
+- Keep existing functional components (`PublicCompanyScorer`, `PaperTradingPanel`, `AlgoAutoPilot`, `LiveTradingViewport`, live signals + adjusted allocation cards) — wrap each in an `OrigamiPanel`. No behaviour changes to those modules.
+- Track A renders A1 → A2 → A3; Track B renders B1 → B2 → … → B7. Track switching mounts/unmounts the inactive track (cleans up timers/intervals in the auto-pilot + viewport).
 
-### New tables (migration, with required GRANTs + RLS)
-- `public_company_scores` — ticker, name, sector, factor scores (jsonb), cc_total, source_payload (jsonb), fetched_at.
-- `paper_portfolios` — name, nav_start, created_by, created_at.
-- `paper_positions` — portfolio_id, ticker, target_weight, shares, avg_cost.
-- `paper_trades` — portfolio_id, ticker, side, qty, price, rationale (jsonb of CC + weights at time of trade).
-- `paper_equity_curve` — portfolio_id, as_of, nav, pnl.
-
-RLS: public read on `public_company_scores` (research data); `paper_*` tables read/write restricted to `authenticated` admins via `has_role(auth.uid(),'admin')`; `service_role` writes from edge functions.
-
-### Front-end
-- New file `src/pages/Test.tsx` additions only (no new route). New components:
-  - `src/components/test/PublicCompanyScorer.tsx`
-  - `src/components/test/LiveAllocationTable.tsx`
-  - `src/components/test/PaperTradingPanel.tsx`
-- Uses `supabase.functions.invoke()` for all calls; existing `VenturePartners` admin gate wraps these sections.
-
-### Paper section (whitepaper accordion) updated
-Adds a "How public-company scoring works" subsection enumerating each SEC/Yahoo field → CC factor mapping and the formula, plus a "Paper trading methodology" subsection (no execution, daily mark-to-market on demand, slippage = 0, costs = 0 by default with editable knobs).
-
-### Cadence
-- On-demand buttons only (per your selection). Existing daily 07:00 UTC industry-signals refresh stays; no new cron.
+### CSS / tokens
+- Add to `src/index.css`:
+  - `--paper-crease: linear-gradient(135deg, transparent 49.5%, hsl(var(--border)) 49.5% 50.5%, transparent 50.5%);`
+  - `--shadow-fold: 0 1px 0 hsl(var(--border)), 0 12px 24px -16px hsl(var(--background));`
+  - `.origami-fold` keyframes for the open/close fold and the diagonal clip-path reveal.
+- Add the `framer-motion` package if not already installed (used only inside the new origami components).
 
 ### Out of scope
-- No external Python/Jupyter service.
-- No live broker / real money.
-- No intraday cron (can be added later by flipping one pg_cron line).
+- No changes to edge functions, DB schema, scoring math, or auto-pilot behaviour.
+- No colour-palette change.
+- No new routes — everything stays on `/test`.
 
 ## Build order
-1. Migration: 5 new tables + GRANTs + RLS + admin policies.
-2. Edge function `score-public-companies` + tests.
-3. Edge function `paper-trade` + tests.
-4. UI: scorer panel → allocation table → paper trading panel.
-5. Whitepaper accordion updates.
-6. Smoke test with 3 tickers (KTOS, RKLB, ASTS), snapshot a paper portfolio, mark-to-market.
+1. Add `framer-motion` if missing; add origami CSS tokens + keyframes.
+2. Build `OrigamiPanel`, `TrackSwitcher`, `OrigamiHero`.
+3. Extract A1 / A2 / A3 content from `Test.tsx`; author B1 trading whitepaper.
+4. Rewire `Test.tsx` as `Hero → TrackSwitcher → <active track modules wrapped in OrigamiPanel>`.
+5. Visual pass: verify fold motion at 60 fps in Chrome, check reduced-motion fallback, screenshot both tracks.
