@@ -85,7 +85,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from('public_company_scores')
-        .select('ticker,cc_total').order('cc_total', { ascending: false }).limit(6);
+        .select('ticker,cc_total').order('cc_total', { ascending: false }).limit(10);
       const list = (data ?? []).map((d) => d.ticker).filter(Boolean);
       if (list.length >= 3) setTickersInput(list.join(','));
     })();
