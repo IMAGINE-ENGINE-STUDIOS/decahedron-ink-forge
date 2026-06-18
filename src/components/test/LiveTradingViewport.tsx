@@ -416,7 +416,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
                     <YAxis domain={['auto', 'auto']} fontSize={10} width={64} stroke="hsl(var(--muted-foreground))"
                       tickFormatter={(v) => `$${fmt(Number(v))}`} />
                     <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', fontSize: 12 }}
-                      formatter={(v: any) => [`$${fmt(Number(v))}`, 'NAV']} />
+                      formatter={(v: unknown) => [`$${fmt(Number(v))}`, 'NAV']} />
                     <Area type="monotone" dataKey="nav" stroke="hsl(var(--primary))" fill="url(#navGrad)" strokeWidth={2} isAnimationActive={false} />
                   </AreaChart>
                 </ResponsiveContainer>
