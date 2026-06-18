@@ -297,7 +297,7 @@ Deno.serve(async (req) => {
       const inserted = await sb.from("paper_trades").insert(trades).select();
       tradeRows = inserted.data ?? trades;
     }
-    await sb.from("paper_portfolios").update({ phi_exponent: phi, nav_current: Number(nav.toFixed(2)) }).eq("id", parsed.data.portfolioId);
+    await sb.from("paper_portfolios").update({ phi_exponent: phi, nav_current: Number(nav.toFixed(2)), cash: 0 }).eq("id", parsed.data.portfolioId);
     await sb.from("paper_equity_curve").insert({ portfolio_id: parsed.data.portfolioId, nav: Number(nav.toFixed(2)), pnl: Number(pnl.toFixed(2)) });
     return new Response(JSON.stringify({ trades: tradeRows, phi, nav, pnl }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
