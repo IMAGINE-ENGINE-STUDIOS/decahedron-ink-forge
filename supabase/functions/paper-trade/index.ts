@@ -36,6 +36,12 @@ const BodySchema = z.discriminatedUnion("action", [
     portfolioId: z.string().uuid(),
     tickers: z.array(z.string()).min(1).max(25),
   }),
+  z.object({
+    action: z.literal("take-profit"),
+    password: z.string(),
+    portfolioId: z.string().uuid(),
+    thresholdPct: z.number().min(0).max(50).default(0.10), // 0.10% by default
+  }),
 ]);
 
 const YAHOO_HEADERS = {
