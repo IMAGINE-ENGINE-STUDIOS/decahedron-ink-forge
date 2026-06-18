@@ -59,7 +59,8 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   const [equity, setEquity] = useState<EquityPoint[]>([]);
 
   const [running, setRunning] = useState(false);
-  const [intervalMs, setIntervalMs] = useState(15_000);
+  const [intervalMs, setIntervalMs] = useState(60_000);
+  const [takeProfitPct, setTakeProfitPct] = useState(0.10);
   const [series, setSeries] = useState<PricePoint[]>([]);
   const [lastTickAt, setLastTickAt] = useState<number | null>(null);
 
@@ -189,6 +190,26 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
     pushEvents([{ id: `mark-local-${now}`, type: 'mark', title: tickPnL >= 0 ? 'LIVE P&L UP' : 'LIVE P&L DOWN', detail: `NAV $${fmt(tickNav)} · ${tickers.length} prices refreshed`, amount: tickPnL, at: now }]);
 
     if (Math.floor(now / 60_000) !== Math.floor((lastTickAt ?? 0) / 60_000)) {
+      // Take-profit sweep: sell any position up >= takeProfitPct since entry to lock the gain.
+      supabase.functions.invoke('paper-trade', { body: { action: 'take-profit', password, portfolioId: selectedId, thresholdPct: takeProfitPct } })
+        .then(({ data }) => {
+          const payload = data as (PaperTradeResponse & { realised?: number }) | null;
+          const rows = payload?.trades ?? [];
+          if (rows.length) {
+            setLiveFeed(prev => [...rows, ...prev].slice(0, 80));
+            pushEvents(rows.map(r => ({
+              id: r.id ?? `tp-${r.ticker}-${Date.now()}-${Math.random()}`,
+              type: 'sell' as const,
+              title: `TAKE-PROFIT ${r.ticker}`,
+              detail: `Locked +${takeProfitPct.toFixed(2)}% · ${Number(r.qty).toFixed(2)} sh @ $${Number(r.price).toFixed(2)}`,
+              amount: Number(r.qty) * Number(r.price),
+              at: r.executed_at ? new Date(r.executed_at).getTime() : Date.now(),
+            })));
+          } else {
+            pushEvents([{ id: `tp-${Date.now()}`, type: 'mark', title: 'NO PROFIT TARGET HIT', detail: `Holding — none of the positions above +${takeProfitPct.toFixed(2)}% yet`, at: Date.now() }]);
+          }
+        }).catch((e: unknown) => pushEvents([{ id: `tp-err-${Date.now()}`, type: 'error', title: 'TAKE-PROFIT FAILED', detail: e instanceof Error ? e.message : 'Sell sweep failed', at: Date.now() }]));
+
       supabase.functions.invoke('paper-trade', { body: { action: 'mark', password, portfolioId: selectedId } })
         .then(({ data }) => {
           const payload = data as PaperTradeResponse | null;
@@ -197,6 +218,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
           loadDetails(selectedId);
         }).catch((e: unknown) => pushEvents([{ id: `mark-error-${Date.now()}`, type: 'error', title: 'MARK FAILED', detail: e instanceof Error ? e.message : 'Price update failed', at: Date.now() }]));
     }
+
 
     if (isAdmin && tickCounterRef.current % REBALANCE_EVERY_N_TICKS === 0) {
       supabase.functions.invoke('paper-trade', {
@@ -370,6 +392,16 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
                 <Button key={i.ms} size="sm" variant={intervalMs === i.ms ? 'default' : 'outline'}
                   onClick={() => setIntervalMs(i.ms)} className="h-8 px-3 text-xs">{i.label}</Button>
               ))}
+            </div>
+            <div className="flex items-center gap-1.5 rounded-md border border-input bg-background px-2 h-8">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Take profit ≥</span>
+              <Input
+                type="number" step="0.05" min={0.05} max={10}
+                value={takeProfitPct}
+                onChange={(e) => setTakeProfitPct(Math.max(0.05, Number(e.target.value) || 0.10))}
+                className="h-6 w-16 px-1 text-xs border-0 focus-visible:ring-0"
+              />
+              <span className="text-xs font-semibold">%</span>
             </div>
             <select value={selectedId ?? ''} onChange={e => setSelectedId(e.target.value)}
               className="h-8 rounded-md border border-input bg-background px-2 text-xs max-w-[200px]">
