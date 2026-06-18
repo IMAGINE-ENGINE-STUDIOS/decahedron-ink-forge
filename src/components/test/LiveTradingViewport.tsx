@@ -144,9 +144,15 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
       });
       if (error) throw error;
       const newId = (data as any)?.portfolio?.id;
+      const openingTrades = ((data as any)?.trades ?? []) as Trade[];
       await loadPortfolios();
       if (newId) setSelectedId(newId);
-      setLiveFeed([]);
+      setLiveFeed(openingTrades.slice(0, 80));
+      setTrades(openingTrades.slice(0, 100));
+      setAlgoEvents([
+        ...buildTradeEvents(openingTrades),
+        { id: `deploy-${Date.now()}`, type: 'deploy', title: 'CAPITAL DEPLOYED', detail: `${tickers.length} tickers weighted by φ`, amount: investAmount, at: Date.now() },
+      ]);
       setSessionStartAt(Date.now());
       setRunning(true);
       toast({ title: 'Capital deployed', description: `$${fmt(investAmount)} → ${tickers.length} positions opened.` });
@@ -168,16 +174,32 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
     setSeries(prev => [...prev, point].slice(-240));
     setLastTickAt(now);
     tickCounterRef.current += 1;
+    const tickNav = positions.reduce((sum, p) => sum + p.shares * (Number(point[p.ticker]) || p.last_price || p.avg_cost), 0);
+    const tickPnL = selected ? tickNav - Number(selected.nav_start) : 0;
+    pushEvents([{ id: `mark-local-${now}`, type: 'mark', title: tickPnL >= 0 ? 'LIVE P&L UP' : 'LIVE P&L DOWN', detail: `NAV $${fmt(tickNav)} · ${tickers.length} prices refreshed`, amount: tickPnL, at: now }]);
 
     if (Math.floor(now / 60_000) !== Math.floor((lastTickAt ?? 0) / 60_000)) {
       supabase.functions.invoke('paper-trade', { body: { action: 'mark', password, portfolioId: selectedId } })
-        .then(() => loadDetails(selectedId)).catch(() => {});
+        .then(({ data }) => {
+          const pnl = Number((data as any)?.pnl ?? tickPnL);
+          pushEvents([{ id: `mark-db-${Date.now()}`, type: 'mark', title: pnl >= 0 ? 'EARNINGS MARK' : 'LOSS MARK', detail: `Portfolio saved at $${fmt(Number((data as any)?.nav ?? tickNav))}`, amount: pnl, at: Date.now() }]);
+          loadDetails(selectedId);
+        }).catch((e) => pushEvents([{ id: `mark-error-${Date.now()}`, type: 'error', title: 'MARK FAILED', detail: e?.message ?? 'Price update failed', at: Date.now() }]));
     }
 
     if (isAdmin && tickCounterRef.current % REBALANCE_EVERY_N_TICKS === 0) {
       supabase.functions.invoke('paper-trade', {
         body: { action: 'rebalance', password, portfolioId: selectedId, tickers },
-      }).then(() => loadDetails(selectedId)).catch(() => {});
+      }).then(({ data }) => {
+        const rows = (((data as any)?.trades ?? []) as Trade[]);
+        if (rows.length) {
+          setLiveFeed(prev => [...rows, ...prev].slice(0, 80));
+          pushEvents(buildTradeEvents(rows));
+        } else {
+          pushEvents([{ id: `rebalance-${Date.now()}`, type: 'rebalance', title: 'REBALANCE CHECK', detail: 'No trade needed — portfolio already on target', amount: Number((data as any)?.pnl ?? tickPnL), at: Date.now() }]);
+        }
+        loadDetails(selectedId);
+      }).catch((e) => pushEvents([{ id: `rebalance-error-${Date.now()}`, type: 'error', title: 'REBALANCE FAILED', detail: e?.message ?? 'Trade check failed', at: Date.now() }]));
     }
   };
 
