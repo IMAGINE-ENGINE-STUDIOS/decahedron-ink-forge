@@ -354,6 +354,7 @@ export type Database = {
       }
       paper_portfolios: {
         Row: {
+          cash: number
           created_at: string
           id: string
           name: string
@@ -363,6 +364,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          cash?: number
           created_at?: string
           id?: string
           name: string
@@ -372,6 +374,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          cash?: number
           created_at?: string
           id?: string
           name?: string
