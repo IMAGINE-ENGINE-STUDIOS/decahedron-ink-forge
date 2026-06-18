@@ -59,39 +59,60 @@ async function fetchPrices(tickers: string[]): Promise<Record<string, number>> {
   return out;
 }
 
+function phiFallback(tickers: string[]): { allocations: Record<string, number>; phi: number } {
+  // Pure golden-ratio decay across the provided ticker order.
+  const n = tickers.length;
+  const raw = tickers.map((_, i) => Math.pow(PHI, n - (i + 1)));
+  const tot = raw.reduce((a, b) => a + b, 0);
+  const allocations: Record<string, number> = {};
+  tickers.forEach((t, i) => { allocations[t.toUpperCase()] = raw[i] / tot; });
+  return { allocations, phi: 1 };
+}
+
 async function computeAllocation(sb: any, tickers: string[]): Promise<{ allocations: Record<string, number>; phi: number }> {
-  // Fetch scored companies + run compute-allocation edge function for adjusted weights.
-  const { data: scored } = await sb.from("public_company_scores").select("*").in("ticker", tickers.map(t => t.toUpperCase()));
+  const upper = tickers.map(t => t.toUpperCase());
+  const { data: scored } = await sb.from("public_company_scores").select("*").in("ticker", upper);
   const have = (scored ?? []).map((s: any) => ({
     id: s.ticker,
     name: s.name ?? s.ticker,
     sector: s.sector ?? undefined,
     scores: s.factor_scores ?? {},
   }));
-  if (!have.length) return { allocations: {}, phi: 1 };
+  // If fewer than half the requested tickers have scores, fall back to pure φ over the full list
+  // so the user always gets a diversified portfolio.
+  if (have.length < Math.max(2, Math.ceil(upper.length / 2))) {
+    return phiFallback(upper);
+  }
 
   const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/compute-allocation`;
-  const resp = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
-    },
-    body: JSON.stringify({ companies: have }),
-  });
-  if (!resp.ok) {
-    // Fallback: pure φ decay by CC rank without macro modulation.
-    const sorted = [...(scored ?? [])].sort((a: any, b: any) => (b.cc_total ?? 0) - (a.cc_total ?? 0));
-    const raw = sorted.map((_: any, n: number) => Math.pow(PHI, sorted.length - (n + 1)));
-    const tot = raw.reduce((a, b) => a + b, 0);
+  try {
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
+      },
+      body: JSON.stringify({ companies: have }),
+    });
+    if (!resp.ok) throw new Error("compute-allocation failed");
+    const payload = await resp.json();
     const allocations: Record<string, number> = {};
-    sorted.forEach((s: any, i: number) => { allocations[s.ticker.toUpperCase()] = raw[i] / tot; });
-    return { allocations, phi: 1 };
+    for (const c of payload.companies ?? []) allocations[c.id.toUpperCase()] = c.allocationPct;
+    // Fill in any missing tickers with a small φ-tail weight so they still trade.
+    const missing = upper.filter(t => !allocations[t]);
+    if (missing.length) {
+      const tail = phiFallback(missing);
+      const tailTotal = missing.reduce((a, t) => a + tail.allocations[t], 0);
+      const reserve = 0.15; // give the unscored tickers a combined 15% sleeve
+      for (const t of missing) allocations[t] = (tail.allocations[t] / tailTotal) * reserve;
+      // Renormalise
+      const sum = Object.values(allocations).reduce((a, b) => a + b, 0);
+      for (const k of Object.keys(allocations)) allocations[k] = allocations[k] / sum;
+    }
+    return { allocations, phi: payload.phiExponent ?? 1 };
+  } catch {
+    return phiFallback(upper);
   }
-  const payload = await resp.json();
-  const allocations: Record<string, number> = {};
-  for (const c of payload.companies ?? []) allocations[c.id.toUpperCase()] = c.allocationPct;
-  return { allocations, phi: payload.phiExponent ?? 1 };
 }
 
 Deno.serve(async (req) => {
