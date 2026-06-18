@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ interface Trade { id: string; ticker: string; side: string; qty: number; price: 
 interface EquityPoint { as_of: string; nav: number; pnl: number; }
 interface PricePoint { t: number; [ticker: string]: number; }
 interface AlgoEvent { id: string; type: 'buy' | 'sell' | 'mark' | 'rebalance' | 'deploy' | 'error'; title: string; detail: string; amount?: number; at: number; }
+interface PaperTradeResponse { portfolio?: { id?: string }; trades?: Trade[]; nav?: number; pnl?: number; }
 interface Props { isAdmin: boolean; password: string; }
 
 const INTERVALS = [
@@ -73,6 +74,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   const tickCounterRef = useRef(0);
   const timerRef = useRef<number | null>(null);
   const countdownRef = useRef<number | null>(null);
+  const freshDeployRef = useRef(false);
 
   const pushEvents = (events: AlgoEvent[]) => {
     if (!events.length) return;
