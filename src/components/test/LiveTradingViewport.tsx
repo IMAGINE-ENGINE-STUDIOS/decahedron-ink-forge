@@ -412,46 +412,50 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
             </div>
           </div>
 
-          {/* Live trade ticker */}
+          {/* Live algorithm activity */}
           <div className="rounded-xl border border-border bg-card overflow-hidden flex flex-col">
             <div className="px-4 py-3 border-b border-border flex items-center justify-between">
               <h4 className="text-sm font-semibold flex items-center gap-2">
                 <Zap className="h-4 w-4 text-primary" /> Algorithm activity
               </h4>
-              <div className="flex gap-1.5 text-[10px] tabular-nums">
+              <div className="flex gap-1.5 text-[10px] tabular-nums items-center">
+                <span className="px-1.5 py-0.5 rounded bg-muted font-semibold">{algoEvents.length} LIVE</span>
                 <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary font-semibold">{feedStats.buys} BUY</span>
                 <span className="px-1.5 py-0.5 rounded bg-destructive/10 text-destructive font-semibold">{feedStats.sells} SELL</span>
               </div>
             </div>
             <div className="flex-1 overflow-y-auto max-h-[330px] divide-y divide-border">
-              {liveFeed.length === 0 ? (
+              {algoEvents.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-xs text-muted-foreground gap-2 py-12 px-4 text-center">
                   <Zap className="h-6 w-6 opacity-30" />
-                  {running ? 'Waiting for first trade…' : 'Deploy & go live to see trades stream in.'}
+                  {running ? 'Scanning prices and allocation…' : 'Deploy & go live to see every buy, sell, earning, and loss.'}
                 </div>
               ) : (
                 <AnimatePresence initial={false}>
-                  {liveFeed.map((t, idx) => {
-                    const notional = Number(t.qty) * Number(t.price);
-                    const isBuy = t.side === 'buy';
+                  {algoEvents.map((event) => {
+                    const isPositive = (event.amount ?? 0) >= 0;
+                    const tone = event.type === 'sell' || (event.type === 'mark' && !isPositive) || event.type === 'error' ? 'destructive' : event.type === 'rebalance' ? 'muted-foreground' : 'primary';
                     return (
                       <motion.div
-                        key={t.id}
+                        key={event.id}
                         layout
-                        initial={{ opacity: 0, x: 20, backgroundColor: isBuy ? 'hsl(var(--primary) / 0.15)' : 'hsl(var(--destructive) / 0.15)' }}
+                        initial={{ opacity: 0, x: 20, backgroundColor: tone === 'destructive' ? 'hsl(var(--destructive) / 0.15)' : 'hsl(var(--primary) / 0.15)' }}
                         animate={{ opacity: 1, x: 0, backgroundColor: 'transparent' }}
                         transition={{ duration: 0.5, backgroundColor: { duration: 1.5 } }}
                         className="flex items-center gap-2 px-3 py-2 text-xs"
                       >
-                        <div className={`w-1 self-stretch rounded-full ${isBuy ? 'bg-primary' : 'bg-destructive'}`} />
-                        <span className={`font-bold w-10 ${isBuy ? 'text-primary' : 'text-destructive'}`}>{isBuy ? 'BUY' : 'SELL'}</span>
-                        <span className="font-mono font-semibold w-14">{t.ticker}</span>
-                        <span className="text-muted-foreground tabular-nums flex-1 text-right">
-                          {Number(t.qty).toFixed(2)} × ${Number(t.price).toFixed(2)}
+                        <div className={`w-1 self-stretch rounded-full ${tone === 'destructive' ? 'bg-destructive' : tone === 'primary' ? 'bg-primary' : 'bg-muted-foreground'}`} />
+                        <span className={`font-bold w-24 ${tone === 'destructive' ? 'text-destructive' : tone === 'primary' ? 'text-primary' : 'text-muted-foreground'}`}>{event.title}</span>
+                        <span className="text-muted-foreground tabular-nums flex-1">
+                          {event.detail}
                         </span>
-                        <span className="font-semibold tabular-nums w-16 text-right">${fmt(notional)}</span>
+                        {typeof event.amount === 'number' && (
+                          <span className={`font-semibold tabular-nums w-20 text-right ${event.type === 'mark' || event.type === 'rebalance' ? (isPositive ? 'text-primary' : 'text-destructive') : ''}`}>
+                            {event.type === 'mark' || event.type === 'rebalance' ? `${isPositive ? '+' : '-'}$${fmt(Math.abs(event.amount))}` : `$${fmt(event.amount)}`}
+                          </span>
+                        )}
                         <span className="text-[10px] text-muted-foreground tabular-nums w-14 text-right">
-                          {new Date(t.executed_at).toLocaleTimeString().slice(0, 8)}
+                          {new Date(event.at).toLocaleTimeString().slice(0, 8)}
                         </span>
                       </motion.div>
                     );
