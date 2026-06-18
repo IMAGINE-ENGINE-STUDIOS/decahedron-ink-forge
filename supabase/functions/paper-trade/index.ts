@@ -48,11 +48,13 @@ async function fetchPrices(tickers: string[]): Promise<Record<string, number>> {
   await Promise.all(tickers.map(async (raw) => {
     const t = raw.toUpperCase();
     try {
-      const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=5d`, { headers: YAHOO_HEADERS });
+      const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1m&range=1d`, { headers: YAHOO_HEADERS });
       if (!r.ok) return;
       const j = await r.json();
-      const meta = j?.chart?.result?.[0]?.meta;
-      const px = meta?.regularMarketPrice ?? meta?.previousClose;
+      const result = j?.chart?.result?.[0];
+      const meta = result?.meta;
+      const closes = (result?.indicators?.quote?.[0]?.close ?? []).filter((v: unknown) => typeof v === "number" && Number.isFinite(v));
+      const px = closes.at(-1) ?? meta?.regularMarketPrice ?? meta?.previousClose;
       if (typeof px === "number") out[t] = px;
     } catch { /* noop */ }
   }));
@@ -161,10 +163,12 @@ Deno.serve(async (req) => {
       qty: p.shares, price: p.avg_cost,
       rationale: { phi, weight: p.target_weight, action: "snapshot" },
     }));
-    await sb.from("paper_positions").insert(positions);
-    await sb.from("paper_trades").insert(trades);
+    const { error: posErr } = await sb.from("paper_positions").insert(positions);
+    if (posErr) return new Response(JSON.stringify({ error: posErr.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const { data: tradeRows, error: tradeErr } = await sb.from("paper_trades").insert(trades).select();
+    if (tradeErr) return new Response(JSON.stringify({ error: tradeErr.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     await sb.from("paper_equity_curve").insert({ portfolio_id: pf.id, nav, pnl: 0 });
-    return new Response(JSON.stringify({ portfolio: pf, positions }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ portfolio: pf, positions, trades: tradeRows ?? [] }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   if (action === "mark") {
@@ -238,10 +242,16 @@ Deno.serve(async (req) => {
         await sb.from("paper_positions").update({ shares: 0, market_value: 0, last_price: px }).eq("id", p.id);
       }
     }
-    if (trades.length) await sb.from("paper_trades").insert(trades);
+    const { data: pf } = await sb.from("paper_portfolios").select("nav_start").eq("id", parsed.data.portfolioId).single();
+    const pnl = nav - Number(pf?.nav_start ?? nav);
+    let tradeRows: any[] = [];
+    if (trades.length) {
+      const inserted = await sb.from("paper_trades").insert(trades).select();
+      tradeRows = inserted.data ?? trades;
+    }
     await sb.from("paper_portfolios").update({ phi_exponent: phi, nav_current: Number(nav.toFixed(2)) }).eq("id", parsed.data.portfolioId);
-    await sb.from("paper_equity_curve").insert({ portfolio_id: parsed.data.portfolioId, nav: Number(nav.toFixed(2)), pnl: 0 });
-    return new Response(JSON.stringify({ trades, phi, nav }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    await sb.from("paper_equity_curve").insert({ portfolio_id: parsed.data.portfolioId, nav: Number(nav.toFixed(2)), pnl: Number(pnl.toFixed(2)) });
+    return new Response(JSON.stringify({ trades: tradeRows, phi, nav, pnl }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   return new Response(JSON.stringify({ error: "Unknown action" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });

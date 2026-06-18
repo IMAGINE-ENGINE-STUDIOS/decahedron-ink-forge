@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,8 @@ interface Position { id: string; ticker: string; target_weight: number; shares: 
 interface Trade { id: string; ticker: string; side: string; qty: number; price: number; executed_at: string; }
 interface EquityPoint { as_of: string; nav: number; pnl: number; }
 interface PricePoint { t: number; [ticker: string]: number; }
+interface AlgoEvent { id: string; type: 'buy' | 'sell' | 'mark' | 'rebalance' | 'deploy' | 'error'; title: string; detail: string; amount?: number; at: number; }
+interface PaperTradeResponse { portfolio?: { id?: string }; trades?: Trade[]; nav?: number; pnl?: number; }
 interface Props { isAdmin: boolean; password: string; }
 
 const INTERVALS = [
@@ -23,8 +25,21 @@ const INTERVALS = [
 ];
 const PRESETS = [10_000, 50_000, 100_000, 500_000];
 const FALLBACK_TICKERS = 'AAPL,MSFT,NVDA,GOOGL,AMZN,META';
-const REBALANCE_EVERY_N_TICKS = 3;
+const REBALANCE_EVERY_N_TICKS = 2;
 const fmt = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+
+const buildTradeEvents = (rows: Trade[] = []): AlgoEvent[] => rows.map((t) => {
+  const amount = Number(t.qty) * Number(t.price);
+  const side = t.side === 'sell' ? 'sell' : 'buy';
+  return {
+    id: t.id ?? `${side}-${t.ticker}-${Date.now()}-${Math.random()}`,
+    type: side,
+    title: `${side.toUpperCase()} ${t.ticker}`,
+    detail: `${Number(t.qty).toFixed(2)} shares at $${Number(t.price).toFixed(2)}`,
+    amount,
+    at: t.executed_at ? new Date(t.executed_at).getTime() : Date.now(),
+  };
+});
 
 async function fetchIntradayPrice(ticker: string): Promise<number | null> {
   try {
@@ -52,29 +67,36 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   const [tickersInput, setTickersInput] = useState<string>(FALLBACK_TICKERS);
   const [deploying, setDeploying] = useState(false);
   const [liveFeed, setLiveFeed] = useState<Trade[]>([]);
+  const [algoEvents, setAlgoEvents] = useState<AlgoEvent[]>([]);
   const [sessionStartAt, setSessionStartAt] = useState<number | null>(null);
   const [nextRebalIn, setNextRebalIn] = useState<number>(0);
 
   const tickCounterRef = useRef(0);
   const timerRef = useRef<number | null>(null);
   const countdownRef = useRef<number | null>(null);
+  const freshDeployRef = useRef(false);
+
+  const pushEvents = useCallback((events: AlgoEvent[]) => {
+    if (!events.length) return;
+    setAlgoEvents(prev => [...events, ...prev].slice(0, 100));
+  }, []);
 
   // Pre-fill from top scored companies
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from('public_company_scores')
         .select('ticker,cc_total').order('cc_total', { ascending: false }).limit(6);
-      const list = (data ?? []).map((d: any) => d.ticker).filter(Boolean);
+      const list = (data ?? []).map((d) => d.ticker).filter(Boolean);
       if (list.length >= 3) setTickersInput(list.join(','));
     })();
   }, []);
 
-  const loadPortfolios = async () => {
+  const loadPortfolios = useCallback(async () => {
     const { data } = await supabase.from('paper_portfolios').select('*').order('created_at', { ascending: false });
     setPortfolios((data ?? []) as Portfolio[]);
     if (data?.length && !selectedId) setSelectedId(data[0].id);
-  };
-  const loadDetails = async (id: string) => {
+  }, [selectedId]);
+  const loadDetails = useCallback(async (id: string) => {
     const [{ data: pos }, { data: tr }, { data: eq }] = await Promise.all([
       supabase.from('paper_positions').select('*').eq('portfolio_id', id).order('target_weight', { ascending: false }),
       supabase.from('paper_trades').select('*').eq('portfolio_id', id).order('executed_at', { ascending: false }).limit(100),
@@ -83,10 +105,17 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
     setPositions((pos ?? []) as Position[]);
     setTrades((tr ?? []) as Trade[]);
     setEquity((eq ?? []) as EquityPoint[]);
-  };
+  }, []);
 
-  useEffect(() => { loadPortfolios(); }, []);
-  useEffect(() => { if (selectedId) { loadDetails(selectedId); setSeries([]); setLiveFeed([]); } }, [selectedId]);
+  useEffect(() => { loadPortfolios(); }, [loadPortfolios]);
+  useEffect(() => {
+    if (selectedId) {
+      loadDetails(selectedId);
+      setSeries([]);
+      if (freshDeployRef.current) freshDeployRef.current = false;
+      else { setLiveFeed([]); setAlgoEvents([]); }
+    }
+  }, [selectedId, loadDetails]);
 
   // Realtime: animate new trades into the feed
   useEffect(() => {
@@ -99,10 +128,11 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
           const t = payload.new as Trade;
           setTrades(prev => [t, ...prev].slice(0, 100));
           setLiveFeed(prev => [t, ...prev].slice(0, 80));
+          pushEvents(buildTradeEvents([t]));
         })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [selectedId]);
+  }, [selectedId, pushEvents]);
 
   const parseTickers = () => Array.from(new Set(
     tickersInput.split(/[,\s]+/).map(s => s.trim().toUpperCase()).filter(Boolean)
@@ -122,15 +152,22 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
         },
       });
       if (error) throw error;
-      const newId = (data as any)?.portfolio?.id;
+      const payload = data as PaperTradeResponse | null;
+      const newId = payload?.portfolio?.id;
+      const openingTrades = payload?.trades ?? [];
       await loadPortfolios();
-      if (newId) setSelectedId(newId);
-      setLiveFeed([]);
+      if (newId) { freshDeployRef.current = true; setSelectedId(newId); }
+      setLiveFeed(openingTrades.slice(0, 80));
+      setTrades(openingTrades.slice(0, 100));
+      setAlgoEvents([
+        ...buildTradeEvents(openingTrades),
+        { id: `deploy-${Date.now()}`, type: 'deploy', title: 'CAPITAL DEPLOYED', detail: `${tickers.length} tickers weighted by φ`, amount: investAmount, at: Date.now() },
+      ]);
       setSessionStartAt(Date.now());
       setRunning(true);
       toast({ title: 'Capital deployed', description: `$${fmt(investAmount)} → ${tickers.length} positions opened.` });
-    } catch (e: any) {
-      toast({ title: 'Deploy failed', description: e?.message ?? String(e), variant: 'destructive' });
+    } catch (e: unknown) {
+      toast({ title: 'Deploy failed', description: e instanceof Error ? e.message : String(e), variant: 'destructive' });
     } finally {
       setDeploying(false);
     }
@@ -147,16 +184,34 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
     setSeries(prev => [...prev, point].slice(-240));
     setLastTickAt(now);
     tickCounterRef.current += 1;
+    const tickNav = positions.reduce((sum, p) => sum + p.shares * (Number(point[p.ticker]) || p.last_price || p.avg_cost), 0);
+    const tickPnL = selected ? tickNav - Number(selected.nav_start) : 0;
+    pushEvents([{ id: `mark-local-${now}`, type: 'mark', title: tickPnL >= 0 ? 'LIVE P&L UP' : 'LIVE P&L DOWN', detail: `NAV $${fmt(tickNav)} · ${tickers.length} prices refreshed`, amount: tickPnL, at: now }]);
 
     if (Math.floor(now / 60_000) !== Math.floor((lastTickAt ?? 0) / 60_000)) {
       supabase.functions.invoke('paper-trade', { body: { action: 'mark', password, portfolioId: selectedId } })
-        .then(() => loadDetails(selectedId)).catch(() => {});
+        .then(({ data }) => {
+          const payload = data as PaperTradeResponse | null;
+          const pnl = Number(payload?.pnl ?? tickPnL);
+          pushEvents([{ id: `mark-db-${Date.now()}`, type: 'mark', title: pnl >= 0 ? 'EARNINGS MARK' : 'LOSS MARK', detail: `Portfolio saved at $${fmt(Number(payload?.nav ?? tickNav))}`, amount: pnl, at: Date.now() }]);
+          loadDetails(selectedId);
+        }).catch((e: unknown) => pushEvents([{ id: `mark-error-${Date.now()}`, type: 'error', title: 'MARK FAILED', detail: e instanceof Error ? e.message : 'Price update failed', at: Date.now() }]));
     }
 
     if (isAdmin && tickCounterRef.current % REBALANCE_EVERY_N_TICKS === 0) {
       supabase.functions.invoke('paper-trade', {
         body: { action: 'rebalance', password, portfolioId: selectedId, tickers },
-      }).then(() => loadDetails(selectedId)).catch(() => {});
+      }).then(({ data }) => {
+        const payload = data as PaperTradeResponse | null;
+        const rows = payload?.trades ?? [];
+        if (rows.length) {
+          setLiveFeed(prev => [...rows, ...prev].slice(0, 80));
+          pushEvents(buildTradeEvents(rows));
+        } else {
+          pushEvents([{ id: `rebalance-${Date.now()}`, type: 'rebalance', title: 'REBALANCE CHECK', detail: 'No trade needed — portfolio already on target', amount: Number(payload?.pnl ?? tickPnL), at: Date.now() }]);
+        }
+        loadDetails(selectedId);
+      }).catch((e: unknown) => pushEvents([{ id: `rebalance-error-${Date.now()}`, type: 'error', title: 'REBALANCE FAILED', detail: e instanceof Error ? e.message : 'Trade check failed', at: Date.now() }]));
     }
   };
 
@@ -361,7 +416,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
                     <YAxis domain={['auto', 'auto']} fontSize={10} width={64} stroke="hsl(var(--muted-foreground))"
                       tickFormatter={(v) => `$${fmt(Number(v))}`} />
                     <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', fontSize: 12 }}
-                      formatter={(v: any) => [`$${fmt(Number(v))}`, 'NAV']} />
+                      formatter={(v: unknown) => [`$${fmt(Number(v))}`, 'NAV']} />
                     <Area type="monotone" dataKey="nav" stroke="hsl(var(--primary))" fill="url(#navGrad)" strokeWidth={2} isAnimationActive={false} />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -369,46 +424,50 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
             </div>
           </div>
 
-          {/* Live trade ticker */}
+          {/* Live algorithm activity */}
           <div className="rounded-xl border border-border bg-card overflow-hidden flex flex-col">
             <div className="px-4 py-3 border-b border-border flex items-center justify-between">
               <h4 className="text-sm font-semibold flex items-center gap-2">
                 <Zap className="h-4 w-4 text-primary" /> Algorithm activity
               </h4>
-              <div className="flex gap-1.5 text-[10px] tabular-nums">
+              <div className="flex gap-1.5 text-[10px] tabular-nums items-center">
+                <span className="px-1.5 py-0.5 rounded bg-muted font-semibold">{algoEvents.length} LIVE</span>
                 <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary font-semibold">{feedStats.buys} BUY</span>
                 <span className="px-1.5 py-0.5 rounded bg-destructive/10 text-destructive font-semibold">{feedStats.sells} SELL</span>
               </div>
             </div>
             <div className="flex-1 overflow-y-auto max-h-[330px] divide-y divide-border">
-              {liveFeed.length === 0 ? (
+              {algoEvents.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-xs text-muted-foreground gap-2 py-12 px-4 text-center">
                   <Zap className="h-6 w-6 opacity-30" />
-                  {running ? 'Waiting for first trade…' : 'Deploy & go live to see trades stream in.'}
+                  {running ? 'Scanning prices and allocation…' : 'Deploy & go live to see every buy, sell, earning, and loss.'}
                 </div>
               ) : (
                 <AnimatePresence initial={false}>
-                  {liveFeed.map((t, idx) => {
-                    const notional = Number(t.qty) * Number(t.price);
-                    const isBuy = t.side === 'buy';
+                  {algoEvents.map((event) => {
+                    const isPositive = (event.amount ?? 0) >= 0;
+                    const tone = event.type === 'sell' || (event.type === 'mark' && !isPositive) || event.type === 'error' ? 'destructive' : event.type === 'rebalance' ? 'muted-foreground' : 'primary';
                     return (
                       <motion.div
-                        key={t.id}
+                        key={event.id}
                         layout
-                        initial={{ opacity: 0, x: 20, backgroundColor: isBuy ? 'hsl(var(--primary) / 0.15)' : 'hsl(var(--destructive) / 0.15)' }}
+                        initial={{ opacity: 0, x: 20, backgroundColor: tone === 'destructive' ? 'hsl(var(--destructive) / 0.15)' : 'hsl(var(--primary) / 0.15)' }}
                         animate={{ opacity: 1, x: 0, backgroundColor: 'transparent' }}
                         transition={{ duration: 0.5, backgroundColor: { duration: 1.5 } }}
                         className="flex items-center gap-2 px-3 py-2 text-xs"
                       >
-                        <div className={`w-1 self-stretch rounded-full ${isBuy ? 'bg-primary' : 'bg-destructive'}`} />
-                        <span className={`font-bold w-10 ${isBuy ? 'text-primary' : 'text-destructive'}`}>{isBuy ? 'BUY' : 'SELL'}</span>
-                        <span className="font-mono font-semibold w-14">{t.ticker}</span>
-                        <span className="text-muted-foreground tabular-nums flex-1 text-right">
-                          {Number(t.qty).toFixed(2)} × ${Number(t.price).toFixed(2)}
+                        <div className={`w-1 self-stretch rounded-full ${tone === 'destructive' ? 'bg-destructive' : tone === 'primary' ? 'bg-primary' : 'bg-muted-foreground'}`} />
+                        <span className={`font-bold w-24 ${tone === 'destructive' ? 'text-destructive' : tone === 'primary' ? 'text-primary' : 'text-muted-foreground'}`}>{event.title}</span>
+                        <span className="text-muted-foreground tabular-nums flex-1">
+                          {event.detail}
                         </span>
-                        <span className="font-semibold tabular-nums w-16 text-right">${fmt(notional)}</span>
+                        {typeof event.amount === 'number' && (
+                          <span className={`font-semibold tabular-nums w-20 text-right ${event.type === 'mark' || event.type === 'rebalance' ? (isPositive ? 'text-primary' : 'text-destructive') : ''}`}>
+                            {event.type === 'mark' || event.type === 'rebalance' ? `${isPositive ? '+' : '-'}$${fmt(Math.abs(event.amount))}` : `$${fmt(event.amount)}`}
+                          </span>
+                        )}
                         <span className="text-[10px] text-muted-foreground tabular-nums w-14 text-right">
-                          {new Date(t.executed_at).toLocaleTimeString().slice(0, 8)}
+                          {new Date(event.at).toLocaleTimeString().slice(0, 8)}
                         </span>
                       </motion.div>
                     );
