@@ -59,7 +59,8 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   const [equity, setEquity] = useState<EquityPoint[]>([]);
 
   const [running, setRunning] = useState(false);
-  const [intervalMs, setIntervalMs] = useState(15_000);
+  const [intervalMs, setIntervalMs] = useState(60_000);
+  const [takeProfitPct, setTakeProfitPct] = useState(0.10);
   const [series, setSeries] = useState<PricePoint[]>([]);
   const [lastTickAt, setLastTickAt] = useState<number | null>(null);
 
