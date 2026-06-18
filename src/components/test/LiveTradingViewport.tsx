@@ -24,7 +24,7 @@ const INTERVALS = [
   { label: '5m', ms: 300_000 },
 ];
 const PRESETS = [10_000, 50_000, 100_000, 500_000];
-const FALLBACK_TICKERS = 'AAPL,MSFT,NVDA,GOOGL,AMZN,META';
+const FALLBACK_TICKERS = 'AAPL,MSFT,NVDA,GOOGL,AMZN,META,TSLA,AVGO,NFLX,AMD';
 const REBALANCE_EVERY_N_TICKS = 2;
 const fmt = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
 
@@ -85,7 +85,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from('public_company_scores')
-        .select('ticker,cc_total').order('cc_total', { ascending: false }).limit(6);
+        .select('ticker,cc_total').order('cc_total', { ascending: false }).limit(10);
       const list = (data ?? []).map((d) => d.ticker).filter(Boolean);
       if (list.length >= 3) setTickersInput(list.join(','));
     })();
