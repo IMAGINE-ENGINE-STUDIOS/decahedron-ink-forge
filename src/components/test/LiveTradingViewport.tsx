@@ -76,27 +76,27 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   const countdownRef = useRef<number | null>(null);
   const freshDeployRef = useRef(false);
 
-  const pushEvents = (events: AlgoEvent[]) => {
+  const pushEvents = useCallback((events: AlgoEvent[]) => {
     if (!events.length) return;
     setAlgoEvents(prev => [...events, ...prev].slice(0, 100));
-  };
+  }, []);
 
   // Pre-fill from top scored companies
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from('public_company_scores')
         .select('ticker,cc_total').order('cc_total', { ascending: false }).limit(6);
-      const list = (data ?? []).map((d: any) => d.ticker).filter(Boolean);
+      const list = (data ?? []).map((d) => d.ticker).filter(Boolean);
       if (list.length >= 3) setTickersInput(list.join(','));
     })();
   }, []);
 
-  const loadPortfolios = async () => {
+  const loadPortfolios = useCallback(async () => {
     const { data } = await supabase.from('paper_portfolios').select('*').order('created_at', { ascending: false });
     setPortfolios((data ?? []) as Portfolio[]);
     if (data?.length && !selectedId) setSelectedId(data[0].id);
-  };
-  const loadDetails = async (id: string) => {
+  }, [selectedId]);
+  const loadDetails = useCallback(async (id: string) => {
     const [{ data: pos }, { data: tr }, { data: eq }] = await Promise.all([
       supabase.from('paper_positions').select('*').eq('portfolio_id', id).order('target_weight', { ascending: false }),
       supabase.from('paper_trades').select('*').eq('portfolio_id', id).order('executed_at', { ascending: false }).limit(100),
@@ -105,10 +105,17 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
     setPositions((pos ?? []) as Position[]);
     setTrades((tr ?? []) as Trade[]);
     setEquity((eq ?? []) as EquityPoint[]);
-  };
+  }, []);
 
-  useEffect(() => { loadPortfolios(); }, []);
-  useEffect(() => { if (selectedId) { loadDetails(selectedId); setSeries([]); setLiveFeed([]); setAlgoEvents([]); } }, [selectedId]);
+  useEffect(() => { loadPortfolios(); }, [loadPortfolios]);
+  useEffect(() => {
+    if (selectedId) {
+      loadDetails(selectedId);
+      setSeries([]);
+      if (freshDeployRef.current) freshDeployRef.current = false;
+      else { setLiveFeed([]); setAlgoEvents([]); }
+    }
+  }, [selectedId, loadDetails]);
 
   // Realtime: animate new trades into the feed
   useEffect(() => {
