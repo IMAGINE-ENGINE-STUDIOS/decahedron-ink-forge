@@ -122,6 +122,9 @@ const Test: React.FC = () => {
   const [adjusted, setAdjusted] = useState<AllocationResponse | null>(null);
   const [computing, setComputing] = useState(false);
 
+  const [liveMode, setLiveMode] = useState(true);
+  const [lastTick, setLastTick] = useState<Date | null>(null);
+
   const loadSignals = async () => {
     setSignalsLoading(true);
     const { data, error } = await supabase
@@ -132,17 +135,32 @@ const Test: React.FC = () => {
     setSignalsLoading(false);
     if (error) { toast({ title: 'Could not load signals', description: error.message, variant: 'destructive' }); return; }
     setSignals(data ?? []);
+    setLastTick(new Date());
   };
   useEffect(() => { loadSignals(); }, []);
 
-  const handleRefreshSignals = async () => {
+  const handleRefreshSignals = async (silent = false) => {
     setRefreshing(true);
     const { data, error } = await supabase.functions.invoke('industry-signals-refresh', { body: {} });
     setRefreshing(false);
-    if (error) { toast({ title: 'Refresh failed', description: error.message, variant: 'destructive' }); return; }
-    toast({ title: 'Signals refreshed', description: `${data?.refreshed ?? 0} metrics updated` });
+    if (error) {
+      if (!silent) toast({ title: 'Refresh failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+    if (!silent) toast({ title: 'Signals refreshed', description: `${data?.refreshed ?? 0} metrics updated` });
     await loadSignals();
   };
+
+  // Live mode: auto refresh + realtime subscription
+  useEffect(() => {
+    if (!liveMode) return;
+    const id = setInterval(() => { handleRefreshSignals(true); }, 60_000);
+    const channel = supabase
+      .channel('industry_signals_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'industry_signals' }, () => { loadSignals(); })
+      .subscribe();
+    return () => { clearInterval(id); supabase.removeChannel(channel); };
+  }, [liveMode]);
 
   const handleRecompute = async () => {
     if (!companies.length) { toast({ title: 'Add companies first', variant: 'destructive' }); return; }
@@ -156,8 +174,39 @@ const Test: React.FC = () => {
     toast({ title: 'Allocation re-adjusted', description: `φ exponent = ${data.phiExponent.toFixed(3)}` });
   };
 
-  const macroSignals = useMemo(() => signals.filter(s => s.sector === 'macro' || s.sector === 'energy').slice(0, 8), [signals]);
-  const sectorSignals = useMemo(() => signals.filter(s => s.sector !== 'macro' && s.sector !== 'energy').slice(0, 18), [signals]);
+  // Unified signals: dedupe (latest per source+metric), group by sector
+  const unifiedSignals = useMemo(() => {
+    const seen = new Map<string, IndustrySignal>();
+    for (const s of signals) {
+      const k = `${s.source}::${s.metric}`;
+      if (!seen.has(k)) seen.set(k, s);
+    }
+    return Array.from(seen.values());
+  }, [signals]);
+
+  const groupedSignals = useMemo(() => {
+    const groups = new Map<string, IndustrySignal[]>();
+    for (const s of unifiedSignals) {
+      const key = s.sector || 'other';
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(s);
+    }
+    return Array.from(groups.entries()).sort(([a], [b]) => {
+      // macro first, then alphabetical
+      if (a === 'macro') return -1;
+      if (b === 'macro') return 1;
+      return a.localeCompare(b);
+    });
+  }, [unifiedSignals]);
+
+  const marketHeat = useMemo(() => {
+    const zs = unifiedSignals.map(s => s.z_score).filter((z): z is number => z != null);
+    if (!zs.length) return { avgAbs: 0, bias: 0, hot: 0 };
+    const avgAbs = zs.reduce((a, b) => a + Math.abs(b), 0) / zs.length;
+    const bias = zs.reduce((a, b) => a + b, 0) / zs.length;
+    const hot = zs.filter(z => Math.abs(z) > 1).length;
+    return { avgAbs, bias, hot };
+  }, [unifiedSignals]);
 
   const { cc, totalPoints } = useMemo(() => {
     const weighted = FACTORS.reduce((sum, f) => sum + scores[f.key] * f.weight, 0);
