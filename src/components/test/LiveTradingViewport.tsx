@@ -3,7 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
-import { Activity, Play, Pause, Zap } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Activity, Play, Pause, Zap, Rocket } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceDot, CartesianGrid, AreaChart, Area,
 } from 'recharts';
@@ -26,6 +27,8 @@ const INTERVALS = [
   { label: '5m', ms: 300_000 },
   { label: '15m', ms: 900_000 },
 ];
+const FALLBACK_TICKERS = 'AAPL,MSFT,GOOGL,NVDA,AMZN';
+const fmtMoney = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
 
 async function fetchIntradayPrice(ticker: string): Promise<number | null> {
   try {
@@ -46,15 +49,35 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
 
   const [running, setRunning] = useState(false);
   const [intervalMs, setIntervalMs] = useState(15_000);
-  const [autoRebalanceMin, setAutoRebalanceMin] = useState(0); // 0 = never auto-rebalance
+  const [autoRebalanceMin, setAutoRebalanceMin] = useState(0);
   const [series, setSeries] = useState<PricePoint[]>([]);
   const [lastTickAt, setLastTickAt] = useState<number | null>(null);
   const [pulse, setPulse] = useState<{ ticker: string; side: string; price: number } | null>(null);
 
+  // NEW: deploy form
+  const [investAmount, setInvestAmount] = useState<number>(100_000);
+  const [tickersInput, setTickersInput] = useState<string>(FALLBACK_TICKERS);
+  const [deploying, setDeploying] = useState(false);
+
+  // NEW: live trade feed (session only) + counters
+  const [liveFeed, setLiveFeed] = useState<Trade[]>([]);
+  const [sessionStartAt, setSessionStartAt] = useState<number | null>(null);
+  const tickCounterRef = useRef(0);
+  const REBALANCE_EVERY_N_TICKS = 4;
+
   const timerRef = useRef<number | null>(null);
   const rebalanceTimerRef = useRef<number | null>(null);
 
-  // ── Data loaders ────────────────────────────────────────────────────────
+  // Pre-fill tickers from top scored companies
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from('public_company_scores')
+        .select('ticker,cc_total').order('cc_total', { ascending: false }).limit(8);
+      const list = (data ?? []).map((d: any) => d.ticker).filter(Boolean);
+      if (list.length) setTickersInput(list.join(','));
+    })();
+  }, []);
+
   const loadPortfolios = async () => {
     const { data } = await supabase.from('paper_portfolios').select('*').order('created_at', { ascending: false });
     setPortfolios((data ?? []) as Portfolio[]);
@@ -72,9 +95,9 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   };
 
   useEffect(() => { loadPortfolios(); }, []);
-  useEffect(() => { if (selectedId) { loadDetails(selectedId); setSeries([]); } }, [selectedId]);
+  useEffect(() => { if (selectedId) { loadDetails(selectedId); setSeries([]); setLiveFeed([]); } }, [selectedId]);
 
-  // Realtime subscription to trades for the selected portfolio → animated pulse
+  // Realtime trades → animated pulse + live feed
   useEffect(() => {
     if (!selectedId) return;
     const channel = supabase
@@ -83,36 +106,74 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
         const t = payload.new as Trade;
         setPulse({ ticker: t.ticker, side: t.side, price: Number(t.price) });
         setTrades(prev => [t, ...prev].slice(0, 100));
+        setLiveFeed(prev => [t, ...prev].slice(0, 50));
         setTimeout(() => setPulse(null), 1800);
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [selectedId]);
 
-  // ── Live tick loop ──────────────────────────────────────────────────────
+  // Deploy capital → snapshot a new portfolio
+  const parseTickers = () => Array.from(new Set(
+    tickersInput.split(/[,\s]+/).map(s => s.trim().toUpperCase()).filter(Boolean)
+  )).slice(0, 10);
+
+  const handleDeploy = async () => {
+    const tickers = parseTickers();
+    if (!tickers.length) { toast({ title: 'Add at least one ticker', variant: 'destructive' }); return; }
+    if (!investAmount || investAmount < 1000) { toast({ title: 'Minimum investment is $1,000', variant: 'destructive' }); return; }
+    setDeploying(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('paper-trade', {
+        body: {
+          action: 'snapshot',
+          password,
+          name: `Live demo — $${fmtMoney(investAmount)} · ${new Date().toLocaleTimeString()}`,
+          navStart: investAmount,
+          tickers,
+        },
+      });
+      if (error) throw error;
+      const newId = (data as any)?.portfolio?.id ?? (data as any)?.id;
+      await loadPortfolios();
+      if (newId) setSelectedId(newId);
+      setLiveFeed([]);
+      setSessionStartAt(Date.now());
+      setRunning(true);
+      toast({ title: 'Capital deployed', description: `$${fmtMoney(investAmount)} across ${tickers.length} tickers.` });
+    } catch (e: any) {
+      toast({ title: 'Deploy failed', description: e?.message ?? String(e), variant: 'destructive' });
+    } finally {
+      setDeploying(false);
+    }
+  };
+
+  // Live tick loop
   const tick = async () => {
     if (!selectedId || !positions.length) return;
     const now = Date.now();
     const tickers = Array.from(new Set(positions.map(p => p.ticker)));
     const prices = await Promise.all(tickers.map(async t => [t, await fetchIntradayPrice(t)] as const));
     const point: PricePoint = { t: now };
-    let nav = 0;
     for (const [t, px] of prices) {
-      if (px != null) {
-        point[t] = px;
-        const pos = positions.find(p => p.ticker === t);
-        if (pos) nav += pos.shares * px;
-      }
+      if (px != null) point[t] = px;
     }
     setSeries(prev => [...prev, point].slice(-240));
     setLastTickAt(now);
 
-    // Also persist NAV via mark-to-market every 4th tick (≥ 1m apart)
-    // to avoid hammering the DB.
+    tickCounterRef.current += 1;
+
+    // Mark-to-market roughly every minute
     if (Math.floor(now / 60_000) !== Math.floor((lastTickAt ?? 0) / 60_000)) {
-      // fire and forget
       supabase.functions.invoke('paper-trade', { body: { action: 'mark', password, portfolioId: selectedId } })
         .then(() => loadDetails(selectedId)).catch(() => {});
+    }
+
+    // Auto-rebalance every N ticks so the algo actually trades while live
+    if (isAdmin && tickCounterRef.current % REBALANCE_EVERY_N_TICKS === 0) {
+      supabase.functions.invoke('paper-trade', {
+        body: { action: 'rebalance', password, portfolioId: selectedId, tickers },
+      }).then(() => loadDetails(selectedId)).catch(() => {});
     }
   };
 
@@ -122,13 +183,14 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
       timerRef.current = null;
       return;
     }
+    if (!sessionStartAt) setSessionStartAt(Date.now());
+    tickCounterRef.current = 0;
     tick();
     timerRef.current = window.setInterval(tick, intervalMs);
     return () => { if (timerRef.current) window.clearInterval(timerRef.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, intervalMs, positions.length, selectedId]);
 
-  // Auto rebalance loop
   useEffect(() => {
     if (rebalanceTimerRef.current) window.clearInterval(rebalanceTimerRef.current);
     rebalanceTimerRef.current = null;
@@ -145,7 +207,6 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, autoRebalanceMin, selectedId, positions.length]);
 
-  // ── Derived ─────────────────────────────────────────────────────────────
   const tickers = useMemo(() => Array.from(new Set(positions.map(p => p.ticker))), [positions]);
   const selected = portfolios.find(p => p.id === selectedId);
   const liveNav = useMemo(() => {
@@ -156,7 +217,6 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   const livePnL = selected ? liveNav - Number(selected.nav_start) : 0;
   const livePnLPct = selected ? (livePnL / Number(selected.nav_start)) * 100 : 0;
 
-  // Normalise each ticker to start = 100 for visual comparison
   const normalised = useMemo(() => {
     if (!series.length) return [];
     const base: Record<string, number> = {};
@@ -183,6 +243,17 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
       .filter(m => series.length && m.x >= series[0].t && m.x <= series[series.length - 1].t);
   }, [trades, series]);
 
+  // Live feed counters
+  const feedStats = useMemo(() => {
+    let buys = 0, sells = 0, gross = 0;
+    for (const t of liveFeed) {
+      const notional = Number(t.qty) * Number(t.price);
+      gross += notional;
+      if (t.side === 'buy') buys += 1; else sells += 1;
+    }
+    return { buys, sells, gross };
+  }, [liveFeed]);
+
   return (
     <Card className="mb-10 relative overflow-hidden">
       {pulse && (
@@ -197,11 +268,41 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
           <span className={`ml-2 h-2 w-2 rounded-full ${running ? 'bg-primary animate-pulse' : 'bg-muted-foreground'}`} />
         </CardTitle>
         <CardDescription>
-          Streams intraday prices from Yahoo every {INTERVALS.find(i => i.ms === intervalMs)?.label}, marks the portfolio to
-          market every minute, and visualises algorithm trades in real time via Supabase Realtime.
+          Set how much you want to invest, deploy the φ-allocation across the tickers, and watch the algorithm
+          buy and sell in real time.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Deploy capital */}
+        <div className="rounded-md border border-border bg-card/40 p-4 space-y-3">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground">Deploy capital</div>
+          <div className="grid grid-cols-1 md:grid-cols-[180px_1fr_auto] gap-3 items-end">
+            <div className="space-y-1">
+              <Label className="text-xs">Investment ($)</Label>
+              <Input
+                type="number"
+                min={1000}
+                step={1000}
+                value={investAmount}
+                onChange={e => setInvestAmount(Number(e.target.value))}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Tickers (comma-separated, max 10)</Label>
+              <Input
+                value={tickersInput}
+                onChange={e => setTickersInput(e.target.value)}
+                placeholder="AAPL, MSFT, NVDA, ..."
+              />
+            </div>
+            <Button onClick={handleDeploy} disabled={!isAdmin || deploying} className="gap-2 h-10">
+              <Rocket className="h-4 w-4" />
+              {deploying ? 'Deploying…' : 'Deploy & go live'}
+            </Button>
+          </div>
+          {!isAdmin && <div className="text-xs text-muted-foreground">Unlock admin to deploy capital.</div>}
+        </div>
+
         {/* Controls */}
         <div className="flex flex-wrap items-end gap-3">
           <div className="space-y-1">
@@ -250,13 +351,12 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
           >
             {running ? <><Pause className="h-4 w-4" /> Stop</> : <><Play className="h-4 w-4" /> Go live</>}
           </Button>
-          {!isAdmin && <span className="text-xs text-muted-foreground">Unlock admin to stream.</span>}
         </div>
 
         {selected && (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-            <Badge variant="outline" className="tabular-nums justify-center py-2">NAV ${liveNav.toFixed(0)}</Badge>
-            <Badge variant="outline" className="tabular-nums justify-center py-2">Start ${Number(selected.nav_start).toLocaleString()}</Badge>
+            <Badge variant="outline" className="tabular-nums justify-center py-2">Invested ${fmtMoney(Number(selected.nav_start))}</Badge>
+            <Badge variant="outline" className="tabular-nums justify-center py-2">NAV ${fmtMoney(liveNav)}</Badge>
             <Badge variant={livePnL >= 0 ? 'default' : 'destructive'} className="tabular-nums justify-center py-2">
               {livePnL >= 0 ? '+' : ''}${livePnL.toFixed(0)} ({livePnLPct.toFixed(2)}%)
             </Badge>
@@ -267,7 +367,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
           </div>
         )}
 
-        {/* Live price stream (normalised) */}
+        {/* Live price stream */}
         <div>
           <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
             Live price stream (normalised, start = 100)
@@ -275,7 +375,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
           <div className="h-72 w-full rounded-md border border-border bg-card/30">
             {normalised.length < 2 ? (
               <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
-                {running ? 'Streaming…' : 'Press "Go live" to start.'}
+                {running ? 'Streaming…' : 'Deploy capital or press "Go live" to start.'}
               </div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
@@ -316,6 +416,42 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
           )}
         </div>
 
+        {/* Live algorithm activity (session feed) */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-xs uppercase tracking-wider text-muted-foreground">Live algorithm activity</h4>
+            <div className="flex gap-2 text-[11px]">
+              <Badge variant="outline" className="tabular-nums">Buys {feedStats.buys}</Badge>
+              <Badge variant="outline" className="tabular-nums">Sells {feedStats.sells}</Badge>
+              <Badge variant="outline" className="tabular-nums">Gross ${fmtMoney(feedStats.gross)}</Badge>
+              {sessionStartAt && (
+                <Badge variant="outline" className="tabular-nums">Since {new Date(sessionStartAt).toLocaleTimeString()}</Badge>
+              )}
+            </div>
+          </div>
+          <div className="max-h-64 overflow-y-auto rounded-md border border-border divide-y divide-border bg-card/30">
+            {liveFeed.length === 0 ? (
+              <div className="px-3 py-6 text-center text-xs text-muted-foreground">
+                {running ? 'Waiting for the algorithm to place its first trade…' : 'Press "Deploy & go live" to start trading.'}
+              </div>
+            ) : liveFeed.map((t, idx) => {
+              const notional = Number(t.qty) * Number(t.price);
+              return (
+                <div
+                  key={t.id}
+                  className={`flex items-center justify-between px-3 py-2 text-xs gap-2 ${idx === 0 ? 'animate-in slide-in-from-top-2 fade-in duration-300 bg-primary/5' : ''}`}
+                >
+                  <span className="text-muted-foreground tabular-nums w-20">{new Date(t.executed_at).toLocaleTimeString()}</span>
+                  <span className={`font-semibold w-12 ${t.side === 'buy' ? 'text-primary' : 'text-destructive'}`}>{t.side.toUpperCase()}</span>
+                  <Badge variant="outline" className="text-[10px] w-16 justify-center">{t.ticker}</Badge>
+                  <span className="tabular-nums flex-1 text-right">{Number(t.qty).toFixed(4)} × ${Number(t.price).toFixed(2)}</span>
+                  <span className="tabular-nums w-24 text-right font-semibold">${fmtMoney(notional)}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Equity curve */}
         <div>
           <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
@@ -349,10 +485,10 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
           </div>
         </div>
 
-        {/* Trade tape */}
+        {/* Historical trade tape (persisted) */}
         {trades.length > 0 && (
           <div>
-            <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Algorithm trade tape</h4>
+            <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Historical trade tape</h4>
             <div className="max-h-48 overflow-y-auto rounded-md border border-border divide-y divide-border">
               {trades.slice(0, 30).map(t => (
                 <div key={t.id} className="flex items-center justify-between px-3 py-1.5 text-xs">
