@@ -188,12 +188,54 @@ Deno.serve(async (req) => {
       nav += mv;
       await sb.from("paper_positions").update({ last_price: px, market_value: mv }).eq("id", p.id);
     }
-    const { data: pf } = await sb.from("paper_portfolios").select("nav_start").eq("id", parsed.data.portfolioId).single();
+    const { data: pf } = await sb.from("paper_portfolios").select("nav_start,cash").eq("id", parsed.data.portfolioId).single();
+    const cash = Number(pf?.cash ?? 0);
+    nav += cash;
     const pnl = nav - Number(pf?.nav_start ?? 0);
     await sb.from("paper_portfolios").update({ nav_current: Number(nav.toFixed(2)) }).eq("id", parsed.data.portfolioId);
     await sb.from("paper_equity_curve").insert({ portfolio_id: parsed.data.portfolioId, nav: Number(nav.toFixed(2)), pnl: Number(pnl.toFixed(2)) });
-    return new Response(JSON.stringify({ nav, pnl, prices }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ nav, pnl, cash, prices }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
+
+  if (action === "take-profit") {
+    const threshold = (parsed.data.thresholdPct ?? 0.10) / 100; // pct → decimal
+    const { data: positions } = await sb.from("paper_positions").select("*").eq("portfolio_id", parsed.data.portfolioId);
+    const open = (positions ?? []).filter((p: any) => Number(p.shares) > 0);
+    if (!open.length) return new Response(JSON.stringify({ trades: [], cash: 0, message: "no open positions" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const prices = await fetchPrices(open.map((p: any) => p.ticker));
+    const trades: any[] = [];
+    let realised = 0;
+    for (const p of open) {
+      const px = prices[p.ticker] ?? Number(p.last_price) ?? Number(p.avg_cost);
+      const cost = Number(p.avg_cost);
+      if (!px || !cost) continue;
+      const gainPct = (px - cost) / cost;
+      if (gainPct >= threshold) {
+        const proceeds = Number(p.shares) * px;
+        const pnl = (px - cost) * Number(p.shares);
+        realised += proceeds;
+        trades.push({
+          portfolio_id: parsed.data.portfolioId, ticker: p.ticker, side: "sell",
+          qty: Number(p.shares), price: px,
+          rationale: { action: "take-profit", gainPct: Number((gainPct * 100).toFixed(3)), pnl: Number(pnl.toFixed(2)), threshold: parsed.data.thresholdPct },
+        });
+        await sb.from("paper_positions").update({ shares: 0, market_value: 0, last_price: px }).eq("id", p.id);
+      } else {
+        // refresh price even if not selling
+        await sb.from("paper_positions").update({ last_price: px, market_value: Number((Number(p.shares) * px).toFixed(2)) }).eq("id", p.id);
+      }
+    }
+    let tradeRows: any[] = [];
+    if (trades.length) {
+      const inserted = await sb.from("paper_trades").insert(trades).select();
+      tradeRows = inserted.data ?? trades;
+      const { data: pf } = await sb.from("paper_portfolios").select("cash").eq("id", parsed.data.portfolioId).single();
+      const newCash = Number(pf?.cash ?? 0) + realised;
+      await sb.from("paper_portfolios").update({ cash: Number(newCash.toFixed(2)) }).eq("id", parsed.data.portfolioId);
+    }
+    return new Response(JSON.stringify({ trades: tradeRows, realised: Number(realised.toFixed(2)), threshold: parsed.data.thresholdPct }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
+
 
   if (action === "rebalance") {
     const tickers = parsed.data.tickers.map(t => t.toUpperCase());
