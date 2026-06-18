@@ -132,7 +132,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
         })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [selectedId]);
+  }, [selectedId, pushEvents]);
 
   const parseTickers = () => Array.from(new Set(
     tickersInput.split(/[,\s]+/).map(s => s.trim().toUpperCase()).filter(Boolean)
@@ -152,10 +152,11 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
         },
       });
       if (error) throw error;
-      const newId = (data as any)?.portfolio?.id;
-      const openingTrades = ((data as any)?.trades ?? []) as Trade[];
+      const payload = data as PaperTradeResponse | null;
+      const newId = payload?.portfolio?.id;
+      const openingTrades = payload?.trades ?? [];
       await loadPortfolios();
-      if (newId) setSelectedId(newId);
+      if (newId) { freshDeployRef.current = true; setSelectedId(newId); }
       setLiveFeed(openingTrades.slice(0, 80));
       setTrades(openingTrades.slice(0, 100));
       setAlgoEvents([
@@ -165,8 +166,8 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
       setSessionStartAt(Date.now());
       setRunning(true);
       toast({ title: 'Capital deployed', description: `$${fmt(investAmount)} → ${tickers.length} positions opened.` });
-    } catch (e: any) {
-      toast({ title: 'Deploy failed', description: e?.message ?? String(e), variant: 'destructive' });
+    } catch (e: unknown) {
+      toast({ title: 'Deploy failed', description: e instanceof Error ? e.message : String(e), variant: 'destructive' });
     } finally {
       setDeploying(false);
     }
@@ -190,25 +191,27 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
     if (Math.floor(now / 60_000) !== Math.floor((lastTickAt ?? 0) / 60_000)) {
       supabase.functions.invoke('paper-trade', { body: { action: 'mark', password, portfolioId: selectedId } })
         .then(({ data }) => {
-          const pnl = Number((data as any)?.pnl ?? tickPnL);
-          pushEvents([{ id: `mark-db-${Date.now()}`, type: 'mark', title: pnl >= 0 ? 'EARNINGS MARK' : 'LOSS MARK', detail: `Portfolio saved at $${fmt(Number((data as any)?.nav ?? tickNav))}`, amount: pnl, at: Date.now() }]);
+          const payload = data as PaperTradeResponse | null;
+          const pnl = Number(payload?.pnl ?? tickPnL);
+          pushEvents([{ id: `mark-db-${Date.now()}`, type: 'mark', title: pnl >= 0 ? 'EARNINGS MARK' : 'LOSS MARK', detail: `Portfolio saved at $${fmt(Number(payload?.nav ?? tickNav))}`, amount: pnl, at: Date.now() }]);
           loadDetails(selectedId);
-        }).catch((e) => pushEvents([{ id: `mark-error-${Date.now()}`, type: 'error', title: 'MARK FAILED', detail: e?.message ?? 'Price update failed', at: Date.now() }]));
+        }).catch((e: unknown) => pushEvents([{ id: `mark-error-${Date.now()}`, type: 'error', title: 'MARK FAILED', detail: e instanceof Error ? e.message : 'Price update failed', at: Date.now() }]));
     }
 
     if (isAdmin && tickCounterRef.current % REBALANCE_EVERY_N_TICKS === 0) {
       supabase.functions.invoke('paper-trade', {
         body: { action: 'rebalance', password, portfolioId: selectedId, tickers },
       }).then(({ data }) => {
-        const rows = (((data as any)?.trades ?? []) as Trade[]);
+        const payload = data as PaperTradeResponse | null;
+        const rows = payload?.trades ?? [];
         if (rows.length) {
           setLiveFeed(prev => [...rows, ...prev].slice(0, 80));
           pushEvents(buildTradeEvents(rows));
         } else {
-          pushEvents([{ id: `rebalance-${Date.now()}`, type: 'rebalance', title: 'REBALANCE CHECK', detail: 'No trade needed — portfolio already on target', amount: Number((data as any)?.pnl ?? tickPnL), at: Date.now() }]);
+          pushEvents([{ id: `rebalance-${Date.now()}`, type: 'rebalance', title: 'REBALANCE CHECK', detail: 'No trade needed — portfolio already on target', amount: Number(payload?.pnl ?? tickPnL), at: Date.now() }]);
         }
         loadDetails(selectedId);
-      }).catch((e) => pushEvents([{ id: `rebalance-error-${Date.now()}`, type: 'error', title: 'REBALANCE FAILED', detail: e?.message ?? 'Trade check failed', at: Date.now() }]));
+      }).catch((e: unknown) => pushEvents([{ id: `rebalance-error-${Date.now()}`, type: 'error', title: 'REBALANCE FAILED', detail: e instanceof Error ? e.message : 'Trade check failed', at: Date.now() }]));
     }
   };
 
