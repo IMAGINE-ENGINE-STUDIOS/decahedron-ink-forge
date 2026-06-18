@@ -248,16 +248,16 @@ Deno.serve(async (req) => {
     if (!usable.length) return new Response(JSON.stringify({ error: "No allocations/prices" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     const sumA = usable.reduce((a, t) => a + allocations[t], 0);
 
-    // current NAV
-    let nav = 0;
+    // current NAV — include cash held from prior take-profits
+    const { data: pfCash } = await sb.from("paper_portfolios").select("nav_current,cash").eq("id", parsed.data.portfolioId).single();
+    const cashAvail = Number(pfCash?.cash ?? 0);
+    let nav = cashAvail;
     for (const p of current ?? []) {
       const px = prices[p.ticker] ?? p.last_price ?? p.avg_cost;
       nav += p.shares * px;
     }
-    if (nav === 0) {
-      const { data: pf } = await sb.from("paper_portfolios").select("nav_current").eq("id", parsed.data.portfolioId).single();
-      nav = Number(pf?.nav_current ?? 0);
-    }
+    if (nav === 0) nav = Number(pfCash?.nav_current ?? 0);
+
 
     const trades: any[] = [];
     for (const t of usable) {
