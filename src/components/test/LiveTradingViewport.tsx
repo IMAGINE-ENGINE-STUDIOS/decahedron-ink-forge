@@ -14,6 +14,7 @@ interface Position { id: string; ticker: string; target_weight: number; shares: 
 interface Trade { id: string; ticker: string; side: string; qty: number; price: number; executed_at: string; }
 interface EquityPoint { as_of: string; nav: number; pnl: number; }
 interface PricePoint { t: number; [ticker: string]: number; }
+interface AlgoEvent { id: string; type: 'buy' | 'sell' | 'mark' | 'rebalance' | 'deploy' | 'error'; title: string; detail: string; amount?: number; at: number; }
 interface Props { isAdmin: boolean; password: string; }
 
 const INTERVALS = [
@@ -23,8 +24,21 @@ const INTERVALS = [
 ];
 const PRESETS = [10_000, 50_000, 100_000, 500_000];
 const FALLBACK_TICKERS = 'AAPL,MSFT,NVDA,GOOGL,AMZN,META';
-const REBALANCE_EVERY_N_TICKS = 3;
+const REBALANCE_EVERY_N_TICKS = 2;
 const fmt = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+
+const buildTradeEvents = (rows: Trade[] = []): AlgoEvent[] => rows.map((t) => {
+  const amount = Number(t.qty) * Number(t.price);
+  const side = t.side === 'sell' ? 'sell' : 'buy';
+  return {
+    id: t.id ?? `${side}-${t.ticker}-${Date.now()}-${Math.random()}`,
+    type: side,
+    title: `${side.toUpperCase()} ${t.ticker}`,
+    detail: `${Number(t.qty).toFixed(2)} shares at $${Number(t.price).toFixed(2)}`,
+    amount,
+    at: t.executed_at ? new Date(t.executed_at).getTime() : Date.now(),
+  };
+});
 
 async function fetchIntradayPrice(ticker: string): Promise<number | null> {
   try {
