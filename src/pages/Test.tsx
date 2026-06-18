@@ -497,58 +497,82 @@ const Test: React.FC = () => {
               index={1}
               icon={<Radio className="h-4 w-4" />}
               title="B2 · Live Industry Signals"
-              description="Real-time macro & sector z-scores from FRED, World Bank, OECD, Yahoo."
-              badge={<Badge variant="outline" className="text-[10px]">{signals.length} signals</Badge>}
+              description="Unified real-time stream — macro, energy, and sector ETF z-scores in one feed."
+              badge={
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className={`absolute inline-flex h-full w-full rounded-full ${liveMode ? 'bg-emerald-400 animate-ping' : 'bg-muted-foreground'} opacity-75`} />
+                    <span className={`relative inline-flex rounded-full h-2 w-2 ${liveMode ? 'bg-emerald-500' : 'bg-muted-foreground'}`} />
+                  </span>
+                  <Badge variant="outline" className="text-[10px]">{unifiedSignals.length} metrics</Badge>
+                </div>
+              }
             >
               <div className="space-y-4">
-                <div className="flex justify-end">
-                  <Button size="sm" variant="outline" onClick={handleRefreshSignals} disabled={refreshing} className="gap-2">
-                    <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-                    {refreshing ? 'Refreshing…' : 'Refresh now'}
-                  </Button>
+                {/* Header strip: live toggle + heat summary */}
+                <div className="flex flex-wrap items-center justify-between gap-3 border border-border p-3 bg-muted/20">
+                  <div className="flex items-center gap-4 text-xs">
+                    <button
+                      onClick={() => setLiveMode(v => !v)}
+                      className={`px-2 py-1 border ${liveMode ? 'border-emerald-500 text-emerald-600' : 'border-border text-muted-foreground'} uppercase tracking-wider font-technical`}
+                    >
+                      {liveMode ? '● LIVE' : '○ PAUSED'}
+                    </button>
+                    <div className="text-muted-foreground font-technical">
+                      Last tick: {lastTick ? lastTick.toLocaleTimeString() : '—'}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 text-xs font-technical">
+                    <div><span className="text-muted-foreground">|z| avg</span> <span className="font-bold tabular-nums">{marketHeat.avgAbs.toFixed(2)}</span></div>
+                    <div><span className="text-muted-foreground">bias</span> <span className={`font-bold tabular-nums ${marketHeat.bias > 0.2 ? 'text-emerald-600' : marketHeat.bias < -0.2 ? 'text-destructive' : ''}`}>{marketHeat.bias >= 0 ? '+' : ''}{marketHeat.bias.toFixed(2)}</span></div>
+                    <div><span className="text-muted-foreground">hot</span> <span className="font-bold tabular-nums">{marketHeat.hot}</span></div>
+                    <Button size="sm" variant="outline" onClick={() => handleRefreshSignals(false)} disabled={refreshing} className="gap-2 h-7">
+                      <RefreshCw className={`h-3 w-3 ${refreshing ? 'animate-spin' : ''}`} />
+                      {refreshing ? '…' : 'Refresh'}
+                    </Button>
+                  </div>
                 </div>
+
                 {signalsLoading && <p className="text-sm text-muted-foreground">Loading signals…</p>}
-                {!signalsLoading && signals.length === 0 && (
-                  <p className="text-sm text-muted-foreground">No signals yet. Click "Refresh now".</p>
+                {!signalsLoading && unifiedSignals.length === 0 && (
+                  <p className="text-sm text-muted-foreground">No signals yet. Click "Refresh".</p>
                 )}
-                {macroSignals.length > 0 && (
-                  <div>
-                    <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Macro</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {macroSignals.map(s => (
-                        <div key={`${s.source}-${s.metric}`} className="border border-border p-3">
-                          <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{s.source} · {s.metric}</div>
-                          <div className="text-lg font-bold tabular-nums">
-                            {s.value.toFixed(2)}<span className="text-xs text-muted-foreground ml-1">{s.unit ?? ''}</span>
-                          </div>
-                          {s.z_score != null && (
-                            <div className={`text-xs tabular-nums ${s.z_score > 1 ? 'text-destructive' : s.z_score < -1 ? 'text-primary' : 'text-muted-foreground'}`}>
-                              z = {s.z_score.toFixed(2)}
-                            </div>
-                          )}
-                        </div>
-                      ))}
+
+                {/* Unified grouped grid */}
+                <div className="space-y-3">
+                  {groupedSignals.map(([sector, items]) => (
+                    <div key={sector} className="border border-border">
+                      <div className="px-3 py-1.5 bg-muted/30 border-b border-border flex items-center justify-between">
+                        <h4 className="text-[10px] uppercase tracking-widest font-technical">{sector.replace(/_/g, ' ')}</h4>
+                        <span className="text-[10px] text-muted-foreground tabular-nums">{items.length}</span>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-border">
+                        {items.map(s => {
+                          const z = s.z_score;
+                          const tone = z == null ? '' : z > 1 ? 'text-emerald-600' : z < -1 ? 'text-destructive' : 'text-muted-foreground';
+                          const display = s.metric.endsWith('_MOM90')
+                            ? `${(s.value * 100).toFixed(1)}%`
+                            : Math.abs(s.value) >= 100 ? s.value.toFixed(1) : s.value.toFixed(3);
+                          return (
+                            <motion.div
+                              key={`${s.source}-${s.metric}`}
+                              layout
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              className="bg-background p-2.5"
+                            >
+                              <div className="text-[9px] uppercase tracking-wide text-muted-foreground truncate">{s.source} · {s.metric}</div>
+                              <div className="flex items-baseline justify-between mt-0.5">
+                                <div className="text-sm font-bold tabular-nums">{display}<span className="text-[10px] text-muted-foreground ml-1">{s.unit ?? ''}</span></div>
+                                {z != null && <div className={`text-[10px] tabular-nums font-technical ${tone}`}>z {z >= 0 ? '+' : ''}{z.toFixed(2)}</div>}
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )}
-                {sectorSignals.length > 0 && (
-                  <div>
-                    <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Sector ETFs</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {sectorSignals.map(s => (
-                        <div key={`${s.source}-${s.metric}`} className="border border-border p-3">
-                          <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{s.sector.replace(/_/g, ' ')} · {s.metric}</div>
-                          <div className="text-base font-semibold tabular-nums">
-                            {s.metric.endsWith('_MOM90') ? `${(s.value * 100).toFixed(1)}%` : s.value.toFixed(3)}
-                          </div>
-                          {s.z_score != null && (
-                            <div className="text-xs tabular-nums text-muted-foreground">z = {s.z_score.toFixed(2)}</div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                  ))}
+                </div>
               </div>
             </OrigamiPanel>
 
