@@ -24,7 +24,7 @@ const INTERVALS = [
   { label: '5m', ms: 300_000 },
 ];
 const PRESETS = [10_000, 50_000, 100_000, 500_000];
-const FALLBACK_TICKERS = 'AAPL,MSFT,NVDA,GOOGL,AMZN,META';
+const FALLBACK_TICKERS = 'AAPL,MSFT,NVDA,GOOGL,AMZN,META,TSLA,AVGO,NFLX,AMD';
 const REBALANCE_EVERY_N_TICKS = 2;
 const fmt = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
 
