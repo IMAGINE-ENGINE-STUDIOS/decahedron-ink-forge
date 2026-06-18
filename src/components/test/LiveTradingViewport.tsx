@@ -66,12 +66,18 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   const [tickersInput, setTickersInput] = useState<string>(FALLBACK_TICKERS);
   const [deploying, setDeploying] = useState(false);
   const [liveFeed, setLiveFeed] = useState<Trade[]>([]);
+  const [algoEvents, setAlgoEvents] = useState<AlgoEvent[]>([]);
   const [sessionStartAt, setSessionStartAt] = useState<number | null>(null);
   const [nextRebalIn, setNextRebalIn] = useState<number>(0);
 
   const tickCounterRef = useRef(0);
   const timerRef = useRef<number | null>(null);
   const countdownRef = useRef<number | null>(null);
+
+  const pushEvents = (events: AlgoEvent[]) => {
+    if (!events.length) return;
+    setAlgoEvents(prev => [...events, ...prev].slice(0, 100));
+  };
 
   // Pre-fill from top scored companies
   useEffect(() => {
@@ -100,7 +106,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
   };
 
   useEffect(() => { loadPortfolios(); }, []);
-  useEffect(() => { if (selectedId) { loadDetails(selectedId); setSeries([]); setLiveFeed([]); } }, [selectedId]);
+  useEffect(() => { if (selectedId) { loadDetails(selectedId); setSeries([]); setLiveFeed([]); setAlgoEvents([]); } }, [selectedId]);
 
   // Realtime: animate new trades into the feed
   useEffect(() => {
@@ -113,6 +119,7 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
           const t = payload.new as Trade;
           setTrades(prev => [t, ...prev].slice(0, 100));
           setLiveFeed(prev => [t, ...prev].slice(0, 80));
+          pushEvents(buildTradeEvents([t]));
         })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
