@@ -393,6 +393,16 @@ export const LiveTradingViewport: React.FC<Props> = ({ isAdmin, password }) => {
                   onClick={() => setIntervalMs(i.ms)} className="h-8 px-3 text-xs">{i.label}</Button>
               ))}
             </div>
+            <div className="flex items-center gap-1.5 rounded-md border border-input bg-background px-2 h-8">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Take profit ≥</span>
+              <Input
+                type="number" step="0.05" min={0.05} max={10}
+                value={takeProfitPct}
+                onChange={(e) => setTakeProfitPct(Math.max(0.05, Number(e.target.value) || 0.10))}
+                className="h-6 w-16 px-1 text-xs border-0 focus-visible:ring-0"
+              />
+              <span className="text-xs font-semibold">%</span>
+            </div>
             <select value={selectedId ?? ''} onChange={e => setSelectedId(e.target.value)}
               className="h-8 rounded-md border border-input bg-background px-2 text-xs max-w-[200px]">
               {portfolios.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
