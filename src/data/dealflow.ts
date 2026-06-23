@@ -189,5 +189,35 @@ export const DEALFLOW: DealFlowCompany[] = [
     deckUrl: arcanorDeck.url,
     website: 'https://www.arcanor.com',
   },
+  {
+    id: 'exowatt',
+    name: 'Exowatt',
+    tagline: 'Clean Firm Power for the AI Era',
+    sector: 'Clean Energy / Data Center Power / Solar',
+    stage: 'Series B',
+    arr: 'Commercially Deployed',
+    raising: '$30M',
+    geography: ['United States'],
+    founded: '2021',
+    status: 'evaluating',
+    problem:
+      'Global data center capacity demand is expected to reach ~220GW by 2030 at 22% CAGR. 80% of data centers still rely on fossil fuels. Hyperscalers and developers face a critical power shortage with slow-to-deploy alternatives like nuclear and gas+CCS unable to meet near-term demand.',
+    solution:
+      'Exowatt P3 — a modular, dispatchable solar system that captures heat via proprietary fresnel lenses, stores it in a high-efficiency heat battery, and dispatches electricity on demand through a proprietary heat engine. Up to 24h dispatchable, U.S.-made, ITC eligible, no rare earth minerals, deployable in 1–3 years.',
+    traction: [
+      { label: 'Pipeline', value: '>10 GW ($89B)' },
+      { label: 'Capital Raised', value: '$140M' },
+      { label: 'Commercial Deployment', value: 'Since 2025' },
+      { label: 'Team Size', value: '55 (1/3 PhDs)' },
+      { label: 'Top Investors', value: 'a16z, Sam Altman, Felicis' },
+      { label: 'Key Backers', value: 'Starwood, Kushner, HSBC' },
+    ],
+    useOfFunds: [
+      { label: 'Manufacturing & Deployment Scaling', pct: 40 },
+      { label: 'R&D — Platform & Heat Engine Advancement', pct: 35 },
+      { label: 'GTM — Hyperscaler & Developer Contracts', pct: 25 },
+    ],
+    deckUrl: exowattDeck.url,
+  },
 ];
 
