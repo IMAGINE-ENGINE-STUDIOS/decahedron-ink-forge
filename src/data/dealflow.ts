@@ -89,4 +89,35 @@ export const DEALFLOW: DealFlowCompany[] = [
     deckUrl: nullspaceDeck.url,
     website: 'https://www.nullspaceinc.com',
   },
+  {
+    id: 'deepreach',
+    name: 'DeepReach',
+    tagline: 'Perception Layer for Physical AI',
+    sector: 'Physical AI / Robotics Data Infrastructure',
+    stage: 'Seed',
+    arr: '$1.5M',
+    raising: '$3.0M',
+    geography: ['United States'],
+    founded: '2024',
+    status: 'evaluating',
+    problem:
+      '>99% of raw perception data collected today cannot be used for robot training due to low quality and lack of structure. Converting egocentric video and driving logs into high-quality datasets with per-frame spatial/temporal/intent metadata costs >$100/hour and remains a $50B bottleneck — manual, slow, expensive and not scalable.',
+    solution:
+      'An automated perception layer that transforms noisy, fragmented, unusable raw signals into training-ready, structured, high-fidelity data at scale. Self-serve automated tools bridge the gap between raw data collection and simulation — the Databricks for Physical AI.',
+    traction: [
+      { label: 'ARR Run Rate', value: '$1.5M' },
+      { label: 'Time to $1.5M ARR', value: '4 months' },
+      { label: 'Monthly Income', value: '$125K' },
+      { label: 'Data Quality', value: 'Training-Ready' },
+      { label: 'Automation Level', value: 'High (Self-Serve)' },
+      { label: 'Churn', value: 'Not Disclosed' },
+    ],
+    useOfFunds: [
+      { label: 'Advance Algorithms (AI perception models)', pct: 70 },
+      { label: 'Expand Data Pipeline (capacity & coverage)', pct: 20 },
+      { label: 'Compliance & Operations', pct: 10 },
+    ],
+    deckUrl: deepreachDeck.url,
+    website: 'https://deepreach.ai',
+  },
 ];
