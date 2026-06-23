@@ -1,4 +1,5 @@
 import bolderDeck from '@/assets/bolder-deck.pdf.asset.json';
+import nullspaceDeck from '@/assets/nullspace-deck.pdf.asset.json';
 
 export interface TractionMetric {
   label: string;
@@ -55,5 +56,36 @@ export const DEALFLOW: DealFlowCompany[] = [
     ],
     deckUrl: bolderDeck.url,
     website: 'https://bebolder.ai',
+  },
+  {
+    id: 'nullspace',
+    name: 'NULLSPACE',
+    tagline: 'Enterprise AI-Enabled Software for Design of Advanced RF Systems',
+    sector: 'Defense SaaS / Deep Tech',
+    stage: 'Seed+',
+    arr: '$2.0M',
+    raising: '$4.0M',
+    geography: ['United States'],
+    founded: '2023',
+    status: 'evaluating',
+    problem:
+      'Legacy EM simulation tools are 30 years outdated — not designed for scale, struggling with GPU/cloud computing, and unable to handle electrically-large RF problems. Realistic simulations take days to months, licensing is convoluted, and optimization/uncertainty analysis are absent.',
+    solution:
+      'AI-native RF simulation software built from the ground up for cloud, GPUs and multi-CPU architectures. A Python-native platform with a decade of validated defense accuracy that AI coding assistants can write and run natively — collapsing simulation times from hours to minutes.',
+    traction: [
+      { label: 'ARR Run Rate', value: '$2.0M' },
+      { label: 'Customer Logos', value: '13 (target 20+)' },
+      { label: 'Customer Retention', value: '100%' },
+      { label: 'LTV / CAC', value: '20:1' },
+      { label: 'Churn', value: '0%' },
+      { label: 'Land ACV', value: '$51K (target $120K+)' },
+    ],
+    useOfFunds: [
+      { label: 'Product & Engineering (AI-guided design, cloud platform)', pct: 45 },
+      { label: 'Sales & Marketing (enterprise land-and-expand)', pct: 35 },
+      { label: 'Team Expansion (engineering, GTM, customer success)', pct: 20 },
+    ],
+    deckUrl: nullspaceDeck.url,
+    website: 'https://www.nullspaceinc.com',
   },
 ];
