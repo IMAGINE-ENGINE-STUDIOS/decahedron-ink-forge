@@ -11,6 +11,7 @@ import DataRoom from "./pages/DataRoom";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import Test from "./pages/Test";
+import DealFlow from "./pages/DealFlow";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/dataroom" element={<DataRoom />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/test" element={<Test />} />
+          <Route path="/dealflow" element={<DealFlow />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
