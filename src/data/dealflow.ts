@@ -220,5 +220,40 @@ export const DEALFLOW: DealFlowCompany[] = [
     ],
     deckUrl: exowattDeck.url,
   },
+  {
+    id: 'indemn',
+    name: 'Indemn',
+    tagline: 'The Digital Workforce for Insurance Distribution',
+    sector: 'InsurTech / Generative AI',
+    stage: 'Pre-Series A',
+    arr: '$1.3M',
+    raising: '$2.0M',
+    geography: ['United States'],
+    founded: '2023',
+    status: 'evaluating',
+    problem:
+      'Insurance distribution is stalled by a massive friction gap. 70% of underwriting capacity is wasted on non-productive administrative work, $100M MGAs operate at only 30% efficiency, average submission response time is 2–3 weeks, and 50%+ of quotes are lost to slow manual processes — representing billions in uncaptured revenue.',
+    solution:
+      'AI Associates — specialized generative AI agents that work alongside human teams across chat, voice, and email. Four composable engines drive outcomes: Revenue (24/7 quoting & binding), Retention (churn defense & cross-sell), Efficiency (service automation & underwriting guardrails), and Control (no-code governance & analytics). Insurance-native, human-in-the-loop, ~60 days to production.',
+    traction: [
+      { label: 'ARR Run Rate', value: '$1.3M' },
+      { label: 'Customers', value: '12 (target 75+ in 2026)' },
+      { label: 'Team Size', value: '15' },
+      { label: 'Seed Raised', value: '$1.9M' },
+      { label: 'First AI Insurance Acquisition', value: '$1.835M + $300K SaaS' },
+      { label: 'Premium Growth (EventGuard)', value: '330% YoY' },
+      { label: 'AI Resolution Rate (GIC)', value: '53%' },
+      { label: 'Revenue Expansion (INSURICA)', value: '3.7x in 5 months' },
+      { label: 'Response Time Reduction', value: '96%+ (2–3 wks → 2–3 min)' },
+      { label: 'NVIDIA Program', value: 'Inception Member' },
+    ],
+    useOfFunds: [
+      { label: 'Product & Engineering (AI platform, compliance, voice)', pct: 45 },
+      { label: 'Sales & GTM (enterprise land-and-expand)', pct: 35 },
+      { label: 'Team Expansion (engineering, customer success)', pct: 20 },
+    ],
+    deckUrl: indemnDeck.url,
+    website: 'https://indemn.ai',
+  },
 ];
 
