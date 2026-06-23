@@ -1,6 +1,7 @@
 import bolderDeck from '@/assets/bolder-deck.pdf.asset.json';
 import nullspaceDeck from '@/assets/nullspace-deck.pdf.asset.json';
 import deepreachDeck from '@/assets/deepreach-deck.pdf.asset.json';
+import gravityDeck from '@/assets/gravity-deck.pdf.asset.json';
 
 export interface TractionMetric {
   label: string;
@@ -119,5 +120,36 @@ export const DEALFLOW: DealFlowCompany[] = [
     ],
     deckUrl: deepreachDeck.url,
     website: 'https://deepreach.ai',
+  },
+  {
+    id: 'gravity',
+    name: 'Gravity',
+    tagline: 'AI Inference in Buildings Utilizing Stranded Electrical Capacity',
+    sector: 'AI Infrastructure / Edge Compute',
+    stage: 'Series A',
+    arr: 'Pre-Revenue (AI Compute)',
+    raising: '$25M',
+    geography: ['United States'],
+    founded: '2021',
+    status: 'evaluating',
+    problem:
+      'Power is the key limiting factor to AI deployment. Hyperscalers face 11+ state moratoriums on new builds with 4–7 year average grid interconnect waits. Colocation vacancy is at a record-low 1.6% with 92% under construction already precommitted. Meanwhile 75% of enterprise data is created at the edge and real-time AI requires <5 ms latency — demanding compute inside the metro, not miles away.',
+    solution:
+      'Distributed compute behind the meter that drops modular GPU clusters into existing commercial buildings — utilizing stranded electrical capacity, recovering waste heat to serve the host property, and deploying live capacity in 4–8 weeks with zero new grid interconnection. Sub-$2M/MW build cost, aligned with NVIDIA current and roadmap architecture.',
+    traction: [
+      { label: 'Sites Deployed', value: '40+' },
+      { label: 'Sessions (EV proven)', value: '>120K' },
+      { label: 'Uptime', value: '99.5%' },
+      { label: 'Revenue Growth', value: '14x (2024→2026)' },
+      { label: 'GW Validated', value: '3.8 (3 metros)' },
+      { label: 'Buildings Mapped', value: '847' },
+    ],
+    useOfFunds: [
+      { label: 'Tech — Compute Platform (GPU/cooling integration, U.S.-made hardware)', pct: 40 },
+      { label: 'GTM — Customer Pipeline (hyperscale off-takes, enterprise sales)', pct: 35 },
+      { label: 'Deployment — Initial Metro Portfolio (flagship sites live)', pct: 25 },
+    ],
+    deckUrl: gravityDeck.url,
+    website: 'https://www.gravitytechnologies.com',
   },
 ];
