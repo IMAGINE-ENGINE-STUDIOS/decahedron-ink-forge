@@ -36,6 +36,7 @@ const statusColor: Record<DealFlowCompany['status'], string> = {
 
 const DealFlow: React.FC = () => {
   const [selectedId, setSelectedId] = useState<string>(DEALFLOW[0]?.id ?? '');
+  const [viewerUrl, setViewerUrl] = useState<string | null>(null);
   const selected = DEALFLOW.find((c) => c.id === selectedId) ?? DEALFLOW[0];
 
   return (
