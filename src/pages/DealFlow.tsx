@@ -1,9 +1,23 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, FileText, ExternalLink, TrendingUp, MapPin, Calendar, Target } from 'lucide-react';
+import {
+  ArrowLeft,
+  FileText,
+  ExternalLink,
+  TrendingUp,
+  MapPin,
+  Calendar,
+  Target,
+  X,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { DEALFLOW, type DealFlowCompany } from '@/data/dealflow';
 
 const statusLabel: Record<DealFlowCompany['status'], string> = {
