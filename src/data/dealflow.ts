@@ -1,4 +1,5 @@
 import bolderDeck from '@/assets/bolder-deck.pdf.asset.json';
+import nullspaceDeck from '@/assets/nullspace-deck.pdf.asset.json';
 
 export interface TractionMetric {
   label: string;
