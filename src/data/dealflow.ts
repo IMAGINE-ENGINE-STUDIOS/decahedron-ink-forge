@@ -4,6 +4,7 @@ import deepreachDeck from '@/assets/deepreach-deck.pdf.asset.json';
 import gravityDeck from '@/assets/gravity-deck.pdf.asset.json';
 import arcanorDeck from '@/assets/arcanor-deck.pdf.asset.json';
 import exowattDeck from '@/assets/exowatt-deck.pdf.asset.json';
+import indemnDeck from '@/assets/indemn-deck.pdf.asset.json';
 
 export interface TractionMetric {
   label: string;
