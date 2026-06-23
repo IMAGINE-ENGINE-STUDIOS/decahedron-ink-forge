@@ -152,4 +152,31 @@ export const DEALFLOW: DealFlowCompany[] = [
     deckUrl: gravityDeck.url,
     website: 'https://www.gravitytechnologies.com',
   },
+  {
+    id: 'arcanor',
+    name: 'Arcanor',
+    tagline: 'Next-Generation Software Platform',
+    sector: 'Software / AI',
+    stage: 'Seed',
+    arr: '$1.89M',
+    raising: '$3.0M',
+    geography: ['United States'],
+    founded: '2023',
+    status: 'evaluating',
+    problem:
+      'Legacy workflows in the target market remain fragmented, manual, and resistant to automation — leaving meaningful efficiency and revenue capture on the table.',
+    solution:
+      'Arcanor delivers an AI-native software platform that consolidates fragmented workflows into a single, automated system — already generating recurring revenue at scale for a seed-stage company.',
+    traction: [
+      { label: 'ARR Run Rate', value: '$1.89M' },
+      { label: 'Stage', value: 'Seed' },
+      { label: 'Status', value: 'Revenue Generating' },
+    ],
+    useOfFunds: [
+      { label: 'Product & Engineering', pct: 60 },
+      { label: 'Go-to-Market', pct: 30 },
+      { label: 'Operations', pct: 10 },
+    ],
+  },
 ];
+
