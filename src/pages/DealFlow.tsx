@@ -1,9 +1,23 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, FileText, ExternalLink, TrendingUp, MapPin, Calendar, Target } from 'lucide-react';
+import {
+  ArrowLeft,
+  FileText,
+  ExternalLink,
+  TrendingUp,
+  MapPin,
+  Calendar,
+  Target,
+  X,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { DEALFLOW, type DealFlowCompany } from '@/data/dealflow';
 
 const statusLabel: Record<DealFlowCompany['status'], string> = {
@@ -22,6 +36,7 @@ const statusColor: Record<DealFlowCompany['status'], string> = {
 
 const DealFlow: React.FC = () => {
   const [selectedId, setSelectedId] = useState<string>(DEALFLOW[0]?.id ?? '');
+  const [viewerUrl, setViewerUrl] = useState<string | null>(null);
   const selected = DEALFLOW.find((c) => c.id === selectedId) ?? DEALFLOW[0];
 
   return (
@@ -117,11 +132,9 @@ const DealFlow: React.FC = () => {
                         </Button>
                       )}
                       {selected.deckUrl && (
-                        <Button asChild size="sm">
-                          <a href={selected.deckUrl} target="_blank" rel="noopener noreferrer">
-                            <FileText className="h-3.5 w-3.5 mr-2" />
-                            Deck
-                          </a>
+                        <Button size="sm" onClick={() => setViewerUrl(selected.deckUrl!)}>
+                          <FileText className="h-3.5 w-3.5 mr-2" />
+                          Deck
                         </Button>
                       )}
                     </div>
@@ -194,6 +207,29 @@ const DealFlow: React.FC = () => {
           )}
         </div>
       </section>
+
+      {/* PDF Viewer Modal */}
+      <Dialog open={!!viewerUrl} onOpenChange={(open) => !open && setViewerUrl(null)}>
+        <DialogContent className="max-w-[95vw] w-full h-[95vh] p-0 border-0 bg-background overflow-hidden">
+          <DialogTitle className="sr-only">Pitch Deck Viewer</DialogTitle>
+          <div className="relative w-full h-full">
+            <button
+              onClick={() => setViewerUrl(null)}
+              className="absolute top-3 right-3 z-10 rounded-full bg-background/90 border border-border p-2 shadow-sm hover:bg-muted transition-colors"
+              aria-label="Close viewer"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            {viewerUrl && (
+              <iframe
+                src={viewerUrl}
+                title="Pitch Deck"
+                className="w-full h-full border-0"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 };
