@@ -26,8 +26,8 @@ const Fold: React.FC<{ children: React.ReactNode; i?: number; className?: string
 
 const Title: React.FC<{ children: React.ReactNode; sub?: string }> = ({ children, sub }) => (
   <Fold>
-    <h2 className="font-display text-2xl md:text-[32px] leading-[0.95] text-foreground mb-2">{children}</h2>
-    {sub && <p className="text-[13px] md:text-[15px] text-muted-foreground max-w-3xl leading-snug">{sub}</p>}
+    <h2 className="font-display text-3xl md:text-[42px] leading-[0.95] text-foreground mb-2">{children}</h2>
+    {sub && <p className="text-[15px] md:text-[18px] text-muted-foreground max-w-3xl leading-snug">{sub}</p>}
     <div className="w-14 h-px bg-geometric-primary/60 mt-4 mb-5" />
   </Fold>
 );
@@ -36,8 +36,8 @@ const Card: React.FC<{ label?: string; title?: string; children: React.ReactNode
   label, title, children, i = 0,
 }) => (
   <Fold i={i} className="border border-technical-line/40 bg-background/40 p-4 rounded-sm">
-    {label && <div className="font-technical text-[9px] tracking-[0.3em] text-geometric-secondary/60 mb-1.5">{label}</div>}
-    {title && <h3 className="font-display text-[17px] text-foreground mb-2">{title}</h3>}
+    {label && <div className="font-technical text-[10px] tracking-[0.3em] text-geometric-secondary/60 mb-1.5">{label}</div>}
+    {title && <h3 className="font-display text-[20px] text-foreground mb-2">{title}</h3>}
     {children}
   </Fold>
 );
@@ -45,7 +45,7 @@ const Card: React.FC<{ label?: string; title?: string; children: React.ReactNode
 const Bullets: React.FC<{ items: string[] }> = ({ items }) => (
   <ul className="space-y-1.5">
     {items.map((it) => (
-      <li key={it} className="text-[12px] text-muted-foreground flex items-start gap-2.5 leading-snug">
+      <li key={it} className="text-[14px] text-muted-foreground flex items-start gap-2.5 leading-snug">
         <span className="w-1.5 h-1.5 rounded-full bg-geometric-secondary/50 mt-1.5 flex-shrink-0" />
         {it}
       </li>
@@ -58,8 +58,8 @@ const Terms: React.FC<{ rows: { term: string; value: string }[] }> = ({ rows }) 
     {rows.map((r, i) => (
       <Fold key={r.term} i={i}>
         <div className="flex items-center justify-between gap-4 py-2.5 border-b border-border">
-          <span className="font-technical text-[10px] tracking-[0.12em] uppercase text-geometric-secondary">{r.term}</span>
-          <span className="text-[13px] text-foreground text-right max-w-[240px]">{r.value}</span>
+          <span className="font-technical text-[11px] tracking-[0.12em] uppercase text-geometric-secondary">{r.term}</span>
+          <span className="text-[15px] text-foreground text-right max-w-[240px]">{r.value}</span>
         </div>
       </Fold>
     ))}
@@ -70,32 +70,32 @@ const Terms: React.FC<{ rows: { term: string; value: string }[] }> = ({ rows }) 
 const Cover = () => (
   <div className="flex flex-col items-center justify-center text-center flex-1">
     <Fold>
-      <div className="font-technical text-[10px] tracking-[0.4em] text-geometric-secondary/70 mb-5">
+      <div className="font-technical text-[12px] tracking-[0.4em] text-geometric-secondary/70 mb-5">
         LIMITED PARTNER BROCHURE
       </div>
     </Fold>
     <Fold i={1}>
-      <h2 className="font-display text-[34px] md:text-[56px] leading-[0.85] text-foreground">
+      <h2 className="font-display text-[44px] md:text-[72px] leading-[0.85] text-foreground">
         DECAHEDRON<br />VENTURES FUND I
       </h2>
     </Fold>
     <Fold i={2}>
       <div className="w-20 h-px bg-geometric-primary/50 my-6 mx-auto" />
-      <p className="font-technical text-[11px] md:text-[12px] tracking-[0.2em] text-geometric-secondary">
+      <p className="font-technical text-[13px] md:text-[14px] tracking-[0.2em] text-geometric-secondary">
         VENTURE CAPITAL ENGINEERING FOR FRONTIER DEEP TECHNOLOGIES
       </p>
     </Fold>
     <Fold i={3}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 font-technical text-[11px] text-geometric-secondary">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 font-technical text-[13px] text-geometric-secondary">
         <div>
-          <div className="text-[9px] tracking-[0.3em] text-geometric-secondary/50 mb-1">MANAGING PARTNER</div>
+          <div className="text-[11px] tracking-[0.3em] text-geometric-secondary/50 mb-1">MANAGING PARTNER</div>
           <div className="text-foreground">Khalia Padilla</div>
-          <div className="text-[10px] mt-0.5">khalia@decahedronventures.com</div>
+          <div className="text-[12px] mt-0.5">khalia@decahedronventures.com</div>
         </div>
         <div>
-          <div className="text-[9px] tracking-[0.3em] text-geometric-secondary/50 mb-1">FOUNDER & MANAGING PARTNER</div>
+          <div className="text-[11px] tracking-[0.3em] text-geometric-secondary/50 mb-1">FOUNDER & MANAGING PARTNER</div>
           <div className="text-foreground">Ricardo Font</div>
-          <div className="text-[10px] mt-0.5">ricardo@decahedronventures.com</div>
+          <div className="text-[12px] mt-0.5">ricardo@decahedronventures.com</div>
         </div>
       </div>
     </Fold>
@@ -108,16 +108,16 @@ const Thesis = () => (
     <Title sub="Back technical founders building the strategic technology leaders of the 2030s.">Core Thesis</Title>
     <div className="space-y-5">
       <Fold i={1}>
-        <div className="font-technical text-[9px] tracking-[0.3em] text-geometric-secondary/60 mb-2">INVESTMENT PHILOSOPHY</div>
-        <p className="font-display text-[17px] md:text-[22px] leading-[1.3] text-foreground max-w-4xl">
+        <div className="font-technical text-[11px] tracking-[0.3em] text-geometric-secondary/60 mb-2">INVESTMENT PHILOSOPHY</div>
+        <p className="font-display text-[22px] md:text-[28px] leading-[1.3] text-foreground max-w-4xl">
           Invest in early and growth-stage companies that demonstrate strong differentiation factors and breakthrough
           innovation, with the potential to reshape and transform entire industries.
         </p>
       </Fold>
       <div className="w-12 h-px bg-geometric-primary/40" />
       <Fold i={2}>
-        <div className="font-technical text-[9px] tracking-[0.3em] text-geometric-secondary/60 mb-2">WHERE WE INVEST</div>
-        <p className="font-display text-[20px] md:text-[28px] leading-[1.2] text-foreground max-w-4xl">
+        <div className="font-technical text-[11px] tracking-[0.3em] text-geometric-secondary/60 mb-2">WHERE WE INVEST</div>
+        <p className="font-display text-[26px] md:text-[34px] leading-[1.2] text-foreground max-w-4xl">
           At the intersection of <span className="italic">physics</span>, <span className="italic">compute</span>, and{' '}
           <span className="italic">autonomy</span> — where breakthroughs create durable, defensible, global-scale businesses.
         </p>
@@ -204,10 +204,10 @@ const FactorList: React.FC<{ from: number; to: number }> = ({ from, to }) => (
     {FACTORS.slice(from, to).map(([num, label, desc], i) => (
       <Fold key={num} i={i}>
         <div className="flex gap-4 items-start border-b border-border pb-2.5">
-          <div className="font-technical text-[26px] text-geometric-secondary/20 leading-none">{num}</div>
+          <div className="font-technical text-[34px] text-geometric-secondary/20 leading-none">{num}</div>
           <div>
-            <div className="font-technical text-[11px] tracking-[0.18em] text-foreground mb-1">{label}</div>
-            <p className="text-[12px] text-muted-foreground leading-[1.5] max-w-2xl">{desc}</p>
+            <div className="font-technical text-[13px] tracking-[0.18em] text-foreground mb-1">{label}</div>
+            <p className="text-[14px] text-muted-foreground leading-[1.5] max-w-2xl">{desc}</p>
           </div>
         </div>
       </Fold>
@@ -218,20 +218,20 @@ const FactorList: React.FC<{ from: number; to: number }> = ({ from, to }) => (
 const FactorsIntro = () => (
   <div className="flex flex-col justify-center flex-1">
     <Fold>
-      <div className="font-technical text-[9px] tracking-[0.3em] text-geometric-secondary/60 mb-3">INVESTMENT PROCESS</div>
-      <h2 className="font-display text-2xl md:text-[32px] leading-[0.95] text-foreground mb-5">
+      <div className="font-technical text-[11px] tracking-[0.3em] text-geometric-secondary/60 mb-3">INVESTMENT PROCESS</div>
+      <h2 className="font-display text-3xl md:text-[42px] leading-[0.95] text-foreground mb-5">
         Ten Faces. Ten Factors.
       </h2>
       <div className="w-14 h-px bg-geometric-primary/60 mb-5" />
     </Fold>
     <Fold i={1}>
-      <p className="text-[15px] md:text-[17px] leading-[1.6] text-muted-foreground max-w-3xl mb-4">
+      <p className="text-[17px] md:text-[20px] leading-[1.6] text-muted-foreground max-w-3xl mb-4">
         Inspired by the ten faces of a decahedron, our investment approach identifies ten transformative factors in
         startups — signals that highlight innovations positioned to deliver exponential growth.
       </p>
     </Fold>
     <Fold i={2}>
-      <p className="text-[13px] leading-[1.6] text-muted-foreground/80 max-w-3xl">
+      <p className="text-[15px] leading-[1.6] text-muted-foreground/80 max-w-3xl">
         Every opportunity is scored on all ten factors by our investment committee using a proprietary assessment
         matrix, producing a single comparable Company Coefficient.
       </p>
@@ -257,11 +257,11 @@ const FactorsTwo = () => (
 const FundTable: React.FC<{ name: string; rows: string[][] }> = ({ name, rows }) => (
   <Fold i={1} className="border border-technical-line/40 rounded-sm overflow-hidden max-w-3xl">
     <div className="bg-secondary/50 p-3">
-      <h3 className="font-display text-[18px] text-foreground">{name}</h3>
+      <h3 className="font-display text-[22px] text-foreground">{name}</h3>
     </div>
-    <table className="w-full text-[13px]">
+    <table className="w-full text-[15px]">
       <thead>
-        <tr className="font-technical text-[9px] tracking-[0.15em] text-geometric-secondary bg-secondary/30">
+        <tr className="font-technical text-[11px] tracking-[0.15em] text-geometric-secondary bg-secondary/30">
           <th className="text-left p-2.5">Stage</th>
           <th className="text-right p-2.5">$ / Deal</th>
           <th className="text-right p-2.5">Total</th>
@@ -313,7 +313,7 @@ const StrategyB = () => (
       ]}
     />
     <Fold i={3}>
-      <p className="font-technical text-[10px] text-geometric-secondary/70 mt-4">
+      <p className="font-technical text-[12px] text-geometric-secondary/70 mt-4">
         Target: 20 portfolio investments — 10 Seed · 3 Series A · 3 Series "Super A" · 4 Series A from Seed
       </p>
     </Fold>
@@ -331,7 +331,7 @@ const Accelerator = () => (
           <img src={startupFactoryLogo} alt="Startup Factory Hub logo" className="w-7 h-7 object-contain" loading="lazy" />
         </div>
         <div className="w-px h-6 bg-technical-line/50" />
-        <div className="font-technical text-[9px] tracking-[0.3em] text-geometric-secondary/70 uppercase leading-relaxed">
+        <div className="font-technical text-[11px] tracking-[0.3em] text-geometric-secondary/70 uppercase leading-relaxed">
           Startup Factory Hub
           <div className="text-muted-foreground/70 tracking-[0.2em]">× Decahedron Ventures</div>
         </div>
@@ -349,14 +349,14 @@ const Accelerator = () => (
         { k: 'VALUATION', v: 'STANDARDIZED', d: 'fixed valuation band applied across the cohort' },
       ].map((m, i) => (
         <Card key={m.k} label={m.k} i={i}>
-          <div className="font-display text-[24px] text-foreground leading-none mb-1.5">{m.v}</div>
-          <p className="text-[12px] text-muted-foreground leading-snug">{m.d}</p>
+          <div className="font-display text-[28px] text-foreground leading-none mb-1.5">{m.v}</div>
+          <p className="text-[14px] text-muted-foreground leading-snug">{m.d}</p>
         </Card>
       ))}
     </div>
 
     <Card label="[ HOW.IT.WORKS ]" i={3}>
-      <ul className="space-y-1.5 text-[12px] text-muted-foreground leading-snug">
+      <ul className="space-y-1.5 text-[14px] text-muted-foreground leading-snug">
         <li>· Founders join the accelerator at no cost and without giving up equity to the program.</li>
         <li>· Cohorts are mentored, pitch-trained and diligence-prepared against our 10-factor framework.</li>
         <li>· Graduates scoring above threshold receive a standard $250,000 check at a pre-agreed valuation.</li>
@@ -379,7 +379,7 @@ const Team = () => (
         { name: 'N. MacDonnell Ulsch', title: 'Strategic Advisor', bio: 'Cybersecurity · Risk advisory', image: nMacdonnellUlsch },
       ].map((m, i) => (
         <Fold key={m.name} i={i} className="border border-technical-line/40 bg-background/40 p-3 rounded-sm text-center">
-          <div className="w-[52px] h-[52px] rounded-full overflow-hidden border border-technical-line/50 bg-secondary mx-auto mb-2.5">
+          <div className="w-[60px] h-[60px] rounded-full overflow-hidden border border-technical-line/50 bg-secondary mx-auto mb-2.5">
             <img
               src={m.image}
               alt={`${m.name}, ${m.title} at Decahedron Ventures`}
@@ -388,9 +388,9 @@ const Team = () => (
             />
           </div>
 
-          <h3 className="font-display text-[13px] text-foreground mb-0.5">{m.name}</h3>
-          <p className="font-technical text-[8px] tracking-wider text-geometric-secondary uppercase mb-2">{m.title}</p>
-          <p className="text-[10px] text-muted-foreground leading-[1.4]">{m.bio}</p>
+          <h3 className="font-display text-[15px] text-foreground mb-0.5">{m.name}</h3>
+          <p className="font-technical text-[9px] tracking-wider text-geometric-secondary uppercase mb-2">{m.title}</p>
+          <p className="text-[11px] text-muted-foreground leading-[1.4]">{m.bio}</p>
         </Fold>
       ))}
     </div>
@@ -412,7 +412,7 @@ const Offering = () => (
       ]}
     />
     <Fold i={5}>
-      <p className="text-[11px] text-muted-foreground leading-[1.6] mt-5 max-w-4xl">
+      <p className="text-[13px] text-muted-foreground leading-[1.6] mt-5 max-w-4xl">
         All investors must certify that they are accredited investors or qualified purchasers. Interests will not be
         registered under the Securities Act of 1933 in reliance upon exemptions in 506(b) of Regulation D, and are
         subject to restrictions on transferability and resale.
@@ -444,18 +444,18 @@ const FundOrg = () => (
 const Closing = () => (
   <div className="flex flex-col items-center justify-center text-center flex-1">
     <Fold>
-      <h2 className="font-display text-[32px] md:text-[48px] text-foreground leading-[0.9] mb-5">Partner With Us</h2>
+      <h2 className="font-display text-[40px] md:text-[60px] text-foreground leading-[0.9] mb-5">Partner With Us</h2>
       <div className="w-16 h-px bg-geometric-primary/50 mx-auto mb-7" />
     </Fold>
     <Fold i={1}>
-      <div className="space-y-1.5 font-technical text-[13px] tracking-wider text-foreground">
+      <div className="space-y-1.5 font-technical text-[15px] tracking-wider text-foreground">
         <p>407 760-4873</p>
         <p>info@decahedronventures.com</p>
         <p className="text-geometric-secondary/60 tracking-[0.4em] pt-3">DECAHEDRONVENTURES.COM</p>
       </div>
     </Fold>
     <Fold i={2}>
-      <p className="text-[10px] leading-[1.7] text-muted-foreground max-w-3xl mt-8">
+      <p className="text-[12px] leading-[1.7] text-muted-foreground max-w-3xl mt-8">
         This brochure is not, and should not be construed as, an offer, invitation, or recommendation with respect to
         any securities issued by Decahedron Fund I LLC or its manager, Decahedron GP I LLC. It does not take into
         account the investment objectives, financial situation, or needs of any investor. Any projections are
