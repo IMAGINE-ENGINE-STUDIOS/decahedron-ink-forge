@@ -17,6 +17,8 @@ export interface LPApplicationDetailRecord {
   message: string | null;
   status: string;
   created_at: string;
+  ticket_code?: string | null;
+  ticket_sent_at?: string | null;
 }
 
 interface Props {
