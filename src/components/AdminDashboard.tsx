@@ -46,6 +46,8 @@ import BrochureAnalytics from '@/components/admin/BrochureAnalytics';
 import { DealFlowTable } from '@/components/admin/DealFlowTable';
 import { InvestorCRM } from '@/components/admin/InvestorCRM';
 import { IndustryBreakdown } from '@/components/admin/IndustryBreakdown';
+import LPSignupsDashboard from '@/components/admin/LPSignupsDashboard';
+import LPApplicationDetail from '@/components/admin/LPApplicationDetail';
 
 interface Pitch {
   id: string;
