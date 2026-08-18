@@ -50,6 +50,24 @@ const LPPipelineBoard: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const issueTicket = async (record: LPRecord, resend = false) => {
+    setSending(record.id);
+    const { data, error } = await supabase.functions.invoke('send-lp-ticket', {
+      body: { application_id: record.id, resend },
+    });
+    setSending(null);
+    if (error) {
+      toast({ title: 'Ticket email failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+    if ((data as any)?.already_sent) {
+      toast({ title: 'Ticket already sent', description: `Code ${(data as any).ticket_code}` });
+    } else {
+      toast({ title: `Ticket sent to ${record.email}`, description: (data as any)?.ticket_code });
+    }
+    load();
+  };
+
   const moveStage = async (record: LPRecord, direction: -1 | 1) => {
     const idx = STAGES.findIndex((s) => s.id === (record.status || 'pending'));
     const next = STAGES[Math.min(STAGES.length - 1, Math.max(0, idx + direction))];
@@ -66,6 +84,10 @@ const LPPipelineBoard: React.FC = () => {
       return;
     }
     toast({ title: `${record.full_name} → ${next.label}` });
+
+    if (next.id === 'approved' && !record.ticket_sent_at) {
+      await issueTicket({ ...record, status: 'approved' });
+    }
   };
 
   const filtered = useMemo(() => {
