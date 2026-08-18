@@ -409,9 +409,11 @@ const AdminDashboard: React.FC = () => {
           </TabsList>
 
           {/* Analytics Tab */}
-          <TabsContent value="overview">
+          <TabsContent value="overview" className="space-y-6">
             <AnalyticsCharts pitches={pitches} />
+            <BrochureAnalytics />
           </TabsContent>
+
 
           {/* Deal Flow Tab */}
           <TabsContent value="deals">
