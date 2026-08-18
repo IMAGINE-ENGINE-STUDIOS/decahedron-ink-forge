@@ -479,5 +479,6 @@ export const lpBrochurePages: { kicker: string; render: React.FC }[] = [
   { kicker: '[ THE.TEAM ]', render: Team },
   { kicker: '[ THE.OFFERING ]', render: Offering },
   { kicker: '[ FUND.ORGANIZATION ]', render: FundOrg },
+  { kicker: '[ LP.SIGN-UP ]', render: ContactSheet },
   { kicker: '[ CONTACT ]', render: Closing },
 ];
