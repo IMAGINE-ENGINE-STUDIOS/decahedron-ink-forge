@@ -485,7 +485,7 @@ const SlideTeam = () => (
         {[
           { name: 'Khalia Padilla', title: 'Managing Partner', bio: 'Nasdaq Entrepreneurial Center · Deep tech operator · Accelerator builder' },
           { name: 'Ricardo Font', title: 'Founder & Managing Partner', bio: 'Serial entrepreneur · Deep tech investor · Fund architect' },
-          { name: 'Steven Lindgren', title: 'Managing Director', bio: 'Operational leadership · Portfolio strategy · Investor relations' },
+          { name: 'Dominic Catrambone', title: 'Chief Financial Officer', bio: 'Financial strategy · Fund operations · LP reporting' },
           { name: 'James Stuber', title: 'Legal Counsel', bio: 'Fund structuring · Securities law · LP governance' },
           { name: 'N. MacDonnell Ulsch', title: 'Strategic Advisor', bio: 'Cybersecurity · Risk advisory · Strategic counsel' },
         ].map((member) => (
