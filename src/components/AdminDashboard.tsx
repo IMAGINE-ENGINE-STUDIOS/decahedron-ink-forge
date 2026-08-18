@@ -431,7 +431,13 @@ const AdminDashboard: React.FC = () => {
 
           {/* LP Applications Tab */}
           <TabsContent value="lps" className="space-y-6">
+            <div className="flex justify-end">
+              <Button asChild variant="outline" size="sm" className="font-technical text-xs">
+                <a href="/lp-pipeline">OPEN LP PIPELINE →</a>
+              </Button>
+            </div>
             <LPSignupsDashboard applications={lpApplications} />
+
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
