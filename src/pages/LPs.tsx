@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion, useReducedMotion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Layers, Maximize2, Minimize2, BookOpen } from 'lucide-react';
 import { lpBrochurePages } from '@/components/lps/brochurePages';
 import { useBrochureTracking } from '@/hooks/useBrochureTracking';
@@ -93,17 +93,11 @@ const LPs: React.FC = () => {
   // Which page is printed on the front of the turning leaf.
   const leafIndex = turn ? (turn.dir === 1 ? turn.from : turn.to) : index;
 
-  const renderPage = (i: number, animateIn: boolean) => {
+  const renderPage = (i: number, _animateIn: boolean) => {
     const Page = lpBrochurePages[i].render;
     const meta = lpBrochurePages[i];
     return (
-      <motion.div
-        key={i}
-        initial={animateIn && !reduce ? { opacity: 0, clipPath: 'polygon(50% 44%, 56% 50%, 50% 56%, 44% 50%)' } : false}
-        animate={{ opacity: 1, clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' }}
-        transition={{ duration: 0.75, delay: 0.28, ease: [0.65, 0.05, 0.36, 1] }}
-        className="relative p-5 md:p-9 h-full flex flex-col"
-      >
+      <div key={i} className="relative p-6 md:p-12 h-full flex flex-col">
         <div className="font-technical text-[11px] tracking-[0.35em] text-geometric-secondary/60 mb-3">
           {meta.kicker}
         </div>
@@ -114,13 +108,14 @@ const LPs: React.FC = () => {
           <span>DECAHEDRON VENTURES · CONFIDENTIAL</span>
           <span>{String(i + 1).padStart(2, '0')}</span>
         </div>
-      </motion.div>
+      </div>
     );
   };
 
   const stageHeight = immersive
-    ? 'min-h-[calc(100vh-190px)] h-[calc(100vh-190px)]'
-    : 'min-h-[620px] md:min-h-[720px] h-[620px] md:h-[720px]';
+    ? 'min-h-[calc(100vh-170px)] h-[calc(100vh-170px)]'
+    : 'min-h-[680px] md:min-h-[calc(100vh-230px)] h-[680px] md:h-[calc(100vh-230px)]';
+
 
   return (
     <main className={`min-h-screen bg-background parchment-texture ${immersive ? 'overflow-hidden' : ''}`}>
@@ -142,7 +137,7 @@ const LPs: React.FC = () => {
         style={{ background: 'radial-gradient(60% 45% at 50% 32%, hsl(var(--geometric-primary)/0.07), transparent 70%)' }}
       />
 
-      <div className={`relative z-10 container mx-auto px-4 md:px-6 max-w-6xl ${immersive ? 'py-5' : 'py-10'}`}>
+      <div className={`relative z-10 w-full px-4 md:px-8 ${immersive ? 'py-4' : 'py-8'}`}>
         <header className={`flex flex-wrap items-end justify-between gap-4 ${immersive ? 'mb-4' : 'mb-8'}`}>
           <div>
             <div className="font-technical text-[11px] tracking-[0.35em] text-geometric-secondary mb-2">
@@ -193,14 +188,24 @@ const LPs: React.FC = () => {
           }}
         >
           {/* stacked sheets behind — depth of the remaining pages */}
-          <div aria-hidden className="absolute inset-x-4 inset-y-0 border border-border/40 bg-card/30 rounded-sm translate-y-3" />
-          <div aria-hidden className="absolute inset-x-2.5 inset-y-0 border border-border/50 bg-card/45 rounded-sm translate-y-2" />
-          <div aria-hidden className="absolute inset-x-1 inset-y-0 border border-border/60 bg-card/65 rounded-sm translate-y-1" />
+          <div aria-hidden className="absolute inset-x-6 inset-y-0 border border-border/30 bg-card/25 rounded-sm translate-y-4" />
+          <div aria-hidden className="absolute inset-x-4 inset-y-0 border border-border/40 bg-card/35 rounded-sm translate-y-3" />
+          <div aria-hidden className="absolute inset-x-2.5 inset-y-0 border border-border/50 bg-card/50 rounded-sm translate-y-2" />
+          <div aria-hidden className="absolute inset-x-1 inset-y-0 border border-border/60 bg-card/70 rounded-sm translate-y-1" />
           {/* spine */}
           <div
             aria-hidden
-            className="absolute inset-y-0 -left-1 w-[10px] z-[6] rounded-l-sm"
-            style={{ background: 'linear-gradient(90deg, hsl(var(--foreground)/0.22), hsl(var(--foreground)/0.04) 60%, transparent)' }}
+            className="absolute inset-y-0 -left-1 w-[14px] z-[6] rounded-l-sm"
+            style={{ background: 'linear-gradient(90deg, hsl(var(--foreground)/0.28), hsl(var(--foreground)/0.06) 55%, transparent)' }}
+          />
+          {/* fore-edge: stacked page edges on the right */}
+          <div
+            aria-hidden
+            className="absolute inset-y-1 -right-2 w-[12px] z-[6] rounded-r-sm"
+            style={{
+              background:
+                'repeating-linear-gradient(90deg, hsl(var(--foreground)/0.10) 0 1px, transparent 1px 3px), linear-gradient(90deg, hsl(var(--card)), hsl(var(--foreground)/0.12))',
+            }}
           />
 
           <div className={`relative ${stageHeight}`} style={{ transformStyle: 'preserve-3d' }}>
@@ -212,10 +217,9 @@ const LPs: React.FC = () => {
                 className="absolute top-0 right-0 w-10 h-10 pointer-events-none z-10"
                 style={{ background: 'linear-gradient(225deg, hsl(var(--border)) 0%, hsl(var(--border)) 49%, transparent 50%)' }}
               />
-              <AnimatePresence mode="wait" initial={false}>
-                {renderPage(baseIndex, true)}
-              </AnimatePresence>
+              {renderPage(baseIndex, false)}
             </article>
+
 
             {/* Turning leaf */}
             {turn && (
