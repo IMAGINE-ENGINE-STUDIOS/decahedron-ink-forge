@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Phone, Check } from 'lucide-react';
+import { trackBrochurePixel } from '@/hooks/useBrochureTracking';
+
+const PIXEL_PAGE = { index: -1, kicker: '[ LP.SIGN-UP ]' };
 
 const Fold: React.FC<{ children: React.ReactNode; i?: number; className?: string }> = ({
   children, i = 0, className,
@@ -31,9 +34,21 @@ const ContactSheet: React.FC = () => {
   const [ticket, setTicket] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const started = useRef(false);
+
+  // Pixel: the reader actually reached the sign-up sheet.
+  useEffect(() => {
+    trackBrochurePixel('contact_view', PIXEL_PAGE.index, PIXEL_PAGE.kicker);
+  }, []);
+
+  const markStart = () => {
+    if (started.current) return;
+    started.current = true;
+    trackBrochurePixel('contact_start', PIXEL_PAGE.index, PIXEL_PAGE.kicker);
+  };
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((f) => ({ ...f, [k]: e.target.value }));
+    { markStart(); setForm((f) => ({ ...f, [k]: e.target.value })); };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +92,7 @@ const ContactSheet: React.FC = () => {
 
     setSubmitting(false);
     setDone(true);
+    trackBrochurePixel('contact_submit', PIXEL_PAGE.index, PIXEL_PAGE.kicker);
     toast({ title: 'Request received', description: 'Our team will be in touch shortly.' });
   };
 
@@ -94,10 +110,10 @@ const ContactSheet: React.FC = () => {
       </Fold>
 
       <Fold i={1} className="flex flex-wrap gap-x-6 gap-y-1.5 mb-4">
-        <a href="mailto:info@decahedronventures.com" className="flex items-center gap-2 font-technical text-[13px] tracking-wider text-foreground hover:text-geometric-primary transition-colors">
+        <a href="mailto:info@decahedronventures.com" onClick={() => trackBrochurePixel('contact_click', PIXEL_PAGE.index, PIXEL_PAGE.kicker)} className="flex items-center gap-2 font-technical text-[13px] tracking-wider text-foreground hover:text-geometric-primary transition-colors">
           <Mail className="w-4 h-4 text-geometric-secondary" /> info@decahedronventures.com
         </a>
-        <a href="tel:+14077604873" className="flex items-center gap-2 font-technical text-[13px] tracking-wider text-foreground hover:text-geometric-primary transition-colors">
+        <a href="tel:+14077604873" onClick={() => trackBrochurePixel('contact_click', PIXEL_PAGE.index, PIXEL_PAGE.kicker)} className="flex items-center gap-2 font-technical text-[13px] tracking-wider text-foreground hover:text-geometric-primary transition-colors">
           <Phone className="w-4 h-4 text-geometric-secondary" /> 407 760-4873
         </a>
       </Fold>

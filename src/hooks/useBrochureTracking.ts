@@ -72,3 +72,15 @@ export const useBrochureTracking = (index: number, kicker?: string) => {
     return () => document.removeEventListener('visibilitychange', flush);
   }, []);
 };
+
+/**
+ * Fires a lightweight tracking pixel for reach-out intent on the contact sheet
+ * (sheet reached, email/phone clicked, form started, form submitted).
+ */
+export const trackBrochurePixel = (
+  event_type: 'contact_view' | 'contact_click' | 'contact_start' | 'contact_submit',
+  page_index: number,
+  page_kicker?: string | null,
+) => {
+  send({ event_type: event_type as Event['event_type'], page_index, page_kicker });
+};
