@@ -1,7 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AuthProvider, useAuth } from '@/hooks/useAuth';
-import AdminLogin from '@/components/AdminLogin';
-import InternalShell from '@/components/internal/InternalShell';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -15,13 +12,13 @@ import LPSignupsDashboard from '@/components/admin/LPSignupsDashboard';
 type LPRecord = LPApplicationDetailRecord;
 
 const STAGES = [
-  { id: 'pending', label: 'NEW · SIGN-UP', tone: 'border-amber-500/40' },
+  { id: 'pending', label: 'NEW \u00b7 SIGN-UP', tone: 'border-amber-500/40' },
   { id: 'reviewing', label: 'IN REVIEW', tone: 'border-primary/40' },
   { id: 'approved', label: 'APPROVED', tone: 'border-emerald-500/40' },
   { id: 'declined', label: 'DECLINED', tone: 'border-destructive/40' },
 ] as const;
 
-const PipelineBoard: React.FC = () => {
+const LPPipelineBoard: React.FC = () => {
   const [records, setRecords] = useState<LPRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -184,42 +181,5 @@ const PipelineBoard: React.FC = () => {
   );
 };
 
-const Gate: React.FC = () => {
-  const { user, isAdmin, loading } = useAuth();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="font-technical text-muted-foreground">AUTHENTICATING...</p>
-      </div>
-    );
-  }
-  if (!user) return <AdminLogin />;
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="font-technical text-primary">[ ACCESS.DENIED ] ADMIN.PRIVILEGES.REQUIRED</p>
-      </div>
-    );
-  }
-
-  return (
-    <InternalShell
-      eyebrow="[ LIMITED.PARTNERS ]"
-      title="LP Pipeline"
-      subtitle="Every sign-up from the LP brochure becomes a tracked record. Move applications through review, approval, and close."
-      backTo="/admin"
-      wide
-    >
-      <PipelineBoard />
-    </InternalShell>
-  );
-};
-
-const LPPipeline: React.FC = () => (
-  <AuthProvider>
-    <Gate />
-  </AuthProvider>
-);
-
-export default LPPipeline;
+export default LPPipelineBoard;

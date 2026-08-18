@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import Research from "./pages/Research";
 import Deck from "./pages/Deck";
@@ -13,7 +13,6 @@ import NotFound from "./pages/NotFound";
 import Test from "./pages/Test";
 import DealFlow from "./pages/DealFlow";
 import LPs from "./pages/LPs";
-import LPPipeline from "./pages/LPPipeline";
 
 const queryClient = new QueryClient();
 
@@ -34,7 +33,7 @@ const App = () => (
           <Route path="/dealflow" element={<DealFlow />} />
           <Route path="/LPs" element={<LPs />} />
           <Route path="/lps" element={<LPs />} />
-          <Route path="/lp-pipeline" element={<LPPipeline />} />
+          <Route path="/lp-pipeline" element={<Navigate to="/admin" replace />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
