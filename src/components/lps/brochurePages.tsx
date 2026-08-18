@@ -440,7 +440,122 @@ const FundOrg = () => (
   </div>
 );
 
-// ── 11 CONTACT / DISCLAIMER ───────────────────────────────
+// ── 11 TERMS SHEET ────────────────────────────────────────
+const TermsSheet = () => (
+  <div>
+    <Title sub="Indicative summary of terms. Qualified in its entirety by the Private Placement Memorandum, operating agreement, and subscription documents.">
+      Terms Sheet
+    </Title>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Card label="[ 01 ]" title="Fund Structure" i={0}>
+        <div className="space-y-1.5">
+          {[
+            ['Fund', 'Decahedron Fund I LLC (Delaware)'],
+            ['Managing Member', 'Decahedron GP I LLC'],
+            ['Investment Manager', 'Decahedron Management LLC'],
+            ['Term', '10 years, two 1-year extensions'],
+            ['Investment Period', '5 years from final closing'],
+            ['Strategy', 'Growth-stage technology equity'],
+          ].map(([k, v]) => (
+            <div key={k} className="flex justify-between gap-3 border-b border-border/60 py-1.5">
+              <span className="font-technical text-[11px] tracking-wider text-geometric-secondary/70 uppercase">{k}</span>
+              <span className="text-[13px] text-foreground text-right leading-snug">{v}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card label="[ 02 ]" title="Subscription Terms" i={1}>
+        <div className="space-y-1.5">
+          {[
+            ['Minimum Commitment', '$1,000,000'],
+            ['Due at Closing', '50% (or as mutually agreed)'],
+            ['Capital Calls', '10 business days written notice'],
+            ['Management Fee', '2% / 1.5% after investment period'],
+            ['Carried Interest', '20% of gains'],
+            ['Eligibility', 'Accredited investors · Reg D 506(b)'],
+          ].map(([k, v]) => (
+            <div key={k} className="flex justify-between gap-3 border-b border-border/60 py-1.5">
+              <span className="font-technical text-[11px] tracking-wider text-geometric-secondary/70 uppercase">{k}</span>
+              <span className="text-[13px] text-foreground text-right leading-snug">{v}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+
+    <Fold i={3}>
+      <p className="text-[12px] text-muted-foreground leading-[1.6] mt-4 max-w-4xl">
+        Distributions follow return of contributed capital, then a preferred return, then carried interest. Interests
+        are illiquid, non-transferable without consent, and subject to the reporting and withdrawal provisions of the
+        operating agreement.
+      </p>
+    </Fold>
+  </div>
+);
+
+// ── 12 DUE DILIGENCE QUESTIONNAIRE ────────────────────────
+const DueDiligence = () => (
+  <div>
+    <Title sub="Standard LP diligence questions, answered up front. Full DDQ, audited policies, and reference calls available in the data room.">
+      Due Diligence
+    </Title>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {[
+        {
+          label: '[ ORGANIZATION ]',
+          items: [
+            'Manager: Decahedron Management LLC, Delaware; SEC exempt reporting adviser.',
+            'Five-person partnership; no outside GP ownership.',
+          ],
+        },
+        {
+          label: '[ STRATEGY ]',
+          items: [
+            'Growth-stage only; no seed or pre-seed exposure.',
+            '10-factor Company Coefficient scoring on every investment.',
+          ],
+        },
+        {
+          label: '[ GOVERNANCE ]',
+          items: [
+            'Investment committee approval required for every check.',
+            'LP Advisory Committee reviews conflicts and valuations.',
+          ],
+        },
+        {
+          label: '[ OPERATIONS ]',
+          items: [
+            'Third-party fund administrator and independent auditor.',
+            'Quarterly unaudited reports; annual audited financials.',
+          ],
+        },
+        {
+          label: '[ VALUATION ]',
+          items: [
+            'ASC 820 fair-value policy, reviewed annually by the auditor.',
+            'Marks held at cost until a qualifying priced round or exit.',
+          ],
+        },
+        {
+          label: '[ COMPLIANCE ]',
+          items: [
+            'AML/KYC on every subscriber; written compliance manual and code of ethics.',
+            'Cybersecurity and business-continuity policies on file.',
+          ],
+        },
+      ].map((b, i) => (
+        <Card key={b.label} label={b.label} i={i}>
+          <Bullets items={b.items} />
+        </Card>
+      ))}
+    </div>
+  </div>
+);
+
+// ── 13 CONTACT / DISCLAIMER ───────────────────────────────
 const Closing = () => (
   <div className="flex flex-col items-center justify-center text-center flex-1">
     <Fold>
@@ -480,6 +595,8 @@ export const lpBrochurePages: { kicker: string; render: React.FC }[] = [
   { kicker: '[ THE.TEAM ]', render: Team },
   { kicker: '[ THE.OFFERING ]', render: Offering },
   { kicker: '[ FUND.ORGANIZATION ]', render: FundOrg },
+  { kicker: '[ TERMS.SHEET ]', render: TermsSheet },
+  { kicker: '[ DUE.DILIGENCE ]', render: DueDiligence },
   { kicker: '[ LP.SIGN-UP ]', render: ContactSheet },
   { kicker: '[ CONTACT ]', render: Closing },
 ];
