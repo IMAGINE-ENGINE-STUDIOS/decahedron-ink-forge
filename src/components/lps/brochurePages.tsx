@@ -6,6 +6,7 @@ import dominicCatrambone from '@/assets/team/dominic-catrambone.jpg';
 import jamesStuber from '@/assets/team/james-stuber.jpg';
 import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 import startupFactoryLogo from '@/assets/partners/startup-factory-hub.ico';
+import ContactSheet from '@/components/lps/ContactSheet';
 
 
 /** Shared origami reveal for content blocks inside a sheet. */
@@ -479,5 +480,6 @@ export const lpBrochurePages: { kicker: string; render: React.FC }[] = [
   { kicker: '[ THE.TEAM ]', render: Team },
   { kicker: '[ THE.OFFERING ]', render: Offering },
   { kicker: '[ FUND.ORGANIZATION ]', render: FundOrg },
+  { kicker: '[ LP.SIGN-UP ]', render: ContactSheet },
   { kicker: '[ CONTACT ]', render: Closing },
 ];
