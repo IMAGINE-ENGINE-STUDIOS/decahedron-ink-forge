@@ -325,12 +325,12 @@ const StrategyB = () => (
 const Accelerator = () => (
   <div>
     <Fold>
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 rounded-sm border border-technical-line/50 bg-background/60 flex items-center justify-center overflow-hidden">
-          <img src={startupFactoryLogo} alt="Startup Factory Hub logo" className="w-8 h-8 object-contain" loading="lazy" />
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 rounded-sm border border-technical-line/50 bg-background/60 flex items-center justify-center overflow-hidden">
+          <img src={startupFactoryLogo} alt="Startup Factory Hub logo" className="w-7 h-7 object-contain" loading="lazy" />
         </div>
-        <div className="w-px h-8 bg-technical-line/50" />
-        <div className="font-technical text-[10px] tracking-[0.3em] text-geometric-secondary/70 uppercase leading-relaxed">
+        <div className="w-px h-6 bg-technical-line/50" />
+        <div className="font-technical text-[9px] tracking-[0.3em] text-geometric-secondary/70 uppercase leading-relaxed">
           Startup Factory Hub
           <div className="text-muted-foreground/70 tracking-[0.2em]">× Decahedron Ventures</div>
         </div>
@@ -341,22 +341,21 @@ const Accelerator = () => (
       Startup Factory Hub · Accelerator Partnership
     </Title>
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
       {[
         { k: 'ALLOCATION', v: '5%', d: 'of the Fund reserved for accelerator-sourced companies' },
         { k: 'STANDARD CHECK', v: '$250,000', d: 'uniform initial ticket, no bespoke negotiation' },
         { k: 'VALUATION', v: 'STANDARDIZED', d: 'fixed valuation band applied across the cohort' },
       ].map((m, i) => (
         <Card key={m.k} label={m.k} i={i}>
-          <div className="font-display text-[30px] text-foreground leading-none mb-2">{m.v}</div>
-          <p className="text-[13px] text-muted-foreground">{m.d}</p>
+          <div className="font-display text-[24px] text-foreground leading-none mb-1.5">{m.v}</div>
+          <p className="text-[12px] text-muted-foreground leading-snug">{m.d}</p>
         </Card>
       ))}
     </div>
 
-
     <Card label="[ HOW.IT.WORKS ]" i={3}>
-      <ul className="space-y-2 text-[14px] text-muted-foreground">
+      <ul className="space-y-1.5 text-[12px] text-muted-foreground leading-snug">
         <li>· Founders join the accelerator at no cost and without giving up equity to the program.</li>
         <li>· Cohorts are mentored, pitch-trained and diligence-prepared against our 10-factor framework.</li>
         <li>· Graduates scoring above threshold receive a standard $250,000 check at a pre-agreed valuation.</li>
