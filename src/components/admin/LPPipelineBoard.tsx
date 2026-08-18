@@ -23,6 +23,7 @@ const LPPipelineBoard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [detail, setDetail] = useState<LPRecord | null>(null);
+  const [sending, setSending] = useState<string | null>(null);
   const { toast } = useToast();
 
   const load = async () => {
