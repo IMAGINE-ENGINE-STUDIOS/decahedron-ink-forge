@@ -322,6 +322,19 @@ const StrategyB = () => (
 // ── ACCELERATOR PARTNERSHIP ───────────────────────────────
 const Accelerator = () => (
   <div>
+    <Fold>
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-12 h-12 rounded-sm border border-technical-line/50 bg-background/60 flex items-center justify-center overflow-hidden">
+          <img src={startupFactoryLogo} alt="Startup Factory Hub logo" className="w-8 h-8 object-contain" loading="lazy" />
+        </div>
+        <div className="w-px h-8 bg-technical-line/50" />
+        <div className="font-technical text-[10px] tracking-[0.3em] text-geometric-secondary/70 uppercase leading-relaxed">
+          Startup Factory Hub
+          <div className="text-muted-foreground/70 tracking-[0.2em]">× Decahedron Ventures</div>
+        </div>
+      </div>
+    </Fold>
+
     <Title sub="Decahedron Ventures partners with Startup Factory Hub, a free hybrid accelerator, as a proprietary top-of-funnel for pre-institutional companies.">
       Startup Factory Hub · Accelerator Partnership
     </Title>
@@ -338,6 +351,7 @@ const Accelerator = () => (
         </Card>
       ))}
     </div>
+
 
     <Card label="[ HOW.IT.WORKS ]" i={3}>
       <ul className="space-y-2 text-[14px] text-muted-foreground">
