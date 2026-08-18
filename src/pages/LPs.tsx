@@ -93,17 +93,11 @@ const LPs: React.FC = () => {
   // Which page is printed on the front of the turning leaf.
   const leafIndex = turn ? (turn.dir === 1 ? turn.from : turn.to) : index;
 
-  const renderPage = (i: number, animateIn: boolean) => {
+  const renderPage = (i: number, _animateIn: boolean) => {
     const Page = lpBrochurePages[i].render;
     const meta = lpBrochurePages[i];
     return (
-      <motion.div
-        key={i}
-        initial={animateIn && !reduce ? { opacity: 0, clipPath: 'polygon(50% 44%, 56% 50%, 50% 56%, 44% 50%)' } : false}
-        animate={{ opacity: 1, clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' }}
-        transition={{ duration: 0.75, delay: 0.28, ease: [0.65, 0.05, 0.36, 1] }}
-        className="relative p-5 md:p-9 h-full flex flex-col"
-      >
+      <div key={i} className="relative p-6 md:p-12 h-full flex flex-col">
         <div className="font-technical text-[11px] tracking-[0.35em] text-geometric-secondary/60 mb-3">
           {meta.kicker}
         </div>
@@ -114,13 +108,14 @@ const LPs: React.FC = () => {
           <span>DECAHEDRON VENTURES · CONFIDENTIAL</span>
           <span>{String(i + 1).padStart(2, '0')}</span>
         </div>
-      </motion.div>
+      </div>
     );
   };
 
   const stageHeight = immersive
-    ? 'min-h-[calc(100vh-190px)] h-[calc(100vh-190px)]'
-    : 'min-h-[620px] md:min-h-[720px] h-[620px] md:h-[720px]';
+    ? 'min-h-[calc(100vh-170px)] h-[calc(100vh-170px)]'
+    : 'min-h-[680px] md:min-h-[calc(100vh-230px)] h-[680px] md:h-[calc(100vh-230px)]';
+
 
   return (
     <main className={`min-h-screen bg-background parchment-texture ${immersive ? 'overflow-hidden' : ''}`}>
