@@ -46,6 +46,8 @@ import BrochureAnalytics from '@/components/admin/BrochureAnalytics';
 import { DealFlowTable } from '@/components/admin/DealFlowTable';
 import { InvestorCRM } from '@/components/admin/InvestorCRM';
 import { IndustryBreakdown } from '@/components/admin/IndustryBreakdown';
+import LPSignupsDashboard from '@/components/admin/LPSignupsDashboard';
+import LPApplicationDetail from '@/components/admin/LPApplicationDetail';
 
 interface Pitch {
   id: string;
@@ -96,6 +98,7 @@ const AdminDashboard: React.FC = () => {
   const [activeDeals, setActiveDeals] = useState(0);
   const [portfolioCount, setPortfolioCount] = useState(0);
   const [deleteConfirmLP, setDeleteConfirmLP] = useState<LPApplication | null>(null);
+  const [detailLP, setDetailLP] = useState<LPApplication | null>(null);
   const { toast } = useToast();
   const { user, signOut } = useAuth();
   const { fetchFundStats, fetchDeals, fetchPortfolio, loading: crmLoading } = useFundCRM();
@@ -427,7 +430,8 @@ const AdminDashboard: React.FC = () => {
           </TabsContent>
 
           {/* LP Applications Tab */}
-          <TabsContent value="lps">
+          <TabsContent value="lps" className="space-y-6">
+            <LPSignupsDashboard applications={lpApplications} />
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -516,14 +520,24 @@ const AdminDashboard: React.FC = () => {
                             </TableCell>
                             <TableCell className="text-xs text-muted-foreground">{formatDate(app.created_at)}</TableCell>
                             <TableCell>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-7 w-7 p-0 text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={() => setDeleteConfirmLP(app)}
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-7 font-technical text-[10px]"
+                                  onClick={() => setDetailLP(app)}
+                                >
+                                  VIEW
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-7 w-7 p-0 text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                                  onClick={() => setDeleteConfirmLP(app)}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -599,6 +613,13 @@ const AdminDashboard: React.FC = () => {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* LP Application Detail */}
+      <LPApplicationDetail
+        application={detailLP}
+        onClose={() => setDetailLP(null)}
+        onDownloadDeck={downloadPitchDeck}
+      />
 
       {/* Delete LP Confirmation Dialog */}
       <AlertDialog open={!!deleteConfirmLP} onOpenChange={() => setDeleteConfirmLP(null)}>
