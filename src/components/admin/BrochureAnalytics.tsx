@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, BookOpen, Users, Clock } from 'lucide-react';
+import { RefreshCw, BookOpen, Users, Clock, Send } from 'lucide-react';
 import { lpBrochurePages } from '@/components/lps/brochurePages';
 
 interface Row {
@@ -51,12 +51,24 @@ const BrochureAnalytics: React.FC = () => {
       };
     });
     const maxReaders = Math.max(1, ...perPage.map((p) => p.readers));
-    return { sessions: sessions.size, opens, dwellTotal, views: views.length, perPage, maxReaders };
+
+    const uniq = (type: string) => new Set(rows.filter((r) => r.event_type === type).map((r) => r.session_id)).size;
+    const funnel = [
+      { label: 'OPENED BROCHURE', value: sessions.size },
+      { label: 'REACHED SIGN-UP SHEET', value: uniq('contact_view') },
+      { label: 'CLICKED EMAIL / PHONE', value: uniq('contact_click') },
+      { label: 'STARTED FORM', value: uniq('contact_start') },
+      { label: 'SUBMITTED REQUEST', value: uniq('contact_submit') },
+    ];
+    const reachOuts = uniq('contact_submit') + uniq('contact_click');
+    const conversion = sessions.size ? Math.round((uniq('contact_submit') / sessions.size) * 100) : 0;
+
+    return { sessions: sessions.size, opens, dwellTotal, views: views.length, perPage, maxReaders, funnel, reachOuts, conversion };
   }, [rows]);
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
           { label: 'BROCHURE OPENS', value: stats.opens, icon: BookOpen },
           { label: 'UNIQUE READERS', value: stats.sessions, icon: Users },
@@ -65,6 +77,7 @@ const BrochureAnalytics: React.FC = () => {
             value: stats.views ? fmtDwell(stats.dwellTotal / stats.views) : '—',
             icon: Clock,
           },
+          { label: 'REACH-OUTS', value: `${stats.reachOuts} (${stats.conversion}%)`, icon: Send },
         ].map((s) => (
           <Card key={s.label}>
             <CardContent className="pt-5 flex items-center justify-between">
@@ -77,6 +90,28 @@ const BrochureAnalytics: React.FC = () => {
           </Card>
         ))}
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-technical text-primary">[ REACH-OUT.FUNNEL ]</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {stats.funnel.map((f) => {
+            const pct = stats.funnel[0].value ? (f.value / stats.funnel[0].value) * 100 : 0;
+            return (
+              <div key={f.label} className="flex items-center gap-3">
+                <span className="font-technical text-[10px] tracking-[0.15em] text-muted-foreground w-52 shrink-0">{f.label}</span>
+                <div className="flex-1 h-3 bg-muted/40 rounded-sm overflow-hidden">
+                  <div className="h-full bg-primary/70" style={{ width: `${Math.max(pct, f.value ? 2 : 0)}%` }} />
+                </div>
+                <span className="font-technical text-[11px] text-foreground w-20 text-right">
+                  {f.value} · {Math.round(pct)}%
+                </span>
+              </div>
+            );
+          })}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
