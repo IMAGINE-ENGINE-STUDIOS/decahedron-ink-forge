@@ -97,13 +97,15 @@ const LPs: React.FC = () => {
         initial={animateIn && !reduce ? { opacity: 0, clipPath: 'polygon(50% 44%, 56% 50%, 50% 56%, 44% 50%)' } : false}
         animate={{ opacity: 1, clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' }}
         transition={{ duration: 0.75, delay: 0.28, ease: [0.65, 0.05, 0.36, 1] }}
-        className="relative p-8 md:p-14 h-full flex flex-col"
+        className="relative p-5 md:p-9 h-full flex flex-col"
       >
-        <div className="font-technical text-[10px] tracking-[0.35em] text-geometric-secondary/60 mb-6">
+        <div className="font-technical text-[10px] tracking-[0.35em] text-geometric-secondary/60 mb-3">
           {meta.kicker}
         </div>
-        <Page />
-        <div className="mt-auto pt-8 flex items-center justify-between font-technical text-[10px] tracking-[0.25em] text-geometric-secondary/40">
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+          <Page />
+        </div>
+        <div className="mt-auto pt-4 flex items-center justify-between font-technical text-[10px] tracking-[0.25em] text-geometric-secondary/40">
           <span>DECAHEDRON VENTURES · CONFIDENTIAL</span>
           <span>{String(i + 1).padStart(2, '0')}</span>
         </div>
