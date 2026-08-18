@@ -552,6 +552,13 @@ const DueDiligence = () => (
         </Card>
       ))}
     </div>
+
+    <Fold i={6} className="mt-4">
+      <div className="font-technical text-[11px] tracking-[0.25em] uppercase text-geometric-secondary/70 mb-2">
+        [ YOUR DDQ RESPONSE ]
+      </div>
+      <DDQResponseForm />
+    </Fold>
   </div>
 );
 
