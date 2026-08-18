@@ -78,7 +78,7 @@ export const useBrochureTracking = (index: number, kicker?: string) => {
  * (sheet reached, email/phone clicked, form started, form submitted).
  */
 export const trackBrochurePixel = (
-  event_type: 'contact_view' | 'contact_click' | 'contact_start' | 'contact_submit',
+  event_type: 'contact_view' | 'contact_click' | 'contact_start' | 'contact_submit' | 'ddq_submit',
   page_index: number,
   page_kicker?: string | null,
 ) => {

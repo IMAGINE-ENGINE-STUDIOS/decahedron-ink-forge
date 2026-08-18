@@ -7,6 +7,7 @@ import jamesStuber from '@/assets/team/james-stuber.jpg';
 import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 import startupFactoryLogo from '@/assets/partners/startup-factory-hub.ico';
 import ContactSheet from '@/components/lps/ContactSheet';
+import DDQResponseForm from '@/components/lps/DDQResponseForm';
 
 
 /** Shared origami reveal for content blocks inside a sheet. */
@@ -552,6 +553,13 @@ const DueDiligence = () => (
         </Card>
       ))}
     </div>
+
+    <Fold i={6} className="mt-4">
+      <div className="font-technical text-[11px] tracking-[0.25em] uppercase text-geometric-secondary/70 mb-2">
+        [ YOUR DDQ RESPONSE ]
+      </div>
+      <DDQResponseForm />
+    </Fold>
   </div>
 );
 
