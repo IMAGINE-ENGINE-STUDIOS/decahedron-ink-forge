@@ -5,6 +5,8 @@ import ricardoFont from '@/assets/team/ricardo-font.jpg';
 import dominicCatrambone from '@/assets/team/dominic-catrambone.jpg';
 import jamesStuber from '@/assets/team/james-stuber.jpg';
 import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
+import startupFactoryLogo from '@/assets/partners/startup-factory-hub.ico';
+
 
 /** Shared origami reveal for content blocks inside a sheet. */
 const Fold: React.FC<{ children: React.ReactNode; i?: number; className?: string }> = ({
