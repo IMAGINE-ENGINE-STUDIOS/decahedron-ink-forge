@@ -526,6 +526,24 @@ const AdminDashboard: React.FC = () => {
                                 <Button
                                   size="sm"
                                   variant="outline"
+                                  className="h-7 font-technical text-[10px] border-primary/40 text-primary hover:bg-primary/10"
+                                  disabled={app.status === 'approved'}
+                                  onClick={() => updateLPStatus(app.id, 'approved')}
+                                >
+                                  APPROVE
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-7 font-technical text-[10px] border-destructive/40 text-destructive hover:bg-destructive/10"
+                                  disabled={app.status === 'declined'}
+                                  onClick={() => updateLPStatus(app.id, 'declined')}
+                                >
+                                  REJECT
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
                                   className="h-7 font-technical text-[10px]"
                                   onClick={() => setDetailLP(app)}
                                 >
