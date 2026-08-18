@@ -319,6 +319,37 @@ const StrategyB = () => (
 
 
 
+// ── ACCELERATOR PARTNERSHIP ───────────────────────────────
+const Accelerator = () => (
+  <div>
+    <Title sub="Decahedron Ventures partners with Startup Factory Hub, a free hybrid accelerator, as a proprietary top-of-funnel for pre-institutional companies.">
+      Startup Factory Hub · Accelerator Partnership
+    </Title>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      {[
+        { k: 'ALLOCATION', v: '5%', d: 'of the Fund reserved for accelerator-sourced companies' },
+        { k: 'STANDARD CHECK', v: '$250,000', d: 'uniform initial ticket, no bespoke negotiation' },
+        { k: 'VALUATION', v: 'STANDARDIZED', d: 'fixed valuation band applied across the cohort' },
+      ].map((m, i) => (
+        <Card key={m.k} label={m.k} i={i}>
+          <div className="font-display text-[30px] text-foreground leading-none mb-2">{m.v}</div>
+          <p className="text-[13px] text-muted-foreground">{m.d}</p>
+        </Card>
+      ))}
+    </div>
+
+    <Card label="[ HOW.IT.WORKS ]" i={3}>
+      <ul className="space-y-2 text-[14px] text-muted-foreground">
+        <li>· Founders join the accelerator at no cost and without giving up equity to the program.</li>
+        <li>· Cohorts are mentored, pitch-trained and diligence-prepared against our 10-factor framework.</li>
+        <li>· Graduates scoring above threshold receive a standard $250,000 check at a pre-agreed valuation.</li>
+        <li>· Positions are tracked for follow-on into the core Seed and Series A strategy.</li>
+      </ul>
+    </Card>
+  </div>
+);
+
 // ── 08 TEAM ───────────────────────────────────────────────
 const Team = () => (
   <div>
@@ -429,6 +460,7 @@ export const lpBrochurePages: { kicker: string; render: React.FC }[] = [
   { kicker: '[ CRITERIA · 06–10 ]', render: FactorsTwo },
   { kicker: '[ STRATEGY · $100M ]', render: StrategyA },
   { kicker: '[ STRATEGY · $500M ]', render: StrategyB },
+  { kicker: '[ ACCELERATOR ]', render: Accelerator },
   { kicker: '[ THE.TEAM ]', render: Team },
   { kicker: '[ THE.OFFERING ]', render: Offering },
   { kicker: '[ FUND.ORGANIZATION ]', render: FundOrg },
