@@ -113,14 +113,15 @@ const LPs: React.FC = () => {
                       'linear-gradient(90deg, hsl(var(--foreground)/0.10) 0%, hsl(var(--foreground)/0.03) 3%, transparent 12%, transparent 88%, hsl(var(--foreground)/0.04) 100%)',
                   }}
                 />
-                {/* origami square creases */}
+                {/* math-book quadrille grid */}
                 <div
                   aria-hidden
-                  className="absolute inset-0 pointer-events-none opacity-[0.5]"
+                  className="absolute inset-0 pointer-events-none opacity-[0.45]"
                   style={{
                     background:
-                      'linear-gradient(135deg, transparent 49.7%, hsl(var(--technical-line)/0.10) 50%, transparent 50.3%),' +
-                      'linear-gradient(45deg, transparent 49.7%, hsl(var(--technical-line)/0.08) 50%, transparent 50.3%)',
+                      'linear-gradient(to right, hsl(var(--technical-line)/0.12) 1px, transparent 1px),' +
+                      'linear-gradient(to bottom, hsl(var(--technical-line)/0.12) 1px, transparent 1px)',
+                    backgroundSize: '24px 24px',
                   }}
                 />
                 {/* folded corner */}
