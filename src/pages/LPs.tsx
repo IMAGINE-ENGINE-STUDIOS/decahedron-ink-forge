@@ -33,29 +33,23 @@ const LPs: React.FC = () => {
   const Page = lpBrochurePages[index].render;
   const meta = lpBrochurePages[index];
 
+  // Real page-turn: the leaving sheet swings 180° on its spine hinge while the
+  // arriving sheet unfolds from a square origami crease underneath it.
   const variants = useMemo(() => ({
     enter: (d: 1 | -1) => reduce
       ? { opacity: 0 }
       : {
-          opacity: 0,
-          rotateY: d === 1 ? 78 : -78,
-          transformOrigin: d === 1 ? 'left center' : 'right center',
-          clipPath: d === 1
-            ? 'polygon(0 0, 0 0, 0 100%, 0 100%)'
-            : 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)',
+          opacity: 1,
+          rotateY: d === 1 ? 0 : 180,
+          zIndex: d === 1 ? 1 : 3,
         },
-    center: {
-      opacity: 1,
-      rotateY: 0,
-      clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-      transformOrigin: 'center center',
-    },
+    center: { opacity: 1, rotateY: 0, zIndex: 2 },
     exit: (d: 1 | -1) => reduce
       ? { opacity: 0 }
       : {
-          opacity: 0,
-          rotateY: d === 1 ? -70 : 70,
-          transformOrigin: d === 1 ? 'right center' : 'left center',
+          opacity: 1,
+          rotateY: d === 1 ? -180 : 0,
+          zIndex: d === 1 ? 3 : 1,
         },
   }), [reduce]);
 
@@ -90,13 +84,15 @@ const LPs: React.FC = () => {
         </header>
 
         {/* Flip book stage */}
-        <div className="relative" style={{ perspective: 2200 }}>
+        <div className="relative" style={{ perspective: 2400 }}>
           {/* stacked sheets behind */}
-          <div aria-hidden className="absolute inset-x-3 -bottom-2 h-full border border-border/60 bg-card/40 rounded-sm translate-y-2" />
-          <div aria-hidden className="absolute inset-x-1.5 -bottom-1 h-full border border-border/70 bg-card/60 rounded-sm translate-y-1" />
+          <div aria-hidden className="absolute inset-x-3 inset-y-0 border border-border/50 bg-card/40 rounded-sm translate-y-2" />
+          <div aria-hidden className="absolute inset-x-1.5 inset-y-0 border border-border/60 bg-card/60 rounded-sm translate-y-1" />
+          {/* spine */}
+          <div aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-technical-line/25 z-[5] rounded-l-sm" />
 
-          <div className="relative min-h-[560px] md:min-h-[640px]">
-            <AnimatePresence mode="wait" custom={dir}>
+          <div className="relative min-h-[620px] md:min-h-[700px]" style={{ transformStyle: 'preserve-3d' }}>
+            <AnimatePresence initial={false} custom={dir}>
               <motion.article
                 key={index}
                 custom={dir}
@@ -104,18 +100,27 @@ const LPs: React.FC = () => {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={{ duration: reduce ? 0.2 : 0.62, ease: [0.65, 0.05, 0.36, 1] }}
-                className="relative border border-technical-line/60 bg-card rounded-sm shadow-[0_18px_50px_-24px_hsl(var(--foreground)/0.45)] overflow-hidden"
-                style={{ transformStyle: 'preserve-3d' }}
+                transition={{ duration: reduce ? 0.2 : 0.85, ease: [0.55, 0.05, 0.25, 1] }}
+                className="absolute inset-0 border border-technical-line/60 bg-card rounded-sm shadow-[0_18px_50px_-24px_hsl(var(--foreground)/0.45)] overflow-hidden"
+                style={{ transformStyle: 'preserve-3d', transformOrigin: 'left center', backfaceVisibility: 'hidden' }}
               >
-                {/* centre crease */}
-                <div aria-hidden className="absolute inset-y-0 left-1/2 w-px bg-technical-line/15 pointer-events-none" />
+                {/* paper shading near the spine */}
                 <div
                   aria-hidden
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background:
-                      'linear-gradient(105deg, hsl(var(--foreground)/0.05) 0%, transparent 22%, transparent 48%, hsl(var(--foreground)/0.045) 50%, transparent 54%, transparent 82%, hsl(var(--foreground)/0.05) 100%)',
+                      'linear-gradient(90deg, hsl(var(--foreground)/0.10) 0%, hsl(var(--foreground)/0.03) 3%, transparent 12%, transparent 88%, hsl(var(--foreground)/0.04) 100%)',
+                  }}
+                />
+                {/* origami square creases */}
+                <div
+                  aria-hidden
+                  className="absolute inset-0 pointer-events-none opacity-[0.5]"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, transparent 49.7%, hsl(var(--technical-line)/0.10) 50%, transparent 50.3%),' +
+                      'linear-gradient(45deg, transparent 49.7%, hsl(var(--technical-line)/0.08) 50%, transparent 50.3%)',
                   }}
                 />
                 {/* folded corner */}
@@ -128,7 +133,13 @@ const LPs: React.FC = () => {
                   }}
                 />
 
-                <div className="relative p-8 md:p-14 min-h-[560px] md:min-h-[640px] flex flex-col">
+                {/* Content unfolds as a square origami reveal */}
+                <motion.div
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, clipPath: 'polygon(50% 42%, 58% 50%, 50% 58%, 42% 50%)' }}
+                  animate={{ opacity: 1, clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' }}
+                  transition={{ duration: reduce ? 0.2 : 0.7, delay: reduce ? 0 : 0.32, ease: [0.65, 0.05, 0.36, 1] }}
+                  className="relative p-8 md:p-14 min-h-[620px] md:min-h-[700px] flex flex-col"
+                >
                   <div className="font-technical text-[10px] tracking-[0.35em] text-geometric-secondary/60 mb-6">
                     {meta.kicker}
                   </div>
@@ -137,11 +148,12 @@ const LPs: React.FC = () => {
                     <span>DECAHEDRON VENTURES · CONFIDENTIAL</span>
                     <span>{String(index + 1).padStart(2, '0')}</span>
                   </div>
-                </div>
+                </motion.div>
               </motion.article>
             </AnimatePresence>
           </div>
         </div>
+
 
         {/* Controls */}
         <nav className="mt-8 flex items-center justify-between gap-4">
