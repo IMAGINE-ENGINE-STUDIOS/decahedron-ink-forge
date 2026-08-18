@@ -105,18 +105,18 @@ const Cover = () => (
 const Thesis = () => (
   <div>
     <Title sub="Back technical founders building the strategic technology leaders of the 2030s.">Core Thesis</Title>
-    <div className="space-y-8">
+    <div className="space-y-5">
       <Fold i={1}>
-        <div className="font-technical text-[10px] tracking-[0.3em] text-geometric-secondary/60 mb-3">INVESTMENT PHILOSOPHY</div>
-        <p className="font-display text-[20px] md:text-[26px] leading-[1.35] text-foreground max-w-4xl">
+        <div className="font-technical text-[9px] tracking-[0.3em] text-geometric-secondary/60 mb-2">INVESTMENT PHILOSOPHY</div>
+        <p className="font-display text-[17px] md:text-[22px] leading-[1.3] text-foreground max-w-4xl">
           Invest in early and growth-stage companies that demonstrate strong differentiation factors and breakthrough
           innovation, with the potential to reshape and transform entire industries.
         </p>
       </Fold>
       <div className="w-12 h-px bg-geometric-primary/40" />
       <Fold i={2}>
-        <div className="font-technical text-[10px] tracking-[0.3em] text-geometric-secondary/60 mb-3">WHERE WE INVEST</div>
-        <p className="font-display text-[24px] md:text-[34px] leading-[1.25] text-foreground max-w-4xl">
+        <div className="font-technical text-[9px] tracking-[0.3em] text-geometric-secondary/60 mb-2">WHERE WE INVEST</div>
+        <p className="font-display text-[20px] md:text-[28px] leading-[1.2] text-foreground max-w-4xl">
           At the intersection of <span className="italic">physics</span>, <span className="italic">compute</span>, and{' '}
           <span className="italic">autonomy</span> — where breakthroughs create durable, defensible, global-scale businesses.
         </p>
@@ -131,7 +131,7 @@ const FocusAreas = () => (
     <Title sub="We engineer capital for the systems that move energy, data, and intelligence across Earth and orbit.">
       Focus Areas
     </Title>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {[
         { code: 'SPCE', title: 'SPACE', items: ['Orbital & ground infrastructure', 'Space-based communications', 'Space systems & platforms'] },
         { code: 'DEEP', title: 'DEEP TECH', items: ['Robotics, autonomy, advanced sensing', 'Custom silicon, photonics, new compute', 'Industrial & energy resiliency', 'Optical networks'] },
@@ -149,7 +149,7 @@ const FocusAreas = () => (
 const WhyNow = () => (
   <div>
     <Title sub="Market context and timing across our three sectors.">Why Now</Title>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {[
         { title: 'SPACE', label: 'Launch economics inverted', items: ['Launch costs down 20×', 'Realtime EO, RF, comms, in-orbit compute → software-like models', 'Procurement shifting commercial-first'] },
         { title: 'DEEP TECH', label: 'Techno-industrial renaissance', items: ['Autonomy and advanced materials', 'Next-gen compute and robotics', 'Industrial & government demand accelerating'] },
@@ -169,7 +169,7 @@ const Sourcing = () => (
     <Title sub="A curated pipeline built from internal accelerators, strategic partnerships, and deep network access.">
       Sourcing Advantage
     </Title>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {[
         { label: 'INTERNAL ACCELERATORS', items: ['Imagine Engine Accelerator', 'Startup Factory Hub'] },
         { label: 'ACCELERATOR PARTNERSHIPS', items: ['Nasdaq Entrepreneurial Center', 'NVIDIA Inception Program', 'Startup Bootcamp (Europe)', 'Plug & Play'] },
