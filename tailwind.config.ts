@@ -52,6 +52,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				signal: {
+					DEFAULT: 'hsl(var(--signal))',
+					foreground: 'hsl(var(--signal-foreground))',
+					soft: 'hsl(var(--signal-soft))'
+				},
+				surface: {
+					DEFAULT: 'hsl(var(--surface))',
+					2: 'hsl(var(--surface-2))'
+				},
 				geometric: {
 					primary: 'hsl(var(--geometric-primary))',
 					secondary: 'hsl(var(--geometric-secondary))',
