@@ -7,6 +7,7 @@ import jamesStuber from '@/assets/team/james-stuber.jpg';
 import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 import startupFactoryLogo from '@/assets/partners/startup-factory-hub.ico';
 import ContactSheet from '@/components/lps/ContactSheet';
+import DDQResponseForm from '@/components/lps/DDQResponseForm';
 
 
 /** Shared origami reveal for content blocks inside a sheet. */
