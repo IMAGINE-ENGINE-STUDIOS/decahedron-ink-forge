@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Layers, Maximize2, Minimize2, BookOpen } from 'lucide-react';
 import { lpBrochurePages } from '@/components/lps/brochurePages';
+import { useBrochureTracking } from '@/hooks/useBrochureTracking';
 
 /**
  * /LPs — Limited Partner brochure rendered as a state-of-the-art origami flip book.
