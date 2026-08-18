@@ -43,6 +43,10 @@ const LPs: React.FC = () => {
   const total = lpBrochurePages.length;
   const busy = useRef(false);
 
+  useBrochureTracking(index, lpBrochurePages[index]?.kicker);
+
+
+
   // Hinge angle in degrees: 0 = flat, -180 = fully turned forward.
   const angle = useMotionValue(0);
   const rotateY = useTransform(angle, (a) => a);
