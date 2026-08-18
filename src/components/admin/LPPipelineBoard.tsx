@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, Search, Mail, ArrowRight, ArrowLeft } from 'lucide-react';
+import { RefreshCw, Search, Mail, ArrowRight, ArrowLeft, Ticket, Loader2 } from 'lucide-react';
 import LPApplicationDetail, { type LPApplicationDetailRecord } from '@/components/admin/LPApplicationDetail';
 import LPSignupsDashboard from '@/components/admin/LPSignupsDashboard';
 
