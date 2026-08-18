@@ -286,6 +286,8 @@ export type Database = {
           phone: string | null
           pitch_deck_url: string | null
           status: string
+          ticket_code: string | null
+          ticket_sent_at: string | null
           updated_at: string
         }
         Insert: {
@@ -301,6 +303,8 @@ export type Database = {
           phone?: string | null
           pitch_deck_url?: string | null
           status?: string
+          ticket_code?: string | null
+          ticket_sent_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -316,6 +320,8 @@ export type Database = {
           phone?: string | null
           pitch_deck_url?: string | null
           status?: string
+          ticket_code?: string | null
+          ticket_sent_at?: string | null
           updated_at?: string
         }
         Relationships: []
