@@ -371,7 +371,7 @@ const AdminDashboard: React.FC = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 space-y-8">
+      <main className="w-full px-6 py-8 space-y-8">
         {/* Overview Stats */}
         <DashboardOverview 
           pitchCount={pitches.length}
