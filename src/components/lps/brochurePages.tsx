@@ -25,27 +25,27 @@ const Fold: React.FC<{ children: React.ReactNode; i?: number; className?: string
 
 const Title: React.FC<{ children: React.ReactNode; sub?: string }> = ({ children, sub }) => (
   <Fold>
-    <h2 className="font-display text-3xl md:text-[46px] leading-[0.95] text-foreground mb-3">{children}</h2>
-    {sub && <p className="text-[15px] md:text-[17px] text-muted-foreground max-w-3xl">{sub}</p>}
-    <div className="w-16 h-px bg-geometric-primary/60 mt-6 mb-8" />
+    <h2 className="font-display text-2xl md:text-[32px] leading-[0.95] text-foreground mb-2">{children}</h2>
+    {sub && <p className="text-[13px] md:text-[15px] text-muted-foreground max-w-3xl leading-snug">{sub}</p>}
+    <div className="w-14 h-px bg-geometric-primary/60 mt-4 mb-5" />
   </Fold>
 );
 
 const Card: React.FC<{ label?: string; title?: string; children: React.ReactNode; i?: number }> = ({
   label, title, children, i = 0,
 }) => (
-  <Fold i={i} className="border border-technical-line/40 bg-background/40 p-6 rounded-sm">
-    {label && <div className="font-technical text-[10px] tracking-[0.3em] text-geometric-secondary/60 mb-2">{label}</div>}
-    {title && <h3 className="font-display text-[20px] text-foreground mb-4">{title}</h3>}
+  <Fold i={i} className="border border-technical-line/40 bg-background/40 p-4 rounded-sm">
+    {label && <div className="font-technical text-[9px] tracking-[0.3em] text-geometric-secondary/60 mb-1.5">{label}</div>}
+    {title && <h3 className="font-display text-[17px] text-foreground mb-2">{title}</h3>}
     {children}
   </Fold>
 );
 
 const Bullets: React.FC<{ items: string[] }> = ({ items }) => (
-  <ul className="space-y-2.5">
+  <ul className="space-y-1.5">
     {items.map((it) => (
-      <li key={it} className="text-[13px] text-muted-foreground flex items-start gap-3">
-        <span className="w-1.5 h-1.5 rounded-full bg-geometric-secondary/50 mt-2 flex-shrink-0" />
+      <li key={it} className="text-[12px] text-muted-foreground flex items-start gap-2.5 leading-snug">
+        <span className="w-1.5 h-1.5 rounded-full bg-geometric-secondary/50 mt-1.5 flex-shrink-0" />
         {it}
       </li>
     ))}
@@ -53,12 +53,12 @@ const Bullets: React.FC<{ items: string[] }> = ({ items }) => (
 );
 
 const Terms: React.FC<{ rows: { term: string; value: string }[] }> = ({ rows }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
     {rows.map((r, i) => (
       <Fold key={r.term} i={i}>
-        <div className="flex items-center justify-between gap-6 py-4 border-b border-border">
-          <span className="font-technical text-[11px] tracking-[0.12em] uppercase text-geometric-secondary">{r.term}</span>
-          <span className="text-[14px] text-foreground text-right max-w-[240px]">{r.value}</span>
+        <div className="flex items-center justify-between gap-4 py-2.5 border-b border-border">
+          <span className="font-technical text-[10px] tracking-[0.12em] uppercase text-geometric-secondary">{r.term}</span>
+          <span className="text-[13px] text-foreground text-right max-w-[240px]">{r.value}</span>
         </div>
       </Fold>
     ))}
