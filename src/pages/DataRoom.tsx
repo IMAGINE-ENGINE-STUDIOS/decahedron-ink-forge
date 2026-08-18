@@ -333,8 +333,14 @@ const DataRoom: React.FC = () => {
   const subfolderKeys = Object.keys(grouped).sort((a, b) => (a === UNFILED ? -1 : b === UNFILED ? 1 : a.localeCompare(b)));
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
+    <div className="relative min-h-screen bg-background">
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 ink-grid opacity-70" />
+        <div className="absolute inset-0 ink-grid-lg opacity-60" />
+        <div className="aurora-blob h-[34rem] w-[34rem] -top-40 -left-32" />
+        <div className="aurora-blob h-[26rem] w-[26rem] top-1/2 -right-32" style={{ animationDelay: '-9s', opacity: 0.3 }} />
+      </div>
+      <header className="sticky top-0 z-40 glass-bar">
         <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">

@@ -2,7 +2,13 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 const Research: React.FC = () => {
-  return <main className="min-h-screen">
+  return <main className="relative min-h-screen">
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 ink-grid opacity-60" />
+        <div className="absolute inset-0 ink-grid-lg opacity-50" />
+        <div className="aurora-blob h-[36rem] w-[36rem] -top-40 -left-24" />
+        <div className="aurora-blob h-[26rem] w-[26rem] top-2/3 -right-28" style={{ animationDelay: '-10s', opacity: 0.3 }} />
+      </div>
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden parchment-texture">
         {/* Technical Blueprint Grid */}
         <div className="absolute inset-0 opacity-30">
