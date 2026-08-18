@@ -155,6 +155,11 @@ const LPPipelineBoard: React.FC = () => {
                         <p className="font-technical text-[10px] text-muted-foreground mt-1">
                           {new Date(r.created_at).toLocaleDateString()}
                         </p>
+                        {r.ticket_code && (
+                          <p className="font-technical text-[10px] text-emerald-500 mt-1 flex items-center gap-1">
+                            <Ticket className="h-3 w-3" /> {r.ticket_code}
+                          </p>
+                        )}
                       </button>
 
                       <div className="flex items-center gap-1 mt-2 pt-2 border-t border-technical-line/30">
@@ -178,6 +183,24 @@ const LPPipelineBoard: React.FC = () => {
                         >
                           <ArrowRight className="h-3 w-3" />
                         </Button>
+                        {stage.id === 'approved' && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-6 px-1.5 font-technical text-[10px]"
+                            disabled={sending === r.id}
+                            onClick={() => issueTicket(r, !!r.ticket_sent_at)}
+                          >
+                            {sending === r.id ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                              <>
+                                <Ticket className="h-3 w-3 mr-1" />
+                                {r.ticket_sent_at ? 'RESEND' : 'SEND TICKET'}
+                              </>
+                            )}
+                          </Button>
+                        )}
                         <a
                           href={`mailto:${r.email}`}
                           className="ml-auto text-muted-foreground hover:text-primary"
