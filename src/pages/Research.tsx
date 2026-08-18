@@ -71,7 +71,7 @@ const Research: React.FC = () => {
           {/* Date and Authors */}
           <div className="font-technical text-sm text-geometric-secondary mb-8 text-center border border-technical-line bg-background/50 backdrop-blur-sm px-6 py-4 rounded-sm">
             <div className="mb-2">DECAHEDRON VENTURES - APRIL 18, 2025</div>
-            <div className="text-xs">KHALIA PADILLA - MANAGING PARTNER | RICARDO FONT - MANAGING PARTNER</div>
+            <div className="text-xs">KHALIA PADILLA - FOUNDER & MANAGING PARTNER | RICARDO FONT - FOUNDER & MANAGING PARTNER</div>
           </div>
 
           {/* Disclaimer */}
