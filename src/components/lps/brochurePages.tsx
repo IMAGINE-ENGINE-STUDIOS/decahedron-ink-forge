@@ -69,32 +69,32 @@ const Terms: React.FC<{ rows: { term: string; value: string }[] }> = ({ rows }) 
 const Cover = () => (
   <div className="flex flex-col items-center justify-center text-center flex-1">
     <Fold>
-      <div className="font-technical text-[11px] tracking-[0.4em] text-geometric-secondary/70 mb-8">
+      <div className="font-technical text-[10px] tracking-[0.4em] text-geometric-secondary/70 mb-5">
         LIMITED PARTNER BROCHURE
       </div>
     </Fold>
     <Fold i={1}>
-      <h2 className="font-display text-[44px] md:text-[76px] leading-[0.85] text-foreground">
+      <h2 className="font-display text-[34px] md:text-[56px] leading-[0.85] text-foreground">
         DECAHEDRON<br />VENTURES FUND I
       </h2>
     </Fold>
     <Fold i={2}>
-      <div className="w-24 h-px bg-geometric-primary/50 my-10 mx-auto" />
-      <p className="font-technical text-[12px] md:text-[14px] tracking-[0.2em] text-geometric-secondary">
+      <div className="w-20 h-px bg-geometric-primary/50 my-6 mx-auto" />
+      <p className="font-technical text-[11px] md:text-[12px] tracking-[0.2em] text-geometric-secondary">
         VENTURE CAPITAL ENGINEERING FOR FRONTIER DEEP TECHNOLOGIES
       </p>
     </Fold>
     <Fold i={3}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-14 font-technical text-[12px] text-geometric-secondary">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 font-technical text-[11px] text-geometric-secondary">
         <div>
-          <div className="text-[10px] tracking-[0.3em] text-geometric-secondary/50 mb-2">MANAGING PARTNER</div>
+          <div className="text-[9px] tracking-[0.3em] text-geometric-secondary/50 mb-1">MANAGING PARTNER</div>
           <div className="text-foreground">Khalia Padilla</div>
-          <div className="text-[11px] mt-1">khalia@decahedronventures.com</div>
+          <div className="text-[10px] mt-0.5">khalia@decahedronventures.com</div>
         </div>
         <div>
-          <div className="text-[10px] tracking-[0.3em] text-geometric-secondary/50 mb-2">FOUNDER & MANAGING PARTNER</div>
+          <div className="text-[9px] tracking-[0.3em] text-geometric-secondary/50 mb-1">FOUNDER & MANAGING PARTNER</div>
           <div className="text-foreground">Ricardo Font</div>
-          <div className="text-[11px] mt-1">ricardo@decahedronventures.com</div>
+          <div className="text-[10px] mt-0.5">ricardo@decahedronventures.com</div>
         </div>
       </div>
     </Fold>
