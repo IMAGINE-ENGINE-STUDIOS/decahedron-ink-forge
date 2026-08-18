@@ -51,11 +51,31 @@ const ContactSheet: React.FC = () => {
       message: form.message || null,
       status: 'pending',
     });
-    setSubmitting(false);
     if (error) {
+      setSubmitting(false);
       toast({ title: 'Submission failed', description: error.message, variant: 'destructive' });
       return;
     }
+
+    // Notify the partnership inbox (non-blocking for the applicant).
+    try {
+      const { error: mailError } = await supabase.functions.invoke('notify-lp-application', {
+        body: {
+          full_name: form.full_name,
+          email: form.email,
+          company_name: form.company_name || null,
+          job_title: form.job_title || null,
+          investment_amount: ticket || null,
+          message: form.message || null,
+          source: 'LP Brochure — Contact Sheet',
+        },
+      });
+      if (mailError) console.error('LP notification email failed:', mailError);
+    } catch (err) {
+      console.error('LP notification email failed:', err);
+    }
+
+    setSubmitting(false);
     setDone(true);
     toast({ title: 'Request received', description: 'Our team will be in touch shortly.' });
   };
