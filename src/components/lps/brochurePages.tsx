@@ -460,6 +460,7 @@ export const lpBrochurePages: { kicker: string; render: React.FC }[] = [
   { kicker: '[ CRITERIA · 06–10 ]', render: FactorsTwo },
   { kicker: '[ STRATEGY · $100M ]', render: StrategyA },
   { kicker: '[ STRATEGY · $500M ]', render: StrategyB },
+  { kicker: '[ ACCELERATOR ]', render: Accelerator },
   { kicker: '[ THE.TEAM ]', render: Team },
   { kicker: '[ THE.OFFERING ]', render: Offering },
   { kicker: '[ FUND.ORGANIZATION ]', render: FundOrg },
