@@ -199,14 +199,14 @@ const FACTORS: [string, string, string][] = [
 ];
 
 const FactorList: React.FC<{ from: number; to: number }> = ({ from, to }) => (
-  <div className="grid grid-cols-1 gap-4">
+  <div className="grid grid-cols-1 gap-2.5">
     {FACTORS.slice(from, to).map(([num, label, desc], i) => (
       <Fold key={num} i={i}>
-        <div className="flex gap-6 items-start border-b border-border pb-4">
-          <div className="font-technical text-[34px] text-geometric-secondary/20 leading-none">{num}</div>
+        <div className="flex gap-4 items-start border-b border-border pb-2.5">
+          <div className="font-technical text-[26px] text-geometric-secondary/20 leading-none">{num}</div>
           <div>
-            <div className="font-technical text-[12px] tracking-[0.18em] text-foreground mb-1.5">{label}</div>
-            <p className="text-[13px] text-muted-foreground leading-[1.6] max-w-2xl">{desc}</p>
+            <div className="font-technical text-[11px] tracking-[0.18em] text-foreground mb-1">{label}</div>
+            <p className="text-[12px] text-muted-foreground leading-[1.5] max-w-2xl">{desc}</p>
           </div>
         </div>
       </Fold>
@@ -217,20 +217,20 @@ const FactorList: React.FC<{ from: number; to: number }> = ({ from, to }) => (
 const FactorsIntro = () => (
   <div className="flex flex-col justify-center flex-1">
     <Fold>
-      <div className="font-technical text-[10px] tracking-[0.3em] text-geometric-secondary/60 mb-4">INVESTMENT PROCESS</div>
-      <h2 className="font-display text-3xl md:text-[46px] leading-[0.95] text-foreground mb-8">
+      <div className="font-technical text-[9px] tracking-[0.3em] text-geometric-secondary/60 mb-3">INVESTMENT PROCESS</div>
+      <h2 className="font-display text-2xl md:text-[32px] leading-[0.95] text-foreground mb-5">
         Ten Faces. Ten Factors.
       </h2>
-      <div className="w-16 h-px bg-geometric-primary/60 mb-8" />
+      <div className="w-14 h-px bg-geometric-primary/60 mb-5" />
     </Fold>
     <Fold i={1}>
-      <p className="text-[17px] md:text-[20px] leading-[1.7] text-muted-foreground max-w-3xl mb-6">
+      <p className="text-[15px] md:text-[17px] leading-[1.6] text-muted-foreground max-w-3xl mb-4">
         Inspired by the ten faces of a decahedron, our investment approach identifies ten transformative factors in
         startups — signals that highlight innovations positioned to deliver exponential growth.
       </p>
     </Fold>
     <Fold i={2}>
-      <p className="text-[15px] leading-[1.7] text-muted-foreground/80 max-w-3xl">
+      <p className="text-[13px] leading-[1.6] text-muted-foreground/80 max-w-3xl">
         Every opportunity is scored on all ten factors by our investment committee using a proprietary assessment
         matrix, producing a single comparable Company Coefficient.
       </p>
@@ -255,23 +255,23 @@ const FactorsTwo = () => (
 // ── STRATEGY (split across two sheets) ────────────────────
 const FundTable: React.FC<{ name: string; rows: string[][] }> = ({ name, rows }) => (
   <Fold i={1} className="border border-technical-line/40 rounded-sm overflow-hidden max-w-3xl">
-    <div className="bg-secondary/50 p-4">
-      <h3 className="font-display text-[22px] text-foreground">{name}</h3>
+    <div className="bg-secondary/50 p-3">
+      <h3 className="font-display text-[18px] text-foreground">{name}</h3>
     </div>
-    <table className="w-full text-[14px]">
+    <table className="w-full text-[13px]">
       <thead>
-        <tr className="font-technical text-[10px] tracking-[0.15em] text-geometric-secondary bg-secondary/30">
-          <th className="text-left p-3">Stage</th>
-          <th className="text-right p-3">$ / Deal</th>
-          <th className="text-right p-3">Total</th>
+        <tr className="font-technical text-[9px] tracking-[0.15em] text-geometric-secondary bg-secondary/30">
+          <th className="text-left p-2.5">Stage</th>
+          <th className="text-right p-2.5">$ / Deal</th>
+          <th className="text-right p-2.5">Total</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((r) => (
           <tr key={r[0]} className="border-t border-border">
-            <td className="p-3 text-muted-foreground">{r[0]}</td>
-            <td className="p-3 text-right text-muted-foreground">{r[1]}</td>
-            <td className="p-3 text-right text-foreground">{r[2]}</td>
+            <td className="p-2.5 text-muted-foreground">{r[0]}</td>
+            <td className="p-2.5 text-right text-muted-foreground">{r[1]}</td>
+            <td className="p-2.5 text-right text-foreground">{r[2]}</td>
           </tr>
         ))}
       </tbody>
@@ -312,7 +312,7 @@ const StrategyB = () => (
       ]}
     />
     <Fold i={3}>
-      <p className="font-technical text-[11px] text-geometric-secondary/70 mt-6">
+      <p className="font-technical text-[10px] text-geometric-secondary/70 mt-4">
         Target: 20 portfolio investments — 10 Seed · 3 Series A · 3 Series "Super A" · 4 Series A from Seed
       </p>
     </Fold>
