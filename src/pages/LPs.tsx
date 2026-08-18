@@ -188,14 +188,24 @@ const LPs: React.FC = () => {
           }}
         >
           {/* stacked sheets behind — depth of the remaining pages */}
-          <div aria-hidden className="absolute inset-x-4 inset-y-0 border border-border/40 bg-card/30 rounded-sm translate-y-3" />
-          <div aria-hidden className="absolute inset-x-2.5 inset-y-0 border border-border/50 bg-card/45 rounded-sm translate-y-2" />
-          <div aria-hidden className="absolute inset-x-1 inset-y-0 border border-border/60 bg-card/65 rounded-sm translate-y-1" />
+          <div aria-hidden className="absolute inset-x-6 inset-y-0 border border-border/30 bg-card/25 rounded-sm translate-y-4" />
+          <div aria-hidden className="absolute inset-x-4 inset-y-0 border border-border/40 bg-card/35 rounded-sm translate-y-3" />
+          <div aria-hidden className="absolute inset-x-2.5 inset-y-0 border border-border/50 bg-card/50 rounded-sm translate-y-2" />
+          <div aria-hidden className="absolute inset-x-1 inset-y-0 border border-border/60 bg-card/70 rounded-sm translate-y-1" />
           {/* spine */}
           <div
             aria-hidden
-            className="absolute inset-y-0 -left-1 w-[10px] z-[6] rounded-l-sm"
-            style={{ background: 'linear-gradient(90deg, hsl(var(--foreground)/0.22), hsl(var(--foreground)/0.04) 60%, transparent)' }}
+            className="absolute inset-y-0 -left-1 w-[14px] z-[6] rounded-l-sm"
+            style={{ background: 'linear-gradient(90deg, hsl(var(--foreground)/0.28), hsl(var(--foreground)/0.06) 55%, transparent)' }}
+          />
+          {/* fore-edge: stacked page edges on the right */}
+          <div
+            aria-hidden
+            className="absolute inset-y-1 -right-2 w-[12px] z-[6] rounded-r-sm"
+            style={{
+              background:
+                'repeating-linear-gradient(90deg, hsl(var(--foreground)/0.10) 0 1px, transparent 1px 3px), linear-gradient(90deg, hsl(var(--card)), hsl(var(--foreground)/0.12))',
+            }}
           />
 
           <div className={`relative ${stageHeight}`} style={{ transformStyle: 'preserve-3d' }}>
@@ -207,10 +217,9 @@ const LPs: React.FC = () => {
                 className="absolute top-0 right-0 w-10 h-10 pointer-events-none z-10"
                 style={{ background: 'linear-gradient(225deg, hsl(var(--border)) 0%, hsl(var(--border)) 49%, transparent 50%)' }}
               />
-              <AnimatePresence mode="wait" initial={false}>
-                {renderPage(baseIndex, true)}
-              </AnimatePresence>
+              {renderPage(baseIndex, false)}
             </article>
+
 
             {/* Turning leaf */}
             {turn && (
