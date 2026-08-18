@@ -1,5 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import khaliaPadilla from '@/assets/team/khalia-padilla.jpg';
+import ricardoFont from '@/assets/team/ricardo-font.jpg';
+import stevenLindgren from '@/assets/team/steven-lindgren.png';
+import jamesStuber from '@/assets/team/james-stuber.jpg';
+import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 
 /** Shared origami reveal for content blocks inside a sheet. */
 const Fold: React.FC<{ children: React.ReactNode; i?: number; className?: string }> = ({
@@ -320,18 +325,22 @@ const Team = () => (
     <Title sub="Founders with deep technical, operational, and investing experience.">Meet the Team</Title>
     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
       {[
-        { name: 'Khalia Padilla', title: 'Managing Partner', bio: 'Nasdaq Entrepreneurial Center · Deep tech operator' },
-        { name: 'Ricardo Font', title: 'Founder & Managing Partner', bio: 'Serial entrepreneur · Fund architect' },
-        { name: 'Steven Lindgren', title: 'Managing Director', bio: 'Portfolio strategy · Investor relations' },
-        { name: 'James Stuber', title: 'Legal Counsel', bio: 'Fund structuring · Securities law' },
-        { name: 'N. MacDonnell Ulsch', title: 'Strategic Advisor', bio: 'Cybersecurity · Risk advisory' },
+        { name: 'Khalia Padilla', title: 'Founder & Managing Partner', bio: 'Nasdaq Entrepreneurial Center · Deep tech operator', image: khaliaPadilla, pos: 'object-[center_15%]' },
+        { name: 'Ricardo Font', title: 'Founder & Managing Partner', bio: 'Serial entrepreneur · Fund architect', image: ricardoFont },
+        { name: 'Steven Lindgren', title: 'Managing Director', bio: 'Portfolio strategy · Investor relations', image: stevenLindgren },
+        { name: 'James Stuber', title: 'Legal Counsel', bio: 'Fund structuring · Securities law', image: jamesStuber },
+        { name: 'N. MacDonnell Ulsch', title: 'Strategic Advisor', bio: 'Cybersecurity · Risk advisory', image: nMacdonnellUlsch },
       ].map((m, i) => (
         <Fold key={m.name} i={i} className="border border-technical-line/40 bg-background/40 p-5 rounded-sm text-center">
-          <div className="w-[68px] h-[68px] rounded-full bg-secondary mx-auto mb-4 flex items-center justify-center">
-            <span className="font-display text-[20px] text-muted-foreground">
-              {m.name.split(' ').map((n) => n[0]).join('')}
-            </span>
+          <div className="w-[68px] h-[68px] rounded-full overflow-hidden border border-technical-line/50 bg-secondary mx-auto mb-4">
+            <img
+              src={m.image}
+              alt={`${m.name}, ${m.title} at Decahedron Ventures`}
+              loading="lazy"
+              className={`w-full h-full object-cover ${m.pos ?? 'object-center'}`}
+            />
           </div>
+
           <h3 className="font-display text-[15px] text-foreground mb-1">{m.name}</h3>
           <p className="font-technical text-[9px] tracking-wider text-geometric-secondary uppercase mb-3">{m.title}</p>
           <p className="text-[11px] text-muted-foreground leading-[1.5]">{m.bio}</p>
