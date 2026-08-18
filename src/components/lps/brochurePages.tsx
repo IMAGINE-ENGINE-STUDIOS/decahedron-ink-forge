@@ -369,7 +369,7 @@ const Accelerator = () => (
 const Team = () => (
   <div>
     <Title sub="Founders with deep technical, operational, and investing experience.">Meet the Team</Title>
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
       {[
         { name: 'Khalia Padilla', title: 'Founder & Managing Partner', bio: 'Nasdaq Entrepreneurial Center · Deep tech operator', image: khaliaPadilla, pos: 'object-[center_15%]' },
         { name: 'Ricardo Font', title: 'Founder & Managing Partner', bio: 'Serial entrepreneur · Fund architect', image: ricardoFont },
@@ -377,8 +377,8 @@ const Team = () => (
         { name: 'James Stuber', title: 'Legal Counsel', bio: 'Fund structuring · Securities law', image: jamesStuber },
         { name: 'N. MacDonnell Ulsch', title: 'Strategic Advisor', bio: 'Cybersecurity · Risk advisory', image: nMacdonnellUlsch },
       ].map((m, i) => (
-        <Fold key={m.name} i={i} className="border border-technical-line/40 bg-background/40 p-5 rounded-sm text-center">
-          <div className="w-[68px] h-[68px] rounded-full overflow-hidden border border-technical-line/50 bg-secondary mx-auto mb-4">
+        <Fold key={m.name} i={i} className="border border-technical-line/40 bg-background/40 p-3 rounded-sm text-center">
+          <div className="w-[52px] h-[52px] rounded-full overflow-hidden border border-technical-line/50 bg-secondary mx-auto mb-2.5">
             <img
               src={m.image}
               alt={`${m.name}, ${m.title} at Decahedron Ventures`}
@@ -387,9 +387,9 @@ const Team = () => (
             />
           </div>
 
-          <h3 className="font-display text-[15px] text-foreground mb-1">{m.name}</h3>
-          <p className="font-technical text-[9px] tracking-wider text-geometric-secondary uppercase mb-3">{m.title}</p>
-          <p className="text-[11px] text-muted-foreground leading-[1.5]">{m.bio}</p>
+          <h3 className="font-display text-[13px] text-foreground mb-0.5">{m.name}</h3>
+          <p className="font-technical text-[8px] tracking-wider text-geometric-secondary uppercase mb-2">{m.title}</p>
+          <p className="text-[10px] text-muted-foreground leading-[1.4]">{m.bio}</p>
         </Fold>
       ))}
     </div>
@@ -411,7 +411,7 @@ const Offering = () => (
       ]}
     />
     <Fold i={5}>
-      <p className="text-[12px] text-muted-foreground leading-[1.7] mt-8 max-w-4xl">
+      <p className="text-[11px] text-muted-foreground leading-[1.6] mt-5 max-w-4xl">
         All investors must certify that they are accredited investors or qualified purchasers. Interests will not be
         registered under the Securities Act of 1933 in reliance upon exemptions in 506(b) of Regulation D, and are
         subject to restrictions on transferability and resale.
@@ -443,18 +443,18 @@ const FundOrg = () => (
 const Closing = () => (
   <div className="flex flex-col items-center justify-center text-center flex-1">
     <Fold>
-      <h2 className="font-display text-[40px] md:text-[64px] text-foreground leading-[0.9] mb-8">Partner With Us</h2>
-      <div className="w-20 h-px bg-geometric-primary/50 mx-auto mb-10" />
+      <h2 className="font-display text-[32px] md:text-[48px] text-foreground leading-[0.9] mb-5">Partner With Us</h2>
+      <div className="w-16 h-px bg-geometric-primary/50 mx-auto mb-7" />
     </Fold>
     <Fold i={1}>
-      <div className="space-y-2 font-technical text-[14px] tracking-wider text-foreground">
+      <div className="space-y-1.5 font-technical text-[13px] tracking-wider text-foreground">
         <p>407 760-4873</p>
         <p>info@decahedronventures.com</p>
-        <p className="text-geometric-secondary/60 tracking-[0.4em] pt-4">DECAHEDRONVENTURES.COM</p>
+        <p className="text-geometric-secondary/60 tracking-[0.4em] pt-3">DECAHEDRONVENTURES.COM</p>
       </div>
     </Fold>
     <Fold i={2}>
-      <p className="text-[11px] leading-[1.8] text-muted-foreground max-w-3xl mt-12">
+      <p className="text-[10px] leading-[1.7] text-muted-foreground max-w-3xl mt-8">
         This brochure is not, and should not be construed as, an offer, invitation, or recommendation with respect to
         any securities issued by Decahedron Fund I LLC or its manager, Decahedron GP I LLC. It does not take into
         account the investment objectives, financial situation, or needs of any investor. Any projections are
