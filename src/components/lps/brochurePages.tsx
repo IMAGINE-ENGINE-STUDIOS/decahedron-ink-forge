@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import khaliaPadilla from '@/assets/team/khalia-padilla.jpg';
 import ricardoFont from '@/assets/team/ricardo-font.jpg';
-import stevenLindgren from '@/assets/team/steven-lindgren.png';
+import dominicCatrambone from '@/assets/team/dominic-catrambone.jpg';
 import jamesStuber from '@/assets/team/james-stuber.jpg';
 import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 
@@ -327,7 +327,7 @@ const Team = () => (
       {[
         { name: 'Khalia Padilla', title: 'Founder & Managing Partner', bio: 'Nasdaq Entrepreneurial Center · Deep tech operator', image: khaliaPadilla, pos: 'object-[center_15%]' },
         { name: 'Ricardo Font', title: 'Founder & Managing Partner', bio: 'Serial entrepreneur · Fund architect', image: ricardoFont },
-        { name: 'Steven Lindgren', title: 'Managing Director', bio: 'Portfolio strategy · Investor relations', image: stevenLindgren },
+        { name: 'Dominic Catrambone', title: 'Chief Financial Officer', bio: 'Financial strategy · Fund operations · LP reporting', image: dominicCatrambone },
         { name: 'James Stuber', title: 'Legal Counsel', bio: 'Fund structuring · Securities law', image: jamesStuber },
         { name: 'N. MacDonnell Ulsch', title: 'Strategic Advisor', bio: 'Cybersecurity · Risk advisory', image: nMacdonnellUlsch },
       ].map((m, i) => (
