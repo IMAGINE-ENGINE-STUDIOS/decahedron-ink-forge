@@ -320,6 +320,42 @@ export type Database = {
         }
         Relationships: []
       }
+      lp_brochure_views: {
+        Row: {
+          created_at: string
+          dwell_ms: number | null
+          event_type: string
+          id: string
+          page_index: number
+          page_kicker: string | null
+          referrer: string | null
+          session_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          dwell_ms?: number | null
+          event_type?: string
+          id?: string
+          page_index?: number
+          page_kicker?: string | null
+          referrer?: string | null
+          session_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          dwell_ms?: number | null
+          event_type?: string
+          id?: string
+          page_index?: number
+          page_kicker?: string | null
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       paper_equity_curve: {
         Row: {
           as_of: string

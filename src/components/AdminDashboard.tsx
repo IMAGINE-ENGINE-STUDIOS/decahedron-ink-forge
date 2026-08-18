@@ -42,6 +42,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useFundCRM, type FundStats } from '@/hooks/useFundCRM';
 import { DashboardOverview } from '@/components/admin/DashboardOverview';
 import { AnalyticsCharts } from '@/components/admin/AnalyticsCharts';
+import BrochureAnalytics from '@/components/admin/BrochureAnalytics';
 import { DealFlowTable } from '@/components/admin/DealFlowTable';
 import { InvestorCRM } from '@/components/admin/InvestorCRM';
 import { IndustryBreakdown } from '@/components/admin/IndustryBreakdown';
@@ -409,9 +410,11 @@ const AdminDashboard: React.FC = () => {
           </TabsList>
 
           {/* Analytics Tab */}
-          <TabsContent value="overview">
+          <TabsContent value="overview" className="space-y-6">
             <AnalyticsCharts pitches={pitches} />
+            <BrochureAnalytics />
           </TabsContent>
+
 
           {/* Deal Flow Tab */}
           <TabsContent value="deals">
