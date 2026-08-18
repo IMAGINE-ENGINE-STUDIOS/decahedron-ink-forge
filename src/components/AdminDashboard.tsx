@@ -98,6 +98,7 @@ const AdminDashboard: React.FC = () => {
   const [activeDeals, setActiveDeals] = useState(0);
   const [portfolioCount, setPortfolioCount] = useState(0);
   const [deleteConfirmLP, setDeleteConfirmLP] = useState<LPApplication | null>(null);
+  const [detailLP, setDetailLP] = useState<LPApplication | null>(null);
   const { toast } = useToast();
   const { user, signOut } = useAuth();
   const { fetchFundStats, fetchDeals, fetchPortfolio, loading: crmLoading } = useFundCRM();
