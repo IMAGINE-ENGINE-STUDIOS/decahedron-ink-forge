@@ -247,7 +247,13 @@ const Test: React.FC = () => {
 
   // ─── Render ──────────────────────────────────────────────────────────────
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="relative min-h-screen bg-background text-foreground">
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 ink-grid opacity-70" />
+        <div className="absolute inset-0 ink-grid-lg opacity-60" />
+        <div className="aurora-blob h-[36rem] w-[36rem] -top-44 -right-32" />
+        <div className="aurora-blob h-[28rem] w-[28rem] bottom-0 -left-32" style={{ animationDelay: '-7s', opacity: 0.3 }} />
+      </div>
       <div className="container mx-auto max-w-5xl px-4 py-8">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6">
           <ArrowLeft className="h-4 w-4" /> Back
