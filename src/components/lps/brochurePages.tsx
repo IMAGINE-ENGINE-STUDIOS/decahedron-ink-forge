@@ -6,6 +6,7 @@ import dominicCatrambone from '@/assets/team/dominic-catrambone.jpg';
 import jamesStuber from '@/assets/team/james-stuber.jpg';
 import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 import startupFactoryLogo from '@/assets/partners/startup-factory-hub.ico';
+import ContactSheet from '@/components/lps/ContactSheet';
 
 
 /** Shared origami reveal for content blocks inside a sheet. */
