@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, Search, Mail, ArrowRight, ArrowLeft } from 'lucide-react';
+import { RefreshCw, Search, Mail, ArrowRight, ArrowLeft, Ticket, Loader2 } from 'lucide-react';
 import LPApplicationDetail, { type LPApplicationDetailRecord } from '@/components/admin/LPApplicationDetail';
 import LPSignupsDashboard from '@/components/admin/LPSignupsDashboard';
 
@@ -23,6 +23,7 @@ const LPPipelineBoard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [detail, setDetail] = useState<LPRecord | null>(null);
+  const [sending, setSending] = useState<string | null>(null);
   const { toast } = useToast();
 
   const load = async () => {
@@ -50,6 +51,24 @@ const LPPipelineBoard: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const issueTicket = async (record: LPRecord, resend = false) => {
+    setSending(record.id);
+    const { data, error } = await supabase.functions.invoke('send-lp-ticket', {
+      body: { application_id: record.id, resend },
+    });
+    setSending(null);
+    if (error) {
+      toast({ title: 'Ticket email failed', description: error.message, variant: 'destructive' });
+      return;
+    }
+    if ((data as any)?.already_sent) {
+      toast({ title: 'Ticket already sent', description: `Code ${(data as any).ticket_code}` });
+    } else {
+      toast({ title: `Ticket sent to ${record.email}`, description: (data as any)?.ticket_code });
+    }
+    load();
+  };
+
   const moveStage = async (record: LPRecord, direction: -1 | 1) => {
     const idx = STAGES.findIndex((s) => s.id === (record.status || 'pending'));
     const next = STAGES[Math.min(STAGES.length - 1, Math.max(0, idx + direction))];
@@ -66,6 +85,10 @@ const LPPipelineBoard: React.FC = () => {
       return;
     }
     toast({ title: `${record.full_name} → ${next.label}` });
+
+    if (next.id === 'approved' && !record.ticket_sent_at) {
+      await issueTicket({ ...record, status: 'approved' });
+    }
   };
 
   const filtered = useMemo(() => {
@@ -132,6 +155,11 @@ const LPPipelineBoard: React.FC = () => {
                         <p className="font-technical text-[10px] text-muted-foreground mt-1">
                           {new Date(r.created_at).toLocaleDateString()}
                         </p>
+                        {r.ticket_code && (
+                          <p className="font-technical text-[10px] text-emerald-500 mt-1 flex items-center gap-1">
+                            <Ticket className="h-3 w-3" /> {r.ticket_code}
+                          </p>
+                        )}
                       </button>
 
                       <div className="flex items-center gap-1 mt-2 pt-2 border-t border-technical-line/30">
@@ -155,6 +183,24 @@ const LPPipelineBoard: React.FC = () => {
                         >
                           <ArrowRight className="h-3 w-3" />
                         </Button>
+                        {stage.id === 'approved' && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-6 px-1.5 font-technical text-[10px]"
+                            disabled={sending === r.id}
+                            onClick={() => issueTicket(r, !!r.ticket_sent_at)}
+                          >
+                            {sending === r.id ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                              <>
+                                <Ticket className="h-3 w-3 mr-1" />
+                                {r.ticket_sent_at ? 'RESEND' : 'SEND TICKET'}
+                              </>
+                            )}
+                          </Button>
+                        )}
                         <a
                           href={`mailto:${r.email}`}
                           className="ml-auto text-muted-foreground hover:text-primary"
