@@ -177,85 +177,133 @@ const Sourcing = () => (
   </div>
 );
 
-// ── 06 TEN FACTORS ────────────────────────────────────────
-const TenFactors = () => (
-  <div>
-    <Title sub="Inspired by the ten faces of a decahedron, every company is scored across ten transformative factors.">
-      10 Factors We Look For
-    </Title>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3">
-      {[
-        ['01', 'TEAM', 'Technically capable, mission-driven teams with resilience to build frontier systems.'],
-        ['02', 'ADVANTAGES', 'Architectural differentiation, performance step-change, or time-to-market leadership.'],
-        ['03', 'IP & TECHNOLOGY', 'Technical rigor, scalability potential, and demonstrated performance advantages.'],
-        ['04', 'VALIDATION', 'Original architectures and thoughtful protection of long-term advantage.'],
-        ['05', 'STRATEGIC PARTNERS', 'Relationships that unlock customers, partners, and deployment.'],
-        ['06', 'ROADMAP', 'Credible vision for scaling into larger ecosystems.'],
-        ['07', 'REVENUE POTENTIAL', 'Repeatable, durable revenue aligned with long-term customers.'],
-        ['08', 'SUPPLY CHAIN', 'Realistic sourcing, manufacturing, and scaling approach.'],
-        ['09', 'STRATEGY', 'Awareness of the path from prototype to real-world deployment.'],
-        ['10', 'CAPITAL DISTRIBUTION', 'Efficient use of capital against technical and commercial milestones.'],
-      ].map(([num, label, desc], i) => (
-        <Fold key={num} i={i}>
-          <div className="flex gap-4 items-start border-b border-border pb-3">
-            <div className="font-technical text-[22px] text-geometric-secondary/25 leading-none mt-1">{num}</div>
-            <div>
-              <div className="font-technical text-[11px] tracking-[0.15em] text-foreground mb-1">{label}</div>
-              <p className="text-[12px] text-muted-foreground leading-[1.5]">{desc}</p>
-            </div>
+// ── TEN FACTORS (split across two sheets) ─────────────────
+const FACTORS: [string, string, string][] = [
+  ['01', 'TEAM', 'Technically capable, mission-driven teams with the curiosity and resilience to build frontier systems.'],
+  ['02', 'ADVANTAGES', 'Architectural differentiation, performance step-change, cost advantage, or time-to-market leadership.'],
+  ['03', 'IP & TECHNOLOGY', 'Technical rigor, scalability potential, and demonstrated performance advantages.'],
+  ['04', 'VALIDATION', 'Original architectures and thoughtful protection of long-term advantage.'],
+  ['05', 'STRATEGIC PARTNERS', 'Relationships that unlock customers, partners, and deployment opportunities.'],
+  ['06', 'ROADMAP', 'Credible vision for scaling and integrating into larger ecosystems.'],
+  ['07', 'REVENUE POTENTIAL', 'Repeatable, durable revenue models aligned with infrastructure or long-term customers.'],
+  ['08', 'SUPPLY CHAIN', 'Realistic sourcing, manufacturing, and scaling approach as the company grows.'],
+  ['09', 'STRATEGY', 'Awareness of the path from prototype to real-world deployment — and openness to support.'],
+  ['10', 'CAPITAL DISTRIBUTION', 'Efficient use of capital against meaningful technical and commercial milestones.'],
+];
+
+const FactorList: React.FC<{ from: number; to: number }> = ({ from, to }) => (
+  <div className="grid grid-cols-1 gap-4">
+    {FACTORS.slice(from, to).map(([num, label, desc], i) => (
+      <Fold key={num} i={i}>
+        <div className="flex gap-6 items-start border-b border-border pb-4">
+          <div className="font-technical text-[34px] text-geometric-secondary/20 leading-none">{num}</div>
+          <div>
+            <div className="font-technical text-[12px] tracking-[0.18em] text-foreground mb-1.5">{label}</div>
+            <p className="text-[13px] text-muted-foreground leading-[1.6] max-w-2xl">{desc}</p>
           </div>
-        </Fold>
-      ))}
-    </div>
+        </div>
+      </Fold>
+    ))}
   </div>
 );
 
-// ── 07 STRATEGY ───────────────────────────────────────────
-const Strategy = () => (
+const FactorsIntro = () => (
+  <div className="flex flex-col justify-center flex-1">
+    <Fold>
+      <div className="font-technical text-[10px] tracking-[0.3em] text-geometric-secondary/60 mb-4">INVESTMENT PROCESS</div>
+      <h2 className="font-display text-3xl md:text-[46px] leading-[0.95] text-foreground mb-8">
+        Ten Faces. Ten Factors.
+      </h2>
+      <div className="w-16 h-px bg-geometric-primary/60 mb-8" />
+    </Fold>
+    <Fold i={1}>
+      <p className="text-[17px] md:text-[20px] leading-[1.7] text-muted-foreground max-w-3xl mb-6">
+        Inspired by the ten faces of a decahedron, our investment approach identifies ten transformative factors in
+        startups — signals that highlight innovations positioned to deliver exponential growth.
+      </p>
+    </Fold>
+    <Fold i={2}>
+      <p className="text-[15px] leading-[1.7] text-muted-foreground/80 max-w-3xl">
+        Every opportunity is scored on all ten factors by our investment committee using a proprietary assessment
+        matrix, producing a single comparable Company Coefficient.
+      </p>
+    </Fold>
+  </div>
+);
+
+const FactorsOne = () => (
+  <div>
+    <Title sub="Factors 01–05">10 Factors We Look For</Title>
+    <FactorList from={0} to={5} />
+  </div>
+);
+
+const FactorsTwo = () => (
+  <div>
+    <Title sub="Factors 06–10">10 Factors We Look For</Title>
+    <FactorList from={5} to={10} />
+  </div>
+);
+
+// ── STRATEGY (split across two sheets) ────────────────────
+const FundTable: React.FC<{ name: string; rows: string[][] }> = ({ name, rows }) => (
+  <Fold i={1} className="border border-technical-line/40 rounded-sm overflow-hidden max-w-3xl">
+    <div className="bg-secondary/50 p-4">
+      <h3 className="font-display text-[22px] text-foreground">{name}</h3>
+    </div>
+    <table className="w-full text-[14px]">
+      <thead>
+        <tr className="font-technical text-[10px] tracking-[0.15em] text-geometric-secondary bg-secondary/30">
+          <th className="text-left p-3">Stage</th>
+          <th className="text-right p-3">$ / Deal</th>
+          <th className="text-right p-3">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={r[0]} className="border-t border-border">
+            <td className="p-3 text-muted-foreground">{r[0]}</td>
+            <td className="p-3 text-right text-muted-foreground">{r[1]}</td>
+            <td className="p-3 text-right text-foreground">{r[2]}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </Fold>
+);
+
+const StrategyA = () => (
   <div>
     <Title sub="Lead Seed rounds; lead or co-lead Series A–C. Initial checks of $1M, $5M, and $10M.">
-      Investment Strategy
+      Investment Strategy · $100M
     </Title>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {[
-        {
-          name: '$100 Million Fund',
-          rows: [
-            ['Seed Investments', '$1,000,000', '$30,000,000'],
-            ['Series A', '$5,000,000', '$35,000,000'],
-            ['Total Invested', '—', '$65,000,000'],
-            ['Follow-ons & Reserves', '—', '$35,000,000'],
-            ['Total Fund', '—', '$100,000,000'],
-          ],
-        },
-        {
-          name: '$500 Million Fund',
-          rows: [
-            ['Seed & Series A', '—', '$215,000,000'],
-            ['Total Invested', '—', '$215,000,000'],
-            ['Follow-ons & Reserves', '—', '$285,000,000'],
-            ['Total Fund', '—', '$500,000,000'],
-          ],
-        },
-      ].map((t, i) => (
-        <Fold key={t.name} i={i} className="border border-technical-line/40 rounded-sm overflow-hidden">
-          <div className="bg-secondary/50 p-4">
-            <h3 className="font-display text-[20px] text-foreground">{t.name}</h3>
-          </div>
-          <table className="w-full text-[13px]">
-            <tbody>
-              {t.rows.map((r) => (
-                <tr key={r[0]} className="border-t border-border">
-                  <td className="p-3 text-muted-foreground">{r[0]}</td>
-                  <td className="p-3 text-right text-muted-foreground">{r[1]}</td>
-                  <td className="p-3 text-right text-foreground">{r[2]}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Fold>
-      ))}
-    </div>
+    <FundTable
+      name="$100 Million Fund"
+      rows={[
+        ['Seed Investments', '$1,000,000', '$30,000,000'],
+        ['Series A', '$5,000,000', '$35,000,000'],
+        ['Total Invested', '—', '$65,000,000'],
+        ['Follow-ons & Reserves', '—', '$35,000,000'],
+        ['Total Fund', '—', '$100,000,000'],
+      ]}
+    />
+  </div>
+);
+
+const StrategyB = () => (
+  <div>
+    <Title sub="The Fund is expandable to $500M with a deeper reserve pool for follow-on ownership.">
+      Investment Strategy · $500M
+    </Title>
+    <FundTable
+      name="$500 Million Fund"
+      rows={[
+        ['Seed & Series A', '—', '$215,000,000'],
+        ['Total Invested', '—', '$215,000,000'],
+        ['Follow-ons & Reserves', '—', '$285,000,000'],
+        ['Total Fund', '—', '$500,000,000'],
+      ]}
+    />
     <Fold i={3}>
       <p className="font-technical text-[11px] text-geometric-secondary/70 mt-6">
         Target: 20 portfolio investments — 10 Seed · 3 Series A · 3 Series "Super A" · 4 Series A from Seed
@@ -263,6 +311,8 @@ const Strategy = () => (
     </Fold>
   </div>
 );
+
+
 
 // ── 08 TEAM ───────────────────────────────────────────────
 const Team = () => (
