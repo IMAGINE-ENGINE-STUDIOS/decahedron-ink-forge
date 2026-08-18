@@ -1,5 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import khaliaPadilla from '@/assets/team/khalia-padilla.jpg';
+import ricardoFont from '@/assets/team/ricardo-font.jpg';
+import stevenLindgren from '@/assets/team/steven-lindgren.png';
+import jamesStuber from '@/assets/team/james-stuber.jpg';
+import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 
 /** Shared origami reveal for content blocks inside a sheet. */
 const Fold: React.FC<{ children: React.ReactNode; i?: number; className?: string }> = ({
