@@ -614,6 +614,13 @@ const AdminDashboard: React.FC = () => {
         </Tabs>
       </main>
 
+      {/* LP Application Detail */}
+      <LPApplicationDetail
+        application={detailLP}
+        onClose={() => setDetailLP(null)}
+        onDownloadDeck={downloadPitchDeck}
+      />
+
       {/* Delete LP Confirmation Dialog */}
       <AlertDialog open={!!deleteConfirmLP} onOpenChange={() => setDeleteConfirmLP(null)}>
         <AlertDialogContent>
