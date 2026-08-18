@@ -335,7 +335,7 @@ const AdminDashboard: React.FC = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
+        <div className="w-full px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div>
@@ -371,7 +371,7 @@ const AdminDashboard: React.FC = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 space-y-8">
+      <main className="w-full px-6 py-8 space-y-8">
         {/* Overview Stats */}
         <DashboardOverview 
           pitchCount={pitches.length}
