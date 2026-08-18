@@ -137,7 +137,7 @@ const LPs: React.FC = () => {
         style={{ background: 'radial-gradient(60% 45% at 50% 32%, hsl(var(--geometric-primary)/0.07), transparent 70%)' }}
       />
 
-      <div className={`relative z-10 container mx-auto px-4 md:px-6 max-w-6xl ${immersive ? 'py-5' : 'py-10'}`}>
+      <div className={`relative z-10 w-full px-4 md:px-8 ${immersive ? 'py-4' : 'py-8'}`}>
         <header className={`flex flex-wrap items-end justify-between gap-4 ${immersive ? 'mb-4' : 'mb-8'}`}>
           <div>
             <div className="font-technical text-[11px] tracking-[0.35em] text-geometric-secondary mb-2">
