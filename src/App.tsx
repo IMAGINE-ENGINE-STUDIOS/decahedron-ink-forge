@@ -12,6 +12,7 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import Test from "./pages/Test";
 import DealFlow from "./pages/DealFlow";
+import LPs from "./pages/LPs";
 
 const queryClient = new QueryClient();
 
