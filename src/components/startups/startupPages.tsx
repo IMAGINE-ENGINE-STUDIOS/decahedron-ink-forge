@@ -174,20 +174,34 @@ const Network = () => (
 const Team = () => (
   <div className="h-full flex flex-col">
     <Title sub="The people you will actually work with.">Your Partners</Title>
-    <div className="grid grid-cols-3 md:grid-cols-5 gap-[clamp(4px,1vh,10px)]">
+    <div className="grid grid-cols-1 md:grid-cols-6 gap-[clamp(4px,1vh,12px)] flex-1 min-h-0">
       {[
-        { n: 'Khalia Padilla', r: 'Founder & Managing Partner', img: khaliaPadilla },
-        { n: 'Ricardo Font', r: 'Founder & Managing Partner', img: ricardoFont },
-        { n: 'Dominic Catrambone', r: 'CFO', img: dominicCatrambone },
-        { n: 'James Stuber', r: 'Legal Counsel', img: jamesStuber },
-        { n: 'N. MacDonnell Ulsch', r: 'Strategic Advisor', img: nMacdonnellUlsch },
+        { n: 'Khalia Padilla', r: 'Founder & Managing Partner', img: khaliaPadilla, span: 'md:col-span-3',
+          b: 'Founder & CEO of Imagine Engine and CEO of Lightware Technologies. Builds AI-powered accelerators and photonic infrastructure for the space economy across the U.S., Japan, Europe and LATAM.' },
+        { n: 'Ricardo Font', r: 'Founder & Managing Partner', img: ricardoFont, span: 'md:col-span-3',
+          b: 'Physicist and inventor in photonics and aerospace infrastructure. Chairman of Startup Factory Hub and business advisor at Startupbootcamp.' },
+        { n: 'Dominic Catrambone', r: 'CFO', img: dominicCatrambone, span: 'md:col-span-2',
+          b: 'Executive with 39 years in financial services and healthcare. Former CEO, President & EVP and founder of an NYSE-listed ETF.' },
+        { n: 'James Stuber', r: 'Legal Counsel', img: jamesStuber, span: 'md:col-span-2',
+          b: 'Attorney with 40+ years in corporate law, fund formation and technology commercialization. Formerly at Hogan & Hartson; Georgetown Law JD.' },
+        { n: 'N. MacDonnell Ulsch', r: 'Strategic Advisor', img: nMacdonnellUlsch, span: 'md:col-span-2',
+          b: 'Former Senior Managing Director, PwC cybercrime practice. Advises the U.S. Senate Foreign Relations Committee; author of "Cyber Threat!".' },
       ].map((m) => (
-        <Card key={m.n} className="text-center">
-          <div className="w-[clamp(36px,7vh,64px)] h-[clamp(36px,7vh,64px)] rounded-full overflow-hidden border border-technical-line/50 mx-auto mb-1.5">
-            <img src={m.img} alt={m.n} className="w-full h-full object-cover" loading="lazy" />
+        <Card key={m.n} className={`${m.span} flex md:flex-col items-center md:items-start gap-3 md:gap-2`}>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="w-12 h-12 md:w-[clamp(44px,11vh,110px)] md:h-[clamp(44px,11vh,110px)] rounded-full overflow-hidden border border-technical-line/50 flex-shrink-0">
+              <img src={m.img} alt={m.n} className="w-full h-full object-cover" loading="lazy" />
+            </div>
+            <div className="hidden md:block">
+              <div className="font-display text-foreground text-[clamp(14px,2.4vh,22px)] leading-tight">{m.n}</div>
+              <div className="font-technical text-geometric-secondary uppercase text-[clamp(8px,1.2vh,11px)] tracking-wider mt-0.5">{m.r}</div>
+            </div>
           </div>
-          <div className="font-display text-foreground text-[clamp(11px,1.7vh,15px)] leading-tight">{m.n}</div>
-          <div className="font-technical text-geometric-secondary uppercase text-[clamp(7px,1vh,9px)] tracking-wider mt-0.5">{m.r}</div>
+          <div className="min-w-0">
+            <div className="md:hidden font-display text-foreground text-[14px] leading-tight">{m.n}</div>
+            <div className="md:hidden font-technical text-geometric-secondary uppercase text-[8px] tracking-wider">{m.r}</div>
+            <p className={`${T.body} line-clamp-2 md:line-clamp-none mt-0.5`}>{m.b}</p>
+          </div>
         </Card>
       ))}
     </div>
