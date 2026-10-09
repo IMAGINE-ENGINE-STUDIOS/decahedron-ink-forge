@@ -108,8 +108,8 @@ const Framework = () => (
 
 const Benefits = () => (
   <div className="h-full flex flex-col">
-    <Title sub="Portfolio companies get access to our partner ecosystem from day one.">Portfolio Benefits</Title>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-[clamp(6px,1.4vh,14px)] flex-1 min-h-0">
+    <Title sub="Partner perks from day one.">Portfolio Benefits</Title>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-[clamp(6px,1.4vh,14px)]">
       <Card>
         <div className="flex items-center gap-3 mb-2">
           <div className="w-9 h-9 rounded-sm border border-technical-line/50 bg-background/60 flex items-center justify-center">
@@ -124,7 +124,6 @@ const Benefits = () => (
           'Free hybrid accelerator — no equity given to the program',
           'Hands-on mentorship and cohort advisory',
           'Pitch training and diligence preparation',
-          'Pathway to follow-on support from Decahedron',
         ]} />
       </Card>
       <Card>
@@ -138,12 +137,11 @@ const Benefits = () => (
         <Bullets items={[
           'Preferred access to NVIDIA hardware and software',
           'Cloud compute credits and developer tools',
-          'Technical training and AI architecture guidance',
           'Go-to-market exposure in NVIDIA’s ecosystem',
         ]} />
       </Card>
     </div>
-    <Card className="mt-[clamp(6px,1.4vh,14px)]" label="ALSO INCLUDED">
+    <Card className="hidden md:block mt-[clamp(6px,1.4vh,14px)]" label="ALSO INCLUDED">
       <p className={T.body}>Introductions to customers, defense & enterprise pilots, follow-on investors, legal and financial advisory.</p>
     </Card>
   </div>
