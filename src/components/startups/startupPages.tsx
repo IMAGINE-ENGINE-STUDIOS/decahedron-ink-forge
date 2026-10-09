@@ -76,12 +76,13 @@ const Why = () => (
 
 const Mandate = () => (
   <div className="h-full flex flex-col">
-    <Title sub="We back Seed-and-up companies with $1M+ ARR across Space, Quantum and Energy.">What We Invest In</Title>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-[clamp(6px,1.4vh,14px)]">
+    <Title sub="We back Seed-and-up companies with $1M+ ARR across Space, Quantum, Energy and Deep Tech.">What We Invest In</Title>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-[clamp(6px,1.4vh,14px)]">
       {[
         { t: 'SPACE', i: ['Launch', 'Propulsion', 'Satellites', 'Telecommunications'] },
         { t: 'QUANTUM', i: ['Quantum computing', 'Optics', 'Sensing'] },
         { t: 'ENERGY', i: ['Remote energy', 'Infrastructure'] },
+        { t: 'DEEP TECH', i: ['Robotics', 'IoT', 'Software', 'Hardware'] },
       ].map((c) => <Card key={c.t} title={c.t}><Bullets items={c.i} /></Card>)}
     </div>
     <div className="grid grid-cols-3 gap-[clamp(6px,1.4vh,14px)] mt-[clamp(6px,1.4vh,14px)]">
