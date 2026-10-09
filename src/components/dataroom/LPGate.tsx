@@ -11,8 +11,6 @@ interface LPGateProps {
   onAccessGranted: () => void;
 }
 
-const LP_PASSWORD = 'VentureFund';
-
 const LPGate: React.FC<LPGateProps> = ({ onAccessGranted }) => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
@@ -22,8 +20,12 @@ const LPGate: React.FC<LPGateProps> = ({ onAccessGranted }) => {
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
 
-  const handlePasswordSubmit = () => {
-    if (password === LP_PASSWORD) {
+  const handlePasswordSubmit = async () => {
+    const { data } = await supabase.functions.invoke('data-room', {
+      body: { action: 'verify', creds: { lpPassword: password }, payload: {} },
+    });
+    if (data?.role === 'lp') {
+      localStorage.setItem('lp_access_creds', JSON.stringify({ lpPassword: password }));
       localStorage.setItem('lp_access_email', 'password-access');
       onAccessGranted();
     } else {
@@ -36,26 +38,23 @@ const LPGate: React.FC<LPGateProps> = ({ onAccessGranted }) => {
       toast({ title: 'Please enter your email', variant: 'destructive' });
       return;
     }
-
+    const normalized = email.trim().toLowerCase();
     setChecking(true);
-    const { data, error } = await supabase
-      .from('limited_partner_applications')
-      .select('status')
-      .eq('email', email.trim().toLowerCase())
-      .order('created_at', { ascending: false })
-      .limit(1);
-
+    const { data, error } = await supabase.functions.invoke('data-room', {
+      body: { action: 'check_email', creds: {}, payload: { email: normalized } },
+    });
     setChecking(false);
 
-    if (error || !data || data.length === 0) {
+    const status = data?.status as string | null | undefined;
+    if (error || !status) {
       toast({ title: 'No application found for this email', description: 'Please register first.', variant: 'destructive' });
       setMode('register');
       return;
     }
 
-    const status = data[0].status;
     if (status === 'approved') {
-      localStorage.setItem('lp_access_email', email.trim().toLowerCase());
+      localStorage.setItem('lp_access_creds', JSON.stringify({ lpEmail: normalized }));
+      localStorage.setItem('lp_access_email', normalized);
       onAccessGranted();
     } else if (status === 'pending') {
       setPendingMessage(true);
