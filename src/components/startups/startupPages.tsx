@@ -76,17 +76,16 @@ const Why = () => (
 
 const Mandate = () => (
   <div className="h-full flex flex-col">
-    <Title sub="We back growth-stage companies at the intersection of physics, compute and autonomy.">What We Invest In</Title>
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-[clamp(6px,1.4vh,14px)]">
+    <Title sub="We back Seed-and-up companies with $1M+ ARR across Space, Quantum and Energy.">What We Invest In</Title>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-[clamp(6px,1.4vh,14px)]">
       {[
-        { t: 'SPACE', i: ['Orbital & ground infra', 'Space comms'] },
-        { t: 'DEEP TECH', i: ['Robotics & autonomy', 'Silicon & photonics'] },
-        { t: 'QUANTUM', i: ['Sensing & comms', 'Optical interconnects'] },
-        { t: 'ENERGY', i: ['Industrial resiliency', 'Grid & storage'] },
+        { t: 'SPACE', i: ['Launch', 'Propulsion', 'Satellites', 'Telecommunications'] },
+        { t: 'QUANTUM', i: ['Quantum computing', 'Optics', 'Sensing'] },
+        { t: 'ENERGY', i: ['Remote energy', 'Infrastructure'] },
       ].map((c) => <Card key={c.t} title={c.t}><Bullets items={c.i} /></Card>)}
     </div>
     <div className="grid grid-cols-3 gap-[clamp(6px,1.4vh,14px)] mt-[clamp(6px,1.4vh,14px)]">
-      {[{ k: 'STAGE', v: 'Growth' }, { k: 'TRACTION', v: 'Revenue' }, { k: 'ROLE', v: 'Active' }].map((m) => (
+      {[{ k: 'STAGE', v: 'Seed & up' }, { k: 'TRACTION', v: '$1M+ ARR' }, { k: 'ROLE', v: 'Active' }].map((m) => (
         <Card key={m.k} label={m.k}><div className={T.big}>{m.v}</div></Card>
       ))}
     </div>
