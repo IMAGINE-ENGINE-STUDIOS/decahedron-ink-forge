@@ -7,6 +7,7 @@ import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 import nasaLogo from '@/assets/partners/nasa.svg';
 import nasaTTAsset from '@/assets/partners/nasa-tech-transfer.png.asset.json';
 import jaxaLogo from '@/assets/partners/jaxa.svg';
+import nvInceptionAsset from '@/assets/partners/nvidia-inception.webp.asset.json';
 import uksaLogo from '@/assets/partners/uksa.png';
 import startupFactoryLogo from '@/assets/partners/startup-factory-hub.ico';
 
@@ -132,7 +133,7 @@ const Benefits = () => (
       </Card>
       <Card>
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-sm border border-technical-line/50 bg-background/60 flex items-center justify-center font-display text-foreground text-sm">NV</div>
+          <div className="h-9 px-1.5 rounded-sm border border-technical-line/50 bg-background/60 flex items-center justify-center"><img src={nvInceptionAsset.url} alt="NVIDIA Inception logo" className="h-7 w-auto object-contain" /></div>
           <div>
             <div className={T.label}>AI & COMPUTE PARTNER</div>
             <h3 className="font-display text-foreground text-[clamp(14px,2.3vh,20px)]">NVIDIA Inception</h3>
