@@ -5,6 +5,7 @@ import dominicCatrambone from '@/assets/team/dominic-catrambone.jpg';
 import jamesStuber from '@/assets/team/james-stuber.jpg';
 import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
 import nasaLogo from '@/assets/partners/nasa.svg';
+import nasaTTAsset from '@/assets/partners/nasa-tech-transfer.png.asset.json';
 import jaxaLogo from '@/assets/partners/jaxa.svg';
 import uksaLogo from '@/assets/partners/uksa.png';
 import startupFactoryLogo from '@/assets/partners/startup-factory-hub.ico';
@@ -156,7 +157,7 @@ const Network = () => (
     <div className="grid grid-cols-2 gap-[clamp(6px,1.4vh,14px)] flex-1 min-h-0 max-h-[60vh]">
       {[
         { n: 'NASA', d: 'National Aeronautics and Space Administration', img: nasaLogo },
-        { n: 'NASA Technology Transfer', d: 'Licensing of NASA patents & technologies', img: nasaLogo },
+        { n: 'NASA Technology Transfer', d: 'Licensing of NASA patents & technologies', img: nasaTTAsset.url },
         { n: 'UK Space Agency', d: 'United Kingdom space programme', img: uksaLogo },
         { n: 'JAXA', d: 'Japan Aerospace Exploration Agency', img: jaxaLogo },
       ].map((o) => (
