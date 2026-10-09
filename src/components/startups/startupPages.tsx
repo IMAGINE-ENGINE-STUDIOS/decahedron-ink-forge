@@ -62,13 +62,13 @@ const Cover = () => (
 
 const Why = () => (
   <div className="h-full flex flex-col">
-    <Title sub="We pitch to you first. Here is what you get when Decahedron joins your cap table.">Our Pitch to You</Title>
+    <Title sub="We pitch to you first. This is the unfair advantage you get when Decahedron joins your cap table.">Our Pitch to You</Title>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[clamp(6px,1.4vh,14px)] flex-1 min-h-0">
       {[
-        { k: 'OPERATORS', t: 'Technical partners', d: 'A team of operators and builders who understand physics, compute and hardware roadmaps.' },
-        { k: 'SPEED', t: 'Fast, clear decisions', d: 'A structured 10-factor review with written feedback — no black boxes, no endless loops.' },
-        { k: 'NETWORK', t: 'Doors that open', d: 'Customers, strategic partners, defense & enterprise pilots and follow-on investors.' },
-        { k: 'LONG HORIZON', t: 'Built for hard tech', d: 'Patient capital that respects long development cycles and capital-intensive scale-ups.' },
+        { k: 'OPERATORS', t: 'Builders, not spectators', d: 'Operators who have shipped physics, compute and hardware — we work your roadmap with you.' },
+        { k: 'SPEED', t: 'Decisions in weeks', d: 'A rigorous 10-factor review with written feedback and a clear yes or no — no endless loops.' },
+        { k: 'IP & TECHNOLOGY', t: '200+ open-source repositories', d: 'Access to 200+ open-source technology repositories, licensing pathways and IP to accelerate your R&D.' },
+        { k: 'LONG HORIZON', t: 'Capital built for hard tech', d: 'Patient capital for long development cycles and capital-intensive scale-ups — no pressure to pivot.' },
       ].map((c) => (
         <Card key={c.k} label={c.k} title={c.t}><p className={T.body}>{c.d}</p></Card>
       ))}
