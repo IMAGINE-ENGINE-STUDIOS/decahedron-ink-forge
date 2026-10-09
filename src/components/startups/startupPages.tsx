@@ -189,7 +189,7 @@ const Team = () => (
       ].map((m) => (
         <Card key={m.n} className={`${m.span} flex md:flex-col items-center md:items-start gap-3 md:gap-2`}>
           <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="w-[clamp(44px,11vh,110px)] h-[clamp(44px,11vh,110px)] rounded-full overflow-hidden border border-technical-line/50 flex-shrink-0">
+            <div className="w-12 h-12 md:w-[clamp(44px,11vh,110px)] md:h-[clamp(44px,11vh,110px)] rounded-full overflow-hidden border border-technical-line/50 flex-shrink-0">
               <img src={m.img} alt={m.n} className="w-full h-full object-cover" loading="lazy" />
             </div>
             <div className="hidden md:block">
