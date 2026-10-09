@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import Test from "./pages/Test";
 import DealFlow from "./pages/DealFlow";
 import LPs from "./pages/LPs";
+import ForStartups from "./pages/ForStartups";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,8 @@ const App = () => (
           <Route path="/dealflow" element={<DealFlow />} />
           <Route path="/LPs" element={<LPs />} />
           <Route path="/lps" element={<LPs />} />
+          <Route path="/forstartups" element={<ForStartups />} />
+          <Route path="/for-startups" element={<ForStartups />} />
           <Route path="/lp-pipeline" element={<Navigate to="/admin" replace />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
