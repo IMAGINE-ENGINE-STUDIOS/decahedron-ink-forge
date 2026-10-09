@@ -67,7 +67,7 @@ const Why = () => (
       {[
         { k: 'OPERATORS', t: 'Builders, not spectators', d: 'Operators who have shipped physics, compute and hardware — we work your roadmap with you.' },
         { k: 'SPEED', t: 'Decisions in weeks', d: 'A rigorous 10-factor review with written feedback and a clear yes or no — no endless loops.' },
-        { k: 'IP & TECHNOLOGY', t: '200+ open-source repositories', d: 'Access to 200+ open-source technology repositories, licensing pathways and IP to accelerate your R&D.' },
+        { k: 'PROPRIETARY TECHNOLOGY', t: '200+ in-house repositories', d: 'Our own library of 200+ technology repositories, licenses and IP — developed in-house by Decahedron and made available to the founders we back.' },
         { k: 'LONG HORIZON', t: 'Capital built for hard tech', d: 'Patient capital for long development cycles and capital-intensive scale-ups — no pressure to pivot.' },
       ].map((c) => (
         <Card key={c.k} label={c.k} title={c.t}><p className={T.body}>{c.d}</p></Card>
