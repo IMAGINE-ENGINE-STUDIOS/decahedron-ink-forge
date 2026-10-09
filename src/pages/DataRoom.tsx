@@ -61,7 +61,6 @@ interface ShareLink {
   created_at: string;
 }
 
-const ADMIN_PASSWORD = 'VenturePartners';
 const UNFILED = '__root__';
 
 const DataRoom: React.FC = () => {
@@ -91,58 +90,91 @@ const DataRoom: React.FC = () => {
   const [activeShare, setActiveShare] = useState<ShareLink | null>(null);
   const [shareChecked, setShareChecked] = useState(!shareToken);
 
+  const [adminSecret, setAdminSecret] = useState<string | null>(() => sessionStorage.getItem('dr_admin_secret'));
+
+  const creds = useMemo(() => {
+    let lp: Record<string, string> = {};
+    try { lp = JSON.parse(localStorage.getItem('lp_access_creds') || '{}'); } catch { lp = {}; }
+    return {
+      ...(adminSecret ? { adminPassword: adminSecret } : {}),
+      ...(lp.lpEmail ? { lpEmail: lp.lpEmail } : {}),
+      ...(lp.lpPassword ? { lpPassword: lp.lpPassword } : {}),
+      ...(shareToken ? { shareToken } : {}),
+    };
+  }, [adminSecret, shareToken, lpAccess]);
+
+  const callRoom = async (action: string, payload: Record<string, unknown> = {}, override?: Record<string, string>) => {
+    const { data, error } = await supabase.functions.invoke('data-room', {
+      body: { action, creds: override ?? creds, payload },
+    });
+    if (error) throw error;
+    return data;
+  };
+
   useEffect(() => {
-    fetchDocuments();
-  }, []);
+    if (lpAccess || isAdmin || activeShare) fetchDocuments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lpAccess, isAdmin, activeShare]);
 
   useEffect(() => {
     if (isAdmin) fetchShareLinks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin]);
 
-  // Validate share token
+  // Restore admin session (verified server-side)
+  useEffect(() => {
+    if (!adminSecret) return;
+    callRoom('verify', {}, { adminPassword: adminSecret })
+      .then((r) => { if (r?.role === 'admin') setIsAdmin(true); })
+      .catch(() => { sessionStorage.removeItem('dr_admin_secret'); setAdminSecret(null); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Validate share token server-side
   useEffect(() => {
     if (!shareToken) return;
     (async () => {
-      const { data } = await supabase
-        .from('data_room_share_links')
-        .select('*')
-        .eq('token', shareToken)
-        .maybeSingle();
-      if (data) {
-        if (!data.expires_at || new Date(data.expires_at) > new Date()) {
-          setActiveShare(data as ShareLink);
-          if (data.scope !== 'all' && data.category) setSelectedCategory(data.category);
+      try {
+        const r = await callRoom('verify', {}, { shareToken });
+        if (r?.role === 'share' && r.share) {
+          setActiveShare({ id: '', token: shareToken, label: null, created_at: '', ...r.share } as ShareLink);
+          if (r.share.scope !== 'all' && r.share.category) setSelectedCategory(r.share.category);
         }
-      }
+      } catch { /* invalid link */ }
       setShareChecked(true);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shareToken]);
 
   const fetchDocuments = async () => {
-    const { data, error } = await supabase
-      .from('data_room_documents')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) console.error(error);
-    else setDocuments((data as DataRoomDocument[]) || []);
+    try {
+      const r = await callRoom('list');
+      setDocuments((r?.documents as DataRoomDocument[]) || []);
+    } catch (e) {
+      console.error(e);
+      if (lpAccess) { localStorage.removeItem('lp_access_creds'); localStorage.removeItem('lp_access_email'); setLpAccess(false); }
+    }
     setLoading(false);
   };
 
   const fetchShareLinks = async () => {
-    const { data } = await supabase
-      .from('data_room_share_links')
-      .select('*')
-      .order('created_at', { ascending: false });
-    setShareLinks((data as ShareLink[]) || []);
+    try {
+      const r = await callRoom('list_shares');
+      setShareLinks((r?.links as ShareLink[]) || []);
+    } catch { setShareLinks([]); }
   };
 
-  const handleAdminLogin = () => {
-    if (adminPassword === ADMIN_PASSWORD) {
+  const handleAdminLogin = async () => {
+    try {
+      const r = await callRoom('verify', {}, { adminPassword });
+      if (r?.role !== 'admin') throw new Error();
+      sessionStorage.setItem('dr_admin_secret', adminPassword);
+      setAdminSecret(adminPassword);
       setIsAdmin(true);
       setShowAdminLogin(false);
       setAdminPassword('');
       toast({ title: 'Admin access granted' });
-    } else {
+    } catch {
       toast({ title: 'Invalid password', variant: 'destructive' });
     }
   };
@@ -155,58 +187,58 @@ const DataRoom: React.FC = () => {
 
     for (const file of Array.from(files)) {
       const subPart = sub ? `${sub.replace(/[^a-zA-Z0-9-_]/g, '_')}/` : '';
-      const filePath = `${uploadCategory}/${subPart}${Date.now()}-${file.name}`;
-      const { error: uploadError } = await supabase.storage.from('data-room').upload(filePath, file);
-      if (uploadError) {
-        toast({ title: `Failed to upload ${file.name}`, description: uploadError.message, variant: 'destructive' });
-        continue;
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const filePath = `${uploadCategory}/${subPart}${Date.now()}-${safeName}`;
+      try {
+        const up = await callRoom('upload_url', { path: filePath });
+        const { error: uploadError } = await supabase.storage.from('data-room').uploadToSignedUrl(up.path, up.token, file);
+        if (uploadError) throw uploadError;
+        await callRoom('register', {
+          name: file.name, category: uploadCategory, subfolder: sub,
+          file_path: filePath, file_size: file.size, mime_type: file.type,
+        });
+      } catch (err) {
+        toast({ title: `Failed to upload ${file.name}`, variant: 'destructive' });
       }
-      const { error: dbError } = await supabase.from('data_room_documents').insert({
-        name: file.name,
-        category: uploadCategory,
-        subfolder: sub,
-        file_path: filePath,
-        file_size: file.size,
-        mime_type: file.type,
-      });
-      if (dbError) toast({ title: `Failed to save ${file.name} metadata`, variant: 'destructive' });
     }
-    toast({ title: 'Files uploaded successfully' });
+    toast({ title: 'Upload finished' });
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
     fetchDocuments();
   };
 
   const handleDelete = async (doc: DataRoomDocument) => {
-    await supabase.storage.from('data-room').remove([doc.file_path]);
-    const { error } = await supabase.from('data_room_documents').delete().eq('id', doc.id);
-    if (error) {
+    try {
+      await callRoom('delete', { id: doc.id });
+      toast({ title: 'Document deleted' });
+      fetchDocuments();
+    } catch {
       toast({ title: 'Failed to delete', variant: 'destructive' });
-      return;
     }
-    toast({ title: 'Document deleted' });
-    fetchDocuments();
   };
 
   const handleSaveMove = async () => {
     if (!moveDoc) return;
     const sub = moveSubfolder.trim() || null;
-    const { error } = await supabase
-      .from('data_room_documents')
-      .update({ category: moveCategory, subfolder: sub })
-      .eq('id', moveDoc.id);
-    if (error) {
+    try {
+      await callRoom('move', { id: moveDoc.id, category: moveCategory, subfolder: sub });
+      toast({ title: 'Document moved' });
+      setMoveDoc(null);
+      fetchDocuments();
+    } catch {
       toast({ title: 'Move failed', variant: 'destructive' });
-      return;
     }
-    toast({ title: 'Document moved' });
-    setMoveDoc(null);
-    fetchDocuments();
   };
 
-  const handleDownload = (doc: DataRoomDocument) => {
-    const { data } = supabase.storage.from('data-room').getPublicUrl(doc.file_path);
-    window.open(data.publicUrl, '_blank');
+  const handleDownload = async (doc: DataRoomDocument) => {
+    const win = window.open('', '_blank');
+    try {
+      const r = await callRoom('signed_url', { id: doc.id });
+      if (win) win.location.href = r.url; else window.location.href = r.url;
+    } catch {
+      win?.close();
+      toast({ title: 'Could not open document', variant: 'destructive' });
+    }
   };
 
   const formatFileSize = (bytes: number | null) => {
@@ -253,32 +285,31 @@ const DataRoom: React.FC = () => {
 
   const handleLPLogout = () => {
     localStorage.removeItem('lp_access_email');
+    localStorage.removeItem('lp_access_creds');
     setLpAccess(false);
   };
 
   const createShareLink = async () => {
     if (!shareDialog) return;
-    const token = (crypto as any).randomUUID().replace(/-/g, '').slice(0, 22);
-    const { data, error } = await supabase.from('data_room_share_links').insert({
-      token,
-      label: shareDialog.label || null,
-      scope: shareDialog.scope,
-      category: shareDialog.category || null,
-      subfolder: shareDialog.subfolder || null,
-    }).select().single();
-    if (error) {
-      toast({ title: 'Could not create share link', description: error.message, variant: 'destructive' });
-      return;
+    try {
+      const r = await callRoom('create_share', {
+        label: shareDialog.label || null,
+        scope: shareDialog.scope,
+        category: shareDialog.category || null,
+        subfolder: shareDialog.subfolder || null,
+      });
+      const url = `${window.location.origin}/dataroom?share=${r.link.token}`;
+      await navigator.clipboard.writeText(url).catch(() => {});
+      toast({ title: 'Share link copied to clipboard', description: url });
+      setShareDialog(null);
+      fetchShareLinks();
+    } catch {
+      toast({ title: 'Could not create share link', variant: 'destructive' });
     }
-    const url = `${window.location.origin}/dataroom?share=${token}`;
-    await navigator.clipboard.writeText(url).catch(() => {});
-    toast({ title: 'Share link copied to clipboard', description: url });
-    setShareDialog(null);
-    fetchShareLinks();
   };
 
   const deleteShareLink = async (id: string) => {
-    await supabase.from('data_room_share_links').delete().eq('id', id);
+    await callRoom('delete_share', { id }).catch(() => {});
     fetchShareLinks();
   };
 

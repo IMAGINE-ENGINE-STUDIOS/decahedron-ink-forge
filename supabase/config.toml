@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.send-lp-ticket]
 verify_jwt = false
+
+[functions.data-room]
+verify_jwt = false
