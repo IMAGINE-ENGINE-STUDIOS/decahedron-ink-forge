@@ -108,7 +108,7 @@ const Framework = () => (
 
 const Benefits = () => (
   <div className="h-full flex flex-col">
-    <Title sub="Partner perks from day one.">Portfolio Benefits</Title>
+    <Title sub="An emerging fund — every founder we back gets these perks from day one.">Founder Benefits</Title>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[clamp(6px,1.4vh,14px)]">
       <Card>
         <div className="flex items-center gap-3 mb-2">
