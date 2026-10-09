@@ -4,6 +4,9 @@ import ricardoFont from '@/assets/team/ricardo-font.jpg';
 import dominicCatrambone from '@/assets/team/dominic-catrambone.jpg';
 import jamesStuber from '@/assets/team/james-stuber.jpg';
 import nMacdonnellUlsch from '@/assets/team/n-macdonnell-ulsch.jpg';
+import nasaLogo from '@/assets/partners/nasa.svg';
+import jaxaLogo from '@/assets/partners/jaxa.svg';
+import uksaLogo from '@/assets/partners/uksa.png';
 import startupFactoryLogo from '@/assets/partners/startup-factory-hub.ico';
 
 /** Fluid type helpers — every sheet must fit the viewport without scrolling. */
@@ -147,6 +150,26 @@ const Benefits = () => (
   </div>
 );
 
+const Network = () => (
+  <div className="h-full flex flex-col">
+    <Title sub="Founders we back gain access to our relationships across the global space ecosystem.">Our Network</Title>
+    <div className="grid grid-cols-2 gap-[clamp(6px,1.4vh,14px)] flex-1 min-h-0 max-h-[60vh]">
+      {[
+        { n: 'NASA', d: 'National Aeronautics and Space Administration', img: nasaLogo },
+        { n: 'NASA Technology Transfer', d: 'Licensing of NASA patents & technologies', img: nasaLogo },
+        { n: 'UK Space Agency', d: 'United Kingdom space programme', img: uksaLogo },
+        { n: 'JAXA', d: 'Japan Aerospace Exploration Agency', img: jaxaLogo },
+      ].map((o) => (
+        <Card key={o.n} className="flex flex-col items-center justify-center text-center bg-card">
+          <img src={o.img} alt={`${o.n} logo`} className="h-[clamp(32px,8vh,80px)] w-auto max-w-[80%] object-contain mb-2" loading="lazy" />
+          <div className="font-display text-foreground text-[clamp(12px,2vh,18px)] leading-tight">{o.n}</div>
+          <div className={`${T.body} hidden sm:block mt-0.5`}>{o.d}</div>
+        </Card>
+      ))}
+    </div>
+  </div>
+);
+
 const Team = () => (
   <div className="h-full flex flex-col">
     <Title sub="The people you will actually work with.">Your Partners</Title>
@@ -191,6 +214,7 @@ export const startupPages = [
   { kicker: '03 · MANDATE', render: Mandate },
   { kicker: '04 · EVALUATION', render: Framework },
   { kicker: '05 · BENEFITS', render: Benefits },
-  { kicker: '06 · TEAM', render: Team },
-  { kicker: '07 · PITCH US', render: Apply },
+  { kicker: '06 · NETWORK', render: Network },
+  { kicker: '07 · TEAM', render: Team },
+  { kicker: '08 · PITCH US', render: Apply },
 ];
