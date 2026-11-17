@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Layers, Maximize2, Minimize2, BookOpen } from 'lucide-react';
-import { startupPages as lpBrochurePages } from '@/components/startups/startupPages';
+import { startupPages as lpBrochurePages, startupPreloadImages } from '@/components/startups/startupPages';
 
 /**
  * /LPs — Limited Partner brochure rendered as a state-of-the-art origami flip book.
@@ -41,6 +41,11 @@ const ForStartups: React.FC = () => {
   const reduce = useReducedMotion();
   const total = lpBrochurePages.length;
   const busy = useRef(false);
+
+  // Decode every logo up front so turning a page never shows a late image.
+  useEffect(() => {
+    startupPreloadImages.forEach((src) => { const img = new Image(); img.src = src; img.decode?.().catch(() => {}); });
+  }, []);
 
 
 

@@ -11,6 +11,12 @@ import nvInceptionAsset from '@/assets/partners/nvidia-inception.webp.asset.json
 import uksaLogo from '@/assets/partners/uksa.png';
 import startupFactoryLogo from '@/assets/partners/startup-factory-hub.ico';
 
+/** Every logo/photo in the reverse pitch — preloaded so page turns never wait on images. */
+export const startupPreloadImages: string[] = [
+  khaliaPadilla, ricardoFont, dominicCatrambone, jamesStuber, nMacdonnellUlsch,
+  nasaLogo, nasaTTAsset.url, aptAsset.url, nvInceptionAsset.url, uksaLogo, startupFactoryLogo,
+];
+
 /** Fluid type helpers — every sheet must fit the viewport without scrolling. */
 const T = {
   h: 'font-display text-foreground leading-[0.95] text-[clamp(22px,4.2vh,44px)]',
@@ -163,7 +169,7 @@ const Network = () => (
         { n: 'Advancing Photonics Technologies', d: 'Photonics innovation & commercialization', img: aptAsset.url },
       ].map((o) => (
         <Card key={o.n} className="flex flex-col items-center justify-center text-center bg-card">
-          <img src={o.img} alt={`${o.n} logo`} className="h-[clamp(32px,8vh,80px)] w-auto max-w-[80%] object-contain mb-2" loading="lazy" />
+          <img src={o.img} alt={`${o.n} logo`} className="h-[clamp(32px,8vh,80px)] w-auto max-w-[80%] object-contain mb-2" loading="eager" decoding="async" draggable={false} />
           <div className="font-display text-foreground text-[clamp(12px,2vh,18px)] leading-tight">{o.n}</div>
           <div className={`${T.body} hidden sm:block mt-0.5`}>{o.d}</div>
         </Card>
@@ -191,7 +197,7 @@ const Team = () => (
         <Card key={m.n} className={`${m.span} flex md:flex-col items-center md:items-start gap-3 md:gap-2`}>
           <div className="flex items-center gap-3 flex-shrink-0">
             <div className="w-12 h-12 md:w-[clamp(44px,11vh,110px)] md:h-[clamp(44px,11vh,110px)] rounded-full overflow-hidden border border-technical-line/50 flex-shrink-0">
-              <img src={m.img} alt={m.n} className="w-full h-full object-cover" loading="lazy" />
+              <img src={m.img} alt={m.n} className="w-full h-full object-cover" loading="eager" decoding="async" draggable={false} />
             </div>
             <div className="hidden md:block">
               <div className="font-display text-foreground text-[clamp(14px,2.4vh,22px)] leading-tight">{m.n}</div>
